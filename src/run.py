@@ -248,6 +248,8 @@ def main():
         token=model_args.token,
         trust_remote_code=model_args.trust_remote_code,
     )
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.unk_token
     MODEL_CLASS = AutoModelForSeq2SeqLM if is_encoder_decoder else AutoModelForCausalLM
     model = MODEL_CLASS.from_pretrained(
         model_args.model_name_or_path,
@@ -258,13 +260,6 @@ def main():
         token=model_args.token,
         trust_remote_code=model_args.trust_remote_code,
     )
-    # if tokenizer.unk_token is None:  # https://stackoverflow.com/questions/70544129/transformers-asking-to-pad-but-the-tokenizer-does-not-have-a-padding-token
-    #     tokenizer.add_special_tokens({'unk_token': '<unk>'})
-    #     model.resize_token_embeddings(len(tokenizer))  #https://docs.nvidia.com/deeplearning/performance/dl-performance-matrix-multiplication/index.html#requirements-tc
-    if tokenizer.pad_token is None:
-        if tokenizer.unk_token is None:  # https://stackoverflow.com/questions/76633368/how-does-one-set-the-pad-token-correctly-not-to-eos-during-fine-tuning-to-avoi/76639568#76639568
-            tokenizer.unk_token = tokenizer.eos_token  # for LLaMA-3
-        tokenizer.pad_token = tokenizer.unk_token  # for LLaMA-2
 
     def preprocess_function(example):
         # remove pairs where at least one record is None
