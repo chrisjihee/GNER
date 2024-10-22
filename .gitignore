@@ -165,3 +165,6 @@ data/mit-*
 data/pile-ner.json
 output/
 gradio_cached_examples/
+
+# custom
+.cache_hf_hub
