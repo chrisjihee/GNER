@@ -1,5 +1,6 @@
 # Deep Learning
 --extra-index-url https://download.pytorch.org/whl/cu118
+nltk
 torch
 datasets
 deepspeed
