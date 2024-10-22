@@ -1,0 +1,8 @@
+# Deep Learning
+--extra-index-url https://download.pytorch.org/whl/cu118
+torch
+datasets
+deepspeed
+accelerate
+protobuf
+transformers>=4.32.0,<4.38.0
