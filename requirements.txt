@@ -6,4 +6,5 @@ datasets
 deepspeed
 accelerate
 protobuf
-transformers>=4.32.0,<4.38.0
+transformers
+sentencepiece
