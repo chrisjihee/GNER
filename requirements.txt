@@ -7,7 +7,7 @@ sentencepiece
 
 # advanced
 --extra-index-url https://download.pytorch.org/whl/cu118
-torch<2.2.0
+torch<2.3.0
 deepspeed<0.14.0
 accelerate<1.0.0
 transformers<4.39.0
