@@ -12,6 +12,8 @@ OUTPUT_DIR=output/llama-7b-task-adaptation
 DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero2_llama.json
 RUN_NAME=llama-7B-experiment
 
+#     --gradient_checkpointing True  => 37867MB/40960MB(92.4%)
+#     --gradient_checkpointing False => 39911MB/40960MB(97.4%)
 deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --bf16 True --tf32 True \
     --do_train \
@@ -19,7 +21,7 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --predict_with_generate \
     --model_name_or_path $MODEL_NAME_OR_PATH \
     --data_dir $DATA_DIR \
-    --preprocessing_num_workers 12 \
+    --preprocessing_num_workers 24 \
     --metric_for_best_model "eval_average_f1" \
     --greater_is_better True \
     --train_json_dir $TRAIN_JSON_DIR \
