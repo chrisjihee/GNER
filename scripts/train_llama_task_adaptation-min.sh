@@ -35,7 +35,7 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --learning_rate 2e-05 \
     --weight_decay 0. \
     --warmup_ratio 0.04 \
-    --num_train_epochs 0.01 \
+    --num_train_epochs 0.1 \
     --lr_scheduler_type "cosine" \
     --deepspeed $DEEPSPEED_CONFIG \
     --run_name $RUN_NAME \
@@ -45,7 +45,7 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --overwrite_output_dir \
     --overwrite_cache \
     --logging_strategy "steps" \
-    --logging_steps 10 \
+    --logging_steps 5 \
     --save_strategy "steps" \
-    --save_steps 100 \
+    --save_steps 10 \
     --seed 1234
