@@ -21,7 +21,7 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --predict_with_generate \
     --model_name_or_path $MODEL_NAME_OR_PATH \
     --data_dir $DATA_DIR \
-    --preprocessing_num_workers 24 \
+    --preprocessing_num_workers 12 \
     --metric_for_best_model "eval_average_f1" \
     --greater_is_better True \
     --train_json_dir $TRAIN_JSON_DIR \
