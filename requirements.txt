@@ -1,12 +1,12 @@
-# basic
+# version-free
 nltk
-numpy<2.0.0
 datasets
 protobuf
 sentencepiece
 
-# advanced
+# version-specific
 --extra-index-url https://download.pytorch.org/whl/cu118
+numpy<2.0.0
 torch<2.4.0
 deepspeed<0.13.2
 accelerate<1.0.0
