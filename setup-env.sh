@@ -14,4 +14,5 @@ ds_report
 
 # train
 #bash scripts/train_llama_task_adaptation-min4.sh
-bash scripts/train_llama_task_adaptation-min8.sh
+#bash scripts/train_llama_task_adaptation-min8.sh
+bash scripts/train_llama_task_adaptation-full.sh
