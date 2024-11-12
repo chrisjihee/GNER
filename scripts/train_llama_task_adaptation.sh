@@ -30,9 +30,9 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --gradient_accumulation_steps 32 \
     --gradient_checkpointing True \
     --learning_rate 2e-05 \
-    --weight_decay 0. \
-    --warmup_ratio 0.04 \
     --lr_scheduler_type "cosine" \
+    --warmup_ratio 0.04 \
+    --weight_decay 0. \
     --num_train_epochs 3 \
     --deepspeed $DEEPSPEED_CONFIG \
     --run_name $RUN_NAME \
