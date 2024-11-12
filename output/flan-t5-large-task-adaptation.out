@@ -1,0 +1,1464 @@
+(GNER) chrisjihee@dgx-a100:~/proj/GNER$ bash scripts/train_t5_large_task_adaptation.sh
+++ shuf -i25000-30000 -n1
++ port=26265
++ MODEL_NAME_OR_PATH=google/flan-t5-large
++ DATA_DIR=data
++ TRAIN_JSON_DIR=data/pile-ner.json
++ DATA_CONFIG_DIR=configs/dataset_configs/task_adaptation_configs
++ INSTRUCTION_FILE=configs/instruction_configs/instruction.json
++ OUTPUT_DIR=output/flan-t5-large-task-adaptation
++ DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero0_t5.json
++ RUN_NAME=flan-t5-large-experiment
++ deepspeed --include=localhost:0,1,2,3,4,5,6,7 --master_port 26265 src/run.py --bf16 True --tf32 True --do_train --do_predict --predict_with_generate --model_name_or_path google/flan-t5-large --data_dir data --preprocessing_num_workers 12 --metric_for_best_model eval_average_f1 --greater_is_better True --train_json_dir data/pile-ner.json --data_config_dir configs/dataset_configs/task_adaptation_configs --instruction_file configs/instruction_configs/instruction.json --output_dir output/flan-t5-large-task-adaptation --per_device_train_batch_size 4 --per_device_eval_batch_size 8 --gradient_accumulation_steps 8 --gradient_checkpointing True --learning_rate 5e-05 --lr_scheduler_type constant --warmup_steps 0 --num_train_epochs 10 --deepspeed configs/deepspeed_configs/deepspeed_zero0_t5.json --run_name flan-t5-large-experiment --max_source_length 640 --max_target_length 640 --generation_max_length 640 --overwrite_output_dir --overwrite_cache --logging_strategy steps --logging_steps 10 --save_strategy epoch --seed 1234
+[2024-11-12 16:21:41,962] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-12 16:21:43,289] [WARNING] [runner.py:202:fetch_hostfile] Unable to find hostfile, will proceed with training with local resources only.
+[2024-11-12 16:21:43,346] [INFO] [runner.py:568:main] cmd = /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11 -u -m deepspeed.launcher.launch --world_info=eyJsb2NhbGhvc3QiOiBbMCwgMSwgMiwgMywgNCwgNSwgNiwgN119 --master_addr=127.0.0.1 --master_port=26265 --enable_each_rank_log=None src/run.py --bf16 True --tf32 True --do_train --do_predict --predict_with_generate --model_name_or_path google/flan-t5-large --data_dir data --preprocessing_num_workers 12 --metric_for_best_model eval_average_f1 --greater_is_better True --train_json_dir data/pile-ner.json --data_config_dir configs/dataset_configs/task_adaptation_configs --instruction_file configs/instruction_configs/instruction.json --output_dir output/flan-t5-large-task-adaptation --per_device_train_batch_size 4 --per_device_eval_batch_size 8 --gradient_accumulation_steps 8 --gradient_checkpointing True --learning_rate 5e-05 --lr_scheduler_type constant --warmup_steps 0 --num_train_epochs 10 --deepspeed configs/deepspeed_configs/deepspeed_zero0_t5.json --run_name flan-t5-large-experiment --max_source_length 640 --max_target_length 640 --generation_max_length 640 --overwrite_output_dir --overwrite_cache --logging_strategy steps --logging_steps 10 --save_strategy epoch --seed 1234
+[2024-11-12 16:21:47,395] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-12 16:21:48,678] [INFO] [launch.py:145:main] WORLD INFO DICT: {'localhost': [0, 1, 2, 3, 4, 5, 6, 7]}
+[2024-11-12 16:21:48,678] [INFO] [launch.py:151:main] nnodes=1, num_local_procs=8, node_rank=0
+[2024-11-12 16:21:48,678] [INFO] [launch.py:162:main] global_rank_mapping=defaultdict(<class 'list'>, {'localhost': [0, 1, 2, 3, 4, 5, 6, 7]})
+[2024-11-12 16:21:48,678] [INFO] [launch.py:163:main] dist_world_size=8
+[2024-11-12 16:21:48,678] [INFO] [launch.py:165:main] Setting CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+[2024-11-12 16:21:54,871] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-12 16:21:55,089] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-12 16:21:55,096] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-12 16:21:55,097] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-12 16:21:55,124] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-12 16:21:55,142] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-12 16:21:55,148] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-12 16:21:55,148] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-12 16:21:55,152] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-12 16:21:55,358] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-12 16:21:55,358] [INFO] [comm.py:668:init_distributed] Initializing TorchBackend in DeepSpeed with backend nccl
+[2024-11-12 16:21:55,373] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-12 16:21:55,403] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-12 16:21:55,417] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-12 16:21:55,435] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-12 16:21:55,435] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-12 16:21:55,441] [INFO] [comm.py:637:init_distributed] cdb=None
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/12/2024 16:21:58 - WARNING - __main__ - Process rank: 2, device: cuda:2, n_gpu: 1distributed training: True, 16-bits training: True
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/12/2024 16:21:58 - WARNING - __main__ - Process rank: 5, device: cuda:5, n_gpu: 1distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/12/2024 16:21:58 - WARNING - __main__ - Process rank: 7, device: cuda:7, n_gpu: 1distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/12/2024 16:21:58 - WARNING - __main__ - Process rank: 3, device: cuda:3, n_gpu: 1distributed training: True, 16-bits training: True
+11/12/2024 16:21:58 - WARNING - __main__ - Process rank: 0, device: cuda:0, n_gpu: 1distributed training: True, 16-bits training: True
+11/12/2024 16:21:58 - INFO - __main__ - Training/evaluation parameters Seq2SeqTrainingArguments(
+_n_gpu=1,
+accelerator_config={'split_batches': False, 'dispatch_batches': None, 'even_batches': True, 'use_seedable_sampler': True},
+adafactor=False,
+adam_beta1=0.9,
+adam_beta2=0.999,
+adam_epsilon=1e-08,
+auto_find_batch_size=False,
+bf16=True,
+bf16_full_eval=False,
+data_seed=None,
+dataloader_drop_last=False,
+dataloader_num_workers=0,
+dataloader_persistent_workers=False,
+dataloader_pin_memory=True,
+dataloader_prefetch_factor=None,
+ddp_backend=None,
+ddp_broadcast_buffers=None,
+ddp_bucket_cap_mb=None,
+ddp_find_unused_parameters=None,
+ddp_timeout=1800,
+debug=[],
+deepspeed=configs/deepspeed_configs/deepspeed_zero0_t5.json,
+disable_tqdm=False,
+dispatch_batches=None,
+do_eval=False,
+do_predict=True,
+do_train=True,
+eval_accumulation_steps=None,
+eval_delay=0,
+eval_steps=None,
+evaluation_strategy=IntervalStrategy.NO,
+fp16=False,
+fp16_backend=auto,
+fp16_full_eval=False,
+fp16_opt_level=O1,
+fsdp=[],
+fsdp_config={'min_num_params': 0, 'xla': False, 'xla_fsdp_v2': False, 'xla_fsdp_grad_ckpt': False},
+fsdp_min_num_params=0,
+fsdp_transformer_layer_cls_to_wrap=None,
+full_determinism=False,
+generation_config=None,
+generation_max_length=640,
+generation_num_beams=None,
+gradient_accumulation_steps=8,
+gradient_checkpointing=True,
+gradient_checkpointing_kwargs=None,
+greater_is_better=True,
+group_by_length=False,
+half_precision_backend=auto,
+hub_always_push=False,
+hub_model_id=None,
+hub_private_repo=False,
+hub_strategy=HubStrategy.EVERY_SAVE,
+hub_token=<HUB_TOKEN>,
+ignore_data_skip=False,
+include_inputs_for_metrics=False,
+include_num_input_tokens_seen=False,
+include_tokens_per_second=False,
+jit_mode_eval=False,
+label_names=None,
+label_smoothing_factor=0.0,
+learning_rate=5e-05,
+length_column_name=length,
+load_best_model_at_end=False,
+local_rank=0,
+log_level=passive,
+log_level_replica=warning,
+log_on_each_node=True,
+logging_dir=output/flan-t5-large-task-adaptation/runs/Nov12_16-21-50_dgx-a100,
+logging_first_step=False,
+logging_nan_inf_filter=True,
+logging_steps=10,
+logging_strategy=IntervalStrategy.STEPS,
+lr_scheduler_kwargs={},
+lr_scheduler_type=SchedulerType.CONSTANT,
+max_grad_norm=1.0,
+max_steps=-1,
+metric_for_best_model=eval_average_f1,
+mp_parameters=,
+neftune_noise_alpha=None,
+no_cuda=False,
+num_train_epochs=10.0,
+optim=OptimizerNames.ADAMW_TORCH,
+optim_args=None,
+output_dir=output/flan-t5-large-task-adaptation,
+overwrite_output_dir=True,
+past_index=-1,
+per_device_eval_batch_size=8,
+per_device_train_batch_size=4,
+predict_with_generate=True,
+prediction_loss_only=False,
+push_to_hub=False,
+push_to_hub_model_id=None,
+push_to_hub_organization=None,
+push_to_hub_token=<PUSH_TO_HUB_TOKEN>,
+ray_scope=last,
+remove_unused_columns=True,
+report_to=[],
+resume_from_checkpoint=None,
+run_name=flan-t5-large-experiment,
+save_on_each_node=False,
+save_only_model=False,
+save_safetensors=True,
+save_steps=500,
+save_strategy=IntervalStrategy.EPOCH,
+save_total_limit=None,
+seed=1234,
+skip_memory_metrics=True,
+sortish_sampler=False,
+split_batches=None,
+tf32=True,
+torch_compile=False,
+torch_compile_backend=None,
+torch_compile_mode=None,
+torchdynamo=None,
+tpu_metrics_debug=False,
+tpu_num_cores=None,
+use_cpu=False,
+use_ipex=False,
+use_legacy_prediction_loop=False,
+use_mps_device=False,
+warmup_ratio=0.0,
+warmup_steps=0,
+weight_decay=0.0,
+)
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/12/2024 16:21:58 - WARNING - __main__ - Process rank: 1, device: cuda:1, n_gpu: 1distributed training: True, 16-bits training: True
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/12/2024 16:21:58 - WARNING - __main__ - Process rank: 4, device: cuda:4, n_gpu: 1distributed training: True, 16-bits training: True
+11/12/2024 16:21:58 - WARNING - __main__ - Process rank: 6, device: cuda:6, n_gpu: 1distributed training: True, 16-bits training: True
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+Using custom data configuration default-e60fd0a2766fdda3
+11/12/2024 16:21:58 - INFO - datasets.builder - Using custom data configuration default-e60fd0a2766fdda3
+Loading Dataset Infos from /raid/chrisjihee/.cache/huggingface/modules/datasets_modules/datasets/gner_dataset/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+11/12/2024 16:21:58 - INFO - datasets.info - Loading Dataset Infos from /raid/chrisjihee/.cache/huggingface/modules/datasets_modules/datasets/gner_dataset/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+Overwrite dataset info from restored data version if exists.
+11/12/2024 16:21:58 - INFO - datasets.builder - Overwrite dataset info from restored data version if exists.
+Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+11/12/2024 16:21:58 - INFO - datasets.info - Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+Found cached dataset gner_dataset (/raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89)
+11/12/2024 16:21:58 - INFO - datasets.builder - Found cached dataset gner_dataset (/raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89)
+Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+11/12/2024 16:21:58 - INFO - datasets.info - Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+Listing files in /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+11/12/2024 16:21:58 - INFO - datasets.arrow_dataset - Listing files in /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+Listing files in /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+11/12/2024 16:21:58 - INFO - datasets.arrow_dataset - Listing files in /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+[INFO|configuration_utils.py:728] 2024-11-12 16:21:58,871 >> loading configuration file config.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--google--flan-t5-large/snapshots/0613663d0d48ea86ba8cb3d7a44f0f65dc596a2a/config.json
+[INFO|configuration_utils.py:791] 2024-11-12 16:21:58,874 >> Model config T5Config {
+  "_name_or_path": "google/flan-t5-large",
+  "architectures": [
+    "T5ForConditionalGeneration"
+  ],
+  "classifier_dropout": 0.0,
+  "d_ff": 2816,
+  "d_kv": 64,
+  "d_model": 1024,
+  "decoder_start_token_id": 0,
+  "dense_act_fn": "gelu_new",
+  "dropout_rate": 0.1,
+  "eos_token_id": 1,
+  "feed_forward_proj": "gated-gelu",
+  "initializer_factor": 1.0,
+  "is_encoder_decoder": true,
+  "is_gated_act": true,
+  "layer_norm_epsilon": 1e-06,
+  "model_type": "t5",
+  "n_positions": 512,
+  "num_decoder_layers": 24,
+  "num_heads": 16,
+  "num_layers": 24,
+  "output_past": true,
+  "pad_token_id": 0,
+  "relative_attention_max_distance": 128,
+  "relative_attention_num_buckets": 32,
+  "tie_word_embeddings": false,
+  "transformers_version": "4.38.2",
+  "use_cache": true,
+  "vocab_size": 32128
+}
+
+[INFO|tokenization_utils_base.py:2046] 2024-11-12 16:21:59,084 >> loading file spiece.model from cache at /raid/chrisjihee/.cache/huggingface/hub/models--google--flan-t5-large/snapshots/0613663d0d48ea86ba8cb3d7a44f0f65dc596a2a/spiece.model
+[INFO|tokenization_utils_base.py:2046] 2024-11-12 16:21:59,084 >> loading file tokenizer.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--google--flan-t5-large/snapshots/0613663d0d48ea86ba8cb3d7a44f0f65dc596a2a/tokenizer.json
+[INFO|tokenization_utils_base.py:2046] 2024-11-12 16:21:59,084 >> loading file added_tokens.json from cache at None
+[INFO|tokenization_utils_base.py:2046] 2024-11-12 16:21:59,084 >> loading file special_tokens_map.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--google--flan-t5-large/snapshots/0613663d0d48ea86ba8cb3d7a44f0f65dc596a2a/special_tokens_map.json
+[INFO|tokenization_utils_base.py:2046] 2024-11-12 16:21:59,084 >> loading file tokenizer_config.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--google--flan-t5-large/snapshots/0613663d0d48ea86ba8cb3d7a44f0f65dc596a2a/tokenizer_config.json
+[INFO|modeling_utils.py:3257] 2024-11-12 16:21:59,170 >> loading weights file model.safetensors from cache at /raid/chrisjihee/.cache/huggingface/hub/models--google--flan-t5-large/snapshots/0613663d0d48ea86ba8cb3d7a44f0f65dc596a2a/model.safetensors
+[INFO|configuration_utils.py:845] 2024-11-12 16:21:59,185 >> Generate config GenerationConfig {
+  "decoder_start_token_id": 0,
+  "eos_token_id": 1,
+  "pad_token_id": 0
+}
+
+[INFO|modeling_utils.py:3992] 2024-11-12 16:22:19,333 >> All model checkpoint weights were used when initializing T5ForConditionalGeneration.
+
+[INFO|modeling_utils.py:4000] 2024-11-12 16:22:19,333 >> All the weights of T5ForConditionalGeneration were initialized from the model checkpoint at google/flan-t5-large.
+If your task is similar to the task the model of the checkpoint was trained on, you can already use T5ForConditionalGeneration for predictions without further training.
+[INFO|configuration_utils.py:800] 2024-11-12 16:22:19,546 >> loading configuration file generation_config.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--google--flan-t5-large/snapshots/0613663d0d48ea86ba8cb3d7a44f0f65dc596a2a/generation_config.json
+[INFO|configuration_utils.py:845] 2024-11-12 16:22:19,546 >> Generate config GenerationConfig {
+  "decoder_start_token_id": 0,
+  "eos_token_id": 1,
+  "pad_token_id": 0
+}
+
+Using custom data configuration default-7c1e414cce45c188
+11/12/2024 16:22:20 - INFO - datasets.builder - Using custom data configuration default-7c1e414cce45c188
+Loading Dataset Infos from /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/datasets/packaged_modules/json
+11/12/2024 16:22:20 - INFO - datasets.info - Loading Dataset Infos from /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/datasets/packaged_modules/json
+Overwrite dataset info from restored data version if exists.
+11/12/2024 16:22:20 - INFO - datasets.builder - Overwrite dataset info from restored data version if exists.
+Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092
+11/12/2024 16:22:20 - INFO - datasets.info - Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092
+Found cached dataset json (/raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092)
+11/12/2024 16:22:20 - INFO - datasets.builder - Found cached dataset json (/raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092)
+Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092
+11/12/2024 16:22:20 - INFO - datasets.info - Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092
+11/12/2024 16:22:20 - INFO - __main__ - Use data/pile-ner.json as train dataset, len(dataset) = 105659
+11/12/2024 16:22:20 - INFO - __main__ - len(dataset) = 105659
+Process #0 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00000_of_00012.arrow
+11/12/2024 16:22:20 - INFO - datasets.arrow_dataset - Process #0 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00000_of_00012.arrow
+Process #1 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00001_of_00012.arrow
+11/12/2024 16:22:20 - INFO - datasets.arrow_dataset - Process #1 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00001_of_00012.arrow
+Process #2 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00002_of_00012.arrow
+11/12/2024 16:22:20 - INFO - datasets.arrow_dataset - Process #2 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00002_of_00012.arrow
+Process #3 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00003_of_00012.arrow
+11/12/2024 16:22:20 - INFO - datasets.arrow_dataset - Process #3 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00003_of_00012.arrow
+Process #4 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00004_of_00012.arrow
+11/12/2024 16:22:20 - INFO - datasets.arrow_dataset - Process #4 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00004_of_00012.arrow
+Process #5 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00005_of_00012.arrow
+11/12/2024 16:22:20 - INFO - datasets.arrow_dataset - Process #5 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00005_of_00012.arrow
+Process #6 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00006_of_00012.arrow
+11/12/2024 16:22:20 - INFO - datasets.arrow_dataset - Process #6 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00006_of_00012.arrow
+Process #7 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00007_of_00012.arrow
+11/12/2024 16:22:20 - INFO - datasets.arrow_dataset - Process #7 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00007_of_00012.arrow
+Process #8 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00008_of_00012.arrow
+11/12/2024 16:22:20 - INFO - datasets.arrow_dataset - Process #8 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00008_of_00012.arrow
+Process #9 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00009_of_00012.arrow
+11/12/2024 16:22:20 - INFO - datasets.arrow_dataset - Process #9 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00009_of_00012.arrow
+Process #10 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00010_of_00012.arrow
+11/12/2024 16:22:20 - INFO - datasets.arrow_dataset - Process #10 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00010_of_00012.arrow
+Process #11 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00011_of_00012.arrow
+11/12/2024 16:22:20 - INFO - datasets.arrow_dataset - Process #11 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00011_of_00012.arrow
+Spawning 12 processes
+11/12/2024 16:22:20 - INFO - datasets.arrow_dataset - Spawning 12 processes
+Running tokenizer on train dataset (num_proc=12):   0%|                                                                                                                                                                                    | 0/105659 [00:00<?, ? examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00000_of_00012.arrow
+11/12/2024 16:22:20 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00000_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00001_of_00012.arrow
+11/12/2024 16:22:20 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00001_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00002_of_00012.arrow
+11/12/2024 16:22:20 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00002_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00003_of_00012.arrow
+11/12/2024 16:22:21 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00003_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00004_of_00012.arrow
+11/12/2024 16:22:21 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00004_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00005_of_00012.arrow
+11/12/2024 16:22:21 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00005_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00006_of_00012.arrow
+11/12/2024 16:22:21 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00006_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00007_of_00012.arrow
+11/12/2024 16:22:21 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00007_of_00012.arrow
+Running tokenizer on train dataset (num_proc=12):   0%|                                                                                                                                                                          | 45/105659 [00:00<07:15, 242.74 examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00008_of_00012.arrow
+11/12/2024 16:22:21 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00008_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00009_of_00012.arrow
+11/12/2024 16:22:21 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00009_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00010_of_00012.arrow
+11/12/2024 16:22:21 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00010_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00011_of_00012.arrow
+11/12/2024 16:22:21 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-5088f762ed1c2dc4_00011_of_00012.arrow
+Running tokenizer on train dataset (num_proc=12): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 105659/105659 [00:11<00:00, 8952.91 examples/s]
+Concatenating 12 shards
+11/12/2024 16:22:32 - INFO - datasets.arrow_dataset - Concatenating 12 shards
+Process #0 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00000_of_00012.arrow
+11/12/2024 16:22:39 - INFO - datasets.arrow_dataset - Process #0 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00000_of_00012.arrow
+Process #1 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00001_of_00012.arrow
+11/12/2024 16:22:39 - INFO - datasets.arrow_dataset - Process #1 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00001_of_00012.arrow
+Process #2 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00002_of_00012.arrow
+11/12/2024 16:22:39 - INFO - datasets.arrow_dataset - Process #2 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00002_of_00012.arrow
+Process #3 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00003_of_00012.arrow
+11/12/2024 16:22:39 - INFO - datasets.arrow_dataset - Process #3 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00003_of_00012.arrow
+Process #4 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00004_of_00012.arrow
+11/12/2024 16:22:39 - INFO - datasets.arrow_dataset - Process #4 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00004_of_00012.arrow
+Process #5 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00005_of_00012.arrow
+11/12/2024 16:22:39 - INFO - datasets.arrow_dataset - Process #5 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00005_of_00012.arrow
+Process #6 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00006_of_00012.arrow
+11/12/2024 16:22:39 - INFO - datasets.arrow_dataset - Process #6 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00006_of_00012.arrow
+Process #7 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00007_of_00012.arrow
+11/12/2024 16:22:39 - INFO - datasets.arrow_dataset - Process #7 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00007_of_00012.arrow
+Process #8 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00008_of_00012.arrow
+11/12/2024 16:22:39 - INFO - datasets.arrow_dataset - Process #8 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00008_of_00012.arrow
+Process #9 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00009_of_00012.arrow
+11/12/2024 16:22:39 - INFO - datasets.arrow_dataset - Process #9 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00009_of_00012.arrow
+Process #10 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00010_of_00012.arrow
+11/12/2024 16:22:39 - INFO - datasets.arrow_dataset - Process #10 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00010_of_00012.arrow
+Process #11 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00011_of_00012.arrow
+11/12/2024 16:22:39 - INFO - datasets.arrow_dataset - Process #11 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00011_of_00012.arrow
+Running tokenizer on train dataset (num_proc=12):   0%|                                                                                                                                                                                    | 0/105659 [00:00<?, ? examples/s]Spawning 12 processes
+11/12/2024 16:22:40 - INFO - datasets.arrow_dataset - Spawning 12 processes
+Running tokenizer on train dataset (num_proc=12):   0%|                                                                                                                                                                          | 46/105659 [00:00<12:37, 139.43 examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00000_of_00012.arrow
+11/12/2024 16:22:40 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00000_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00001_of_00012.arrow
+11/12/2024 16:22:40 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00001_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00002_of_00012.arrow
+11/12/2024 16:22:40 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00002_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00003_of_00012.arrow
+11/12/2024 16:22:40 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00003_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00004_of_00012.arrow
+11/12/2024 16:22:40 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00004_of_00012.arrow
+Running tokenizer on train dataset (num_proc=12):   0%|                                                                                                                                                                          | 39/105659 [00:00<16:56, 103.87 examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00005_of_00012.arrow
+11/12/2024 16:22:40 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00005_of_00012.arrow
+Running tokenizer on train dataset (num_proc=12):   0%|                                                                                                                                                                           | 34/105659 [00:00<19:23, 90.76 examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00006_of_00012.arrow
+11/12/2024 16:22:40 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00006_of_00012.arrow
+Running tokenizer on train dataset (num_proc=12):   1%|█▎                                                                                                                                                                      | 797/105659 [00:00<00:44, 2350.19 examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00007_of_00012.arrow
+11/12/2024 16:22:40 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00007_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00008_of_00012.arrow
+11/12/2024 16:22:40 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00008_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00009_of_00012.arrow
+11/12/2024 16:22:40 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00009_of_00012.arrow
+Running tokenizer on train dataset (num_proc=12):   0%|                                                                                                                                                                          | 36/105659 [00:00<13:24, 131.29 examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00010_of_00012.arrow
+11/12/2024 16:22:40 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00010_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00011_of_00012.arrow
+11/12/2024 16:22:40 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-cb487fd69e441b41_00011_of_00012.arrow
+Running tokenizer on prediction dataset (num_proc=12): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 6470/6470 [00:00<00:00, 7032.41 examples/s]
+Running tokenizer on train dataset (num_proc=12):   4%|███████▍                                                                                                                                                               | 4688/105659 [00:01<00:26, 3847.97 examples/s]Concatenating 12 shards
+11/12/2024 16:22:41 - INFO - datasets.arrow_dataset - Concatenating 12 shards
+Running tokenizer on train dataset (num_proc=12): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 105659/105659 [00:14<00:00, 7427.25 examples/s]
+Running tokenizer on train dataset (num_proc=12): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 105659/105659 [00:14<00:00, 7284.49 examples/s]
+Running tokenizer on train dataset (num_proc=12): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 105659/105659 [00:14<00:00, 7254.19 examples/s]
+Running tokenizer on train dataset (num_proc=12): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 105659/105659 [00:14<00:00, 7061.06 examples/s]
+Running tokenizer on train dataset (num_proc=12): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 105659/105659 [00:14<00:00, 7115.70 examples/s]
+Running tokenizer on train dataset (num_proc=12): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 105659/105659 [00:15<00:00, 7004.35 examples/s]
+Running tokenizer on train dataset (num_proc=12): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 105659/105659 [00:15<00:00, 6952.85 examples/s]
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/accelerate/accelerator.py:457: FutureWarning: Passing the following arguments to `Accelerator` is deprecated and will be removed in version 1.0 of Accelerate: dict_keys(['dispatch_batches', 'split_batches', 'even_batches', 'use_seedable_sampler']). Please pass an `accelerate.DataLoaderConfiguration` instead:
+dataloader_config = DataLoaderConfiguration(dispatch_batches=None, split_batches=False, even_batches=True, use_seedable_sampler=True)
+  warnings.warn(
+[INFO|trainer.py:601] 2024-11-12 16:22:55,675 >> Using auto half precision backend
+[2024-11-12 16:22:55,823] [INFO] [logging.py:96:log_dist] [Rank 0] DeepSpeed info: version=0.13.1, git-hash=unknown, git-branch=unknown
+Running tokenizer on prediction dataset (num_proc=12): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 6470/6470 [00:00<00:00, 7143.56 examples/s]
+Running tokenizer on prediction dataset (num_proc=12): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 6470/6470 [00:00<00:00, 7228.16 examples/s]
+Running tokenizer on prediction dataset (num_proc=12): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 6470/6470 [00:00<00:00, 6716.71 examples/s]
+Running tokenizer on prediction dataset (num_proc=12): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 6470/6470 [00:00<00:00, 6907.46 examples/s]
+Running tokenizer on prediction dataset (num_proc=12): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 6470/6470 [00:01<00:00, 6339.28 examples/s]
+Running tokenizer on prediction dataset (num_proc=12): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 6470/6470 [00:00<00:00, 6730.54 examples/s]
+Running tokenizer on prediction dataset (num_proc=12):  73%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                                           | 4751/6470 [00:00<00:00, 14850.53 examples/s]/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/accelerate/accelerator.py:457: FutureWarning: Passing the following arguments to `Accelerator` is deprecated and will be removed in version 1.0 of Accelerate: dict_keys(['dispatch_batches', 'split_batches', 'even_batches', 'use_seedable_sampler']). Please pass an `accelerate.DataLoaderConfiguration` instead:
+dataloader_config = DataLoaderConfiguration(dispatch_batches=None, split_batches=False, even_batches=True, use_seedable_sampler=True)
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/accelerate/accelerator.py:457: FutureWarning: Passing the following arguments to `Accelerator` is deprecated and will be removed in version 1.0 of Accelerate: dict_keys(['dispatch_batches', 'split_batches', 'even_batches', 'use_seedable_sampler']). Please pass an `accelerate.DataLoaderConfiguration` instead:
+dataloader_config = DataLoaderConfiguration(dispatch_batches=None, split_batches=False, even_batches=True, use_seedable_sampler=True)
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/accelerate/accelerator.py:457: FutureWarning: Passing the following arguments to `Accelerator` is deprecated and will be removed in version 1.0 of Accelerate: dict_keys(['dispatch_batches', 'split_batches', 'even_batches', 'use_seedable_sampler']). Please pass an `accelerate.DataLoaderConfiguration` instead:
+dataloader_config = DataLoaderConfiguration(dispatch_batches=None, split_batches=False, even_batches=True, use_seedable_sampler=True)
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/accelerate/accelerator.py:457: FutureWarning: Passing the following arguments to `Accelerator` is deprecated and will be removed in version 1.0 of Accelerate: dict_keys(['dispatch_batches', 'split_batches', 'even_batches', 'use_seedable_sampler']). Please pass an `accelerate.DataLoaderConfiguration` instead:
+dataloader_config = DataLoaderConfiguration(dispatch_batches=None, split_batches=False, even_batches=True, use_seedable_sampler=True)
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/accelerate/accelerator.py:457: FutureWarning: Passing the following arguments to `Accelerator` is deprecated and will be removed in version 1.0 of Accelerate: dict_keys(['dispatch_batches', 'split_batches', 'even_batches', 'use_seedable_sampler']). Please pass an `accelerate.DataLoaderConfiguration` instead:
+dataloader_config = DataLoaderConfiguration(dispatch_batches=None, split_batches=False, even_batches=True, use_seedable_sampler=True)
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/accelerate/accelerator.py:457: FutureWarning: Passing the following arguments to `Accelerator` is deprecated and will be removed in version 1.0 of Accelerate: dict_keys(['dispatch_batches', 'split_batches', 'even_batches', 'use_seedable_sampler']). Please pass an `accelerate.DataLoaderConfiguration` instead:
+dataloader_config = DataLoaderConfiguration(dispatch_batches=None, split_batches=False, even_batches=True, use_seedable_sampler=True)
+  warnings.warn(
+Running tokenizer on prediction dataset (num_proc=12): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 6470/6470 [00:00<00:00, 8540.70 examples/s]
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/accelerate/accelerator.py:457: FutureWarning: Passing the following arguments to `Accelerator` is deprecated and will be removed in version 1.0 of Accelerate: dict_keys(['dispatch_batches', 'split_batches', 'even_batches', 'use_seedable_sampler']). Please pass an `accelerate.DataLoaderConfiguration` instead:
+dataloader_config = DataLoaderConfiguration(dispatch_batches=None, split_batches=False, even_batches=True, use_seedable_sampler=True)
+  warnings.warn(
+[2024-11-12 16:23:25,252] [INFO] [logging.py:96:log_dist] [Rank 0] DeepSpeed Flops Profiler Enabled: False
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+Detected CUDA files, patching ldflags
+Emitting ninja build file /raid/chrisjihee/.cache/torch_extensions/py311_cu118/fused_adam/build.ninja...
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/cpp_extension.py:1967: UserWarning: TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation.
+If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'].
+  warnings.warn(
+Building extension module fused_adam...
+Allowing ninja to set a default number of workers... (overridable by setting the environment variable MAX_JOBS=N)
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+ninja: no work to do.
+Loading extension module fused_adam...
+Time to load fused_adam op: 0.07166481018066406 seconds
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+Detected CUDA files, patching ldflags
+Emitting ninja build file /raid/chrisjihee/.cache/torch_extensions/py311_cu118/fused_adam/build.ninja...
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/cpp_extension.py:1967: UserWarning: TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation.
+If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'].
+  warnings.warn(
+Building extension module fused_adam...
+Allowing ninja to set a default number of workers... (overridable by setting the environment variable MAX_JOBS=N)
+ninja: no work to do.
+Loading extension module fused_adam...
+Time to load fused_adam op: 0.07436990737915039 seconds
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+Loading extension module fused_adam...
+Time to load fused_adam op: 0.20150351524353027 seconds
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+Loading extension module fused_adam...
+Time to load fused_adam op: 0.2012624740600586 seconds
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/checkpoint.py:464: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.4 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  warnings.warn(
+Loading extension module fused_adam...
+Time to load fused_adam op: 0.2012500762939453 seconds
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+Loading extension module fused_adam...
+Loading extension module fused_adam...
+Time to load fused_adam op: 0.20142245292663574 seconds
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+Time to load fused_adam op: 0.2015841007232666 seconds
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+[2024-11-12 16:23:26,071] [INFO] [logging.py:96:log_dist] [Rank 0] Using DeepSpeed Optimizer param name adamw as basic optimizer
+[2024-11-12 16:23:26,071] [INFO] [logging.py:96:log_dist] [Rank 0] Removing param_group that has no 'params' in the basic Optimizer
+Loading extension module fused_adam...
+Time to load fused_adam op: 0.20152068138122559 seconds
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+[2024-11-12 16:23:26,099] [INFO] [logging.py:96:log_dist] [Rank 0] DeepSpeed Basic Optimizer = FusedAdam
+[2024-11-12 16:23:26,099] [INFO] [logging.py:96:log_dist] [Rank 0] Creating BF16 optimizer
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/checkpoint.py:464: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.4 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/checkpoint.py:464: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.4 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  warnings.warn(
+[2024-11-12 16:23:26,240] [INFO] [utils.py:791:see_memory_usage] begin bf16_optimizer
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/checkpoint.py:464: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.4 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  warnings.warn(
+[2024-11-12 16:23:26,241] [INFO] [utils.py:792:see_memory_usage] MA 1.5 GB         Max_MA 1.5 GB         CA 1.53 GB         Max_CA 2 GB
+[2024-11-12 16:23:26,241] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 74.47 GB, percent = 7.4%
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/checkpoint.py:464: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.4 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/checkpoint.py:464: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.4 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/checkpoint.py:464: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.4 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  warnings.warn(
+[WARNING|logging.py:329] 2024-11-12 16:23:26,291 >> `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+[WARNING|logging.py:329] 2024-11-12 16:23:26,370 >> `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+[2024-11-12 16:23:26,375] [INFO] [utils.py:791:see_memory_usage] before initializing group 0
+[2024-11-12 16:23:26,376] [INFO] [utils.py:792:see_memory_usage] MA 1.5 GB         Max_MA 1.5 GB         CA 1.53 GB         Max_CA 2 GB
+[2024-11-12 16:23:26,376] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 74.53 GB, percent = 7.4%
+[WARNING|logging.py:329] 2024-11-12 16:23:26,379 >> `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[WARNING|logging.py:329] 2024-11-12 16:23:26,430 >> `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+[WARNING|logging.py:329] 2024-11-12 16:23:26,437 >> `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+[WARNING|logging.py:329] 2024-11-12 16:23:26,438 >> `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[WARNING|logging.py:329] 2024-11-12 16:23:26,444 >> `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[2024-11-12 16:23:26,527] [INFO] [utils.py:791:see_memory_usage] after initializing group 0
+[2024-11-12 16:23:26,527] [INFO] [utils.py:792:see_memory_usage] MA 4.74 GB         Max_MA 4.74 GB         CA 6.46 GB         Max_CA 6 GB
+[2024-11-12 16:23:26,527] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 74.6 GB, percent = 7.4%
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[2024-11-12 16:23:26,650] [INFO] [utils.py:791:see_memory_usage] before initialize_optimizer
+[2024-11-12 16:23:26,651] [INFO] [utils.py:792:see_memory_usage] MA 4.74 GB         Max_MA 4.74 GB         CA 6.46 GB         Max_CA 6 GB
+[2024-11-12 16:23:26,651] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 74.71 GB, percent = 7.4%
+[2024-11-12 16:23:26,794] [INFO] [utils.py:791:see_memory_usage] end initialize_optimizer
+[2024-11-12 16:23:26,795] [INFO] [utils.py:792:see_memory_usage] MA 5.47 GB         Max_MA 5.47 GB         CA 7.19 GB         Max_CA 7 GB
+[2024-11-12 16:23:26,795] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 74.68 GB, percent = 7.4%
+[2024-11-12 16:23:26,923] [INFO] [utils.py:791:see_memory_usage] end bf16_optimizer
+[2024-11-12 16:23:26,923] [INFO] [utils.py:792:see_memory_usage] MA 5.47 GB         Max_MA 5.47 GB         CA 7.19 GB         Max_CA 7 GB
+[2024-11-12 16:23:26,924] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 74.68 GB, percent = 7.4%
+[2024-11-12 16:23:26,924] [INFO] [logging.py:96:log_dist] [Rank 0] DeepSpeed Final Optimizer = adamw
+[2024-11-12 16:23:26,924] [INFO] [logging.py:96:log_dist] [Rank 0] DeepSpeed using configured LR scheduler = WarmupLR
+[2024-11-12 16:23:26,924] [INFO] [logging.py:96:log_dist] [Rank 0] DeepSpeed LR Scheduler = <deepspeed.runtime.lr_schedules.WarmupLR object at 0x7fc8e6c5c910>
+[2024-11-12 16:23:26,924] [INFO] [logging.py:96:log_dist] [Rank 0] step=0, skipped=0, lr=[5e-05], mom=[[0.9, 0.999]]
+[2024-11-12 16:23:26,925] [INFO] [config.py:984:print] DeepSpeedEngine configuration:
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   activation_checkpointing_config  {
+    "partition_activations": false,
+    "contiguous_memory_optimization": false,
+    "cpu_checkpointing": false,
+    "number_checkpoints": null,
+    "synchronize_checkpoint_boundary": false,
+    "profile": false
+}
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   aio_config ................... {'block_size': 1048576, 'queue_depth': 8, 'thread_count': 1, 'single_submit': False, 'overlap_events': True}
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   amp_enabled .................. False
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   amp_params ................... False
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   autotuning_config ............ {
+    "enabled": false,
+    "start_step": null,
+    "end_step": null,
+    "metric_path": null,
+    "arg_mappings": null,
+    "metric": "throughput",
+    "model_info": null,
+    "results_dir": "autotuning_results",
+    "exps_dir": "autotuning_exps",
+    "overwrite": true,
+    "fast": true,
+    "start_profile_step": 3,
+    "end_profile_step": 5,
+    "tuner_type": "gridsearch",
+    "tuner_early_stopping": 5,
+    "tuner_num_trials": 50,
+    "model_info_path": null,
+    "mp_size": 1,
+    "max_train_batch_size": null,
+    "min_train_batch_size": 1,
+    "max_train_micro_batch_size_per_gpu": 1.024000e+03,
+    "min_train_micro_batch_size_per_gpu": 1,
+    "num_tuning_micro_batch_sizes": 3
+}
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   bfloat16_enabled ............. True
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   checkpoint_parallel_write_pipeline  False
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   checkpoint_tag_validation_enabled  True
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   checkpoint_tag_validation_fail  False
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   comms_config ................. <deepspeed.comm.config.DeepSpeedCommsConfig object at 0x7fc7a39a7ad0>
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   communication_data_type ...... None
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   compression_config ........... {'weight_quantization': {'shared_parameters': {'enabled': False, 'quantizer_kernel': False, 'schedule_offset': 0, 'quantize_groups': 1, 'quantize_verbose': False, 'quantization_type': 'symmetric', 'quantize_weight_in_forward': False, 'rounding': 'nearest', 'fp16_mixed_quantize': False, 'quantize_change_ratio': 0.001}, 'different_groups': {}}, 'activation_quantization': {'shared_parameters': {'enabled': False, 'quantization_type': 'symmetric', 'range_calibration': 'dynamic', 'schedule_offset': 1000}, 'different_groups': {}}, 'sparse_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'row_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'head_pruning': {'shared_parameters': {'enabled': False, 'method': 'topk', 'schedule_offset': 1000}, 'different_groups': {}}, 'channel_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'layer_reduction': {'enabled': False}}
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   curriculum_enabled_legacy .... False
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   curriculum_params_legacy ..... False
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   data_efficiency_config ....... {'enabled': False, 'seed': 1234, 'data_sampling': {'enabled': False, 'num_epochs': 1000, 'num_workers': 0, 'curriculum_learning': {'enabled': False}}, 'data_routing': {'enabled': False, 'random_ltd': {'enabled': False, 'layer_token_lr_schedule': {'enabled': False}}}}
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   data_efficiency_enabled ...... False
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   dataloader_drop_last ......... False
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   disable_allgather ............ False
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   dump_state ................... False
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   dynamic_loss_scale_args ...... None
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   eigenvalue_enabled ........... False
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   eigenvalue_gas_boundary_resolution  1
+[2024-11-12 16:23:26,926] [INFO] [config.py:988:print]   eigenvalue_layer_name ........ bert.encoder.layer
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   eigenvalue_layer_num ......... 0
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   eigenvalue_max_iter .......... 100
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   eigenvalue_stability ......... 1e-06
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   eigenvalue_tol ............... 0.01
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   eigenvalue_verbose ........... False
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   elasticity_enabled ........... False
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   flops_profiler_config ........ {
+    "enabled": false,
+    "recompute_fwd_factor": 0.0,
+    "profile_step": 1,
+    "module_depth": -1,
+    "top_modules": 1,
+    "detailed": true,
+    "output_file": null
+}
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   fp16_auto_cast ............... None
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   fp16_enabled ................. False
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   fp16_master_weights_and_gradients  False
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   global_rank .................. 0
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   grad_accum_dtype ............. None
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   gradient_accumulation_steps .. 8
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   gradient_clipping ............ 1.0
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   gradient_predivide_factor .... 1.0
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   graph_harvesting ............. False
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   hybrid_engine ................ enabled=False max_out_tokens=512 inference_tp_size=1 release_inference_cache=False pin_parameters=True tp_gather_partition_size=8
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   initial_dynamic_scale ........ 1
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   load_universal_checkpoint .... False
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   loss_scale ................... 1.0
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   memory_breakdown ............. False
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   mics_hierarchial_params_gather  False
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   mics_shard_size .............. -1
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   monitor_config ............... tensorboard=TensorBoardConfig(enabled=False, output_path='', job_name='DeepSpeedJobName') wandb=WandbConfig(enabled=False, group=None, team=None, project='deepspeed') csv_monitor=CSVConfig(enabled=False, output_path='', job_name='DeepSpeedJobName') enabled=False
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   nebula_config ................ {
+    "enabled": false,
+    "persistent_storage_path": null,
+    "persistent_time_interval": 100,
+    "num_of_version_in_retention": 2,
+    "enable_nebula_load": true,
+    "load_path": null
+}
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   optimizer_legacy_fusion ...... False
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   optimizer_name ............... adamw
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   optimizer_params ............. {'lr': 5e-05, 'betas': [0.9, 0.999], 'eps': 1e-08, 'weight_decay': 0.0}
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   pipeline ..................... {'stages': 'auto', 'partition': 'best', 'seed_layers': False, 'activation_checkpoint_interval': 0, 'pipe_partitioned': True, 'grad_partitioned': True}
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   pld_enabled .................. False
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   pld_params ................... False
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   prescale_gradients ........... False
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   scheduler_name ............... WarmupLR
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   scheduler_params ............. {'warmup_min_lr': 0, 'warmup_max_lr': 5e-05, 'warmup_num_steps': 0}
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   seq_parallel_communication_data_type  torch.float32
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   sparse_attention ............. None
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   sparse_gradients_enabled ..... False
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   steps_per_print .............. inf
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   train_batch_size ............. 256
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   train_micro_batch_size_per_gpu  4
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   use_data_before_expert_parallel_  False
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   use_node_local_storage ....... False
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   wall_clock_breakdown ......... False
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   weight_quantization_config ... None
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   world_size ................... 8
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   zero_allow_untested_optimizer  False
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   zero_config .................. stage=0 contiguous_gradients=True reduce_scatter=True reduce_bucket_size=500,000,000 use_multi_rank_bucket_allreduce=True allgather_partitions=True allgather_bucket_size=500,000,000 overlap_comm=False load_from_fp32_weights=True elastic_checkpoint=False offload_param=None offload_optimizer=None sub_group_size=1,000,000,000 cpu_offload_param=None cpu_offload_use_pin_memory=None cpu_offload=None prefetch_bucket_size=50,000,000 param_persistence_threshold=100,000 model_persistence_threshold=sys.maxsize max_live_parameters=1,000,000,000 max_reuse_distance=1,000,000,000 gather_16bit_weights_on_model_save=False stage3_gather_fp16_weights_on_model_save=False ignore_unused_parameters=True legacy_stage1=False round_robin_gradients=False zero_hpz_partition_size=1 zero_quantized_weights=False zero_quantized_nontrainable_weights=False zero_quantized_gradients=False mics_shard_size=-1 mics_hierarchical_params_gather=False memory_efficient_linear=True pipeline_loading_checkpoint=False override_module_apply=True
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   zero_enabled ................. False
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   zero_force_ds_cpu_optimizer .. True
+[2024-11-12 16:23:26,927] [INFO] [config.py:988:print]   zero_optimization_stage ...... 0
+[2024-11-12 16:23:26,928] [INFO] [config.py:974:print_user_config]   json = {
+    "bf16": {
+        "enabled": true
+    },
+    "optimizer": {
+        "type": "AdamW",
+        "params": {
+            "lr": 5e-05,
+            "betas": [0.9, 0.999],
+            "eps": 1e-08,
+            "weight_decay": 0.0
+        }
+    },
+    "scheduler": {
+        "type": "WarmupLR",
+        "params": {
+            "warmup_min_lr": 0,
+            "warmup_max_lr": 5e-05,
+            "warmup_num_steps": 0
+        }
+    },
+    "zero_optimization": {
+        "stage": 0
+    },
+    "gradient_accumulation_steps": 8,
+    "gradient_clipping": 1.0,
+    "train_batch_size": 256,
+    "train_micro_batch_size_per_gpu": 4,
+    "steps_per_print": inf,
+    "fp16": {
+        "enabled": false
+    }
+}
+[INFO|trainer.py:1812] 2024-11-12 16:23:26,928 >> ***** Running training *****
+[INFO|trainer.py:1813] 2024-11-12 16:23:26,928 >>   Num examples = 105,659
+[INFO|trainer.py:1814] 2024-11-12 16:23:26,928 >>   Num Epochs = 10
+[INFO|trainer.py:1815] 2024-11-12 16:23:26,928 >>   Instantaneous batch size per device = 4
+[INFO|trainer.py:1818] 2024-11-12 16:23:26,928 >>   Total train batch size (w. parallel, distributed & accumulation) = 256
+[INFO|trainer.py:1819] 2024-11-12 16:23:26,928 >>   Gradient Accumulation steps = 8
+[INFO|trainer.py:1820] 2024-11-12 16:23:26,928 >>   Total optimization steps = 4,120
+[INFO|trainer.py:1821] 2024-11-12 16:23:26,930 >>   Number of trainable parameters = 783,150,080
+  0%|                                                                                                                                                                                                                                               | 0/4120 [00:00<?, ?it/s]/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/checkpoint.py:464: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.4 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  warnings.warn(
+[WARNING|logging.py:329] 2024-11-12 16:23:27,196 >> `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+{'loss': 0.5453, 'grad_norm': 0.7228464649497923, 'learning_rate': 5e-05, 'epoch': 0.02}
+{'loss': 0.2107, 'grad_norm': 0.36550116357344165, 'learning_rate': 5e-05, 'epoch': 0.05}
+{'loss': 0.146, 'grad_norm': 0.3540649571884828, 'learning_rate': 5e-05, 'epoch': 0.07}
+{'loss': 0.1175, 'grad_norm': 0.24694340729894945, 'learning_rate': 5e-05, 'epoch': 0.1}
+{'loss': 0.1047, 'grad_norm': 0.2003921657450972, 'learning_rate': 5e-05, 'epoch': 0.12}
+{'loss': 0.0956, 'grad_norm': 0.21259237974152276, 'learning_rate': 5e-05, 'epoch': 0.15}
+{'loss': 0.0893, 'grad_norm': 0.18216540300753187, 'learning_rate': 5e-05, 'epoch': 0.17}
+{'loss': 0.0837, 'grad_norm': 0.17860232111537502, 'learning_rate': 5e-05, 'epoch': 0.19}
+{'loss': 0.0819, 'grad_norm': 0.17872663335193886, 'learning_rate': 5e-05, 'epoch': 0.22}
+{'loss': 0.0773, 'grad_norm': 0.18655500094998753, 'learning_rate': 5e-05, 'epoch': 0.24}
+{'loss': 0.0757, 'grad_norm': 0.1990463969845298, 'learning_rate': 5e-05, 'epoch': 0.27}
+{'loss': 0.0722, 'grad_norm': 0.22059149999750458, 'learning_rate': 5e-05, 'epoch': 0.29}
+{'loss': 0.0705, 'grad_norm': 0.18682058741451543, 'learning_rate': 5e-05, 'epoch': 0.31}
+{'loss': 0.0695, 'grad_norm': 0.26207174153207696, 'learning_rate': 5e-05, 'epoch': 0.34}
+{'loss': 0.0671, 'grad_norm': 0.1853063530248201, 'learning_rate': 5e-05, 'epoch': 0.36}
+{'loss': 0.0645, 'grad_norm': 0.16410422362249547, 'learning_rate': 5e-05, 'epoch': 0.39}
+{'loss': 0.064, 'grad_norm': 0.1565825380800316, 'learning_rate': 5e-05, 'epoch': 0.41}
+{'loss': 0.0629, 'grad_norm': 0.19005128482042077, 'learning_rate': 5e-05, 'epoch': 0.44}
+{'loss': 0.0618, 'grad_norm': 0.1921217546201317, 'learning_rate': 5e-05, 'epoch': 0.46}
+{'loss': 0.0611, 'grad_norm': 0.17253853854617363, 'learning_rate': 5e-05, 'epoch': 0.48}
+{'loss': 0.0613, 'grad_norm': 0.16422430075348354, 'learning_rate': 5e-05, 'epoch': 0.51}
+{'loss': 0.0572, 'grad_norm': 0.2965203978275047, 'learning_rate': 5e-05, 'epoch': 0.53}
+{'loss': 0.06, 'grad_norm': 0.2120207416963662, 'learning_rate': 5e-05, 'epoch': 0.56}
+{'loss': 0.0583, 'grad_norm': 0.11836484528165984, 'learning_rate': 5e-05, 'epoch': 0.58}
+{'loss': 0.0556, 'grad_norm': 0.23378530864203567, 'learning_rate': 5e-05, 'epoch': 0.61}
+{'loss': 0.0564, 'grad_norm': 0.15571014602840474, 'learning_rate': 5e-05, 'epoch': 0.63}
+{'loss': 0.0569, 'grad_norm': 0.14426231493974792, 'learning_rate': 5e-05, 'epoch': 0.65}
+{'loss': 0.0538, 'grad_norm': 0.13348318203573067, 'learning_rate': 5e-05, 'epoch': 0.68}
+{'loss': 0.0537, 'grad_norm': 0.19716404669584328, 'learning_rate': 5e-05, 'epoch': 0.7}
+{'loss': 0.0538, 'grad_norm': 0.11919213182188929, 'learning_rate': 5e-05, 'epoch': 0.73}
+{'loss': 0.0533, 'grad_norm': 0.11911039672472393, 'learning_rate': 5e-05, 'epoch': 0.75}
+{'loss': 0.0527, 'grad_norm': 0.16249412241723254, 'learning_rate': 5e-05, 'epoch': 0.78}
+{'loss': 0.0532, 'grad_norm': 0.14995390163807604, 'learning_rate': 5e-05, 'epoch': 0.8}
+{'loss': 0.0513, 'grad_norm': 0.12470403666175581, 'learning_rate': 5e-05, 'epoch': 0.82}
+{'loss': 0.0513, 'grad_norm': 0.18680180254746553, 'learning_rate': 5e-05, 'epoch': 0.85}
+{'loss': 0.0511, 'grad_norm': 0.16979701837245947, 'learning_rate': 5e-05, 'epoch': 0.87}
+{'loss': 0.0515, 'grad_norm': 0.13000394435776674, 'learning_rate': 5e-05, 'epoch': 0.9}
+{'loss': 0.0499, 'grad_norm': 0.13563827956137953, 'learning_rate': 5e-05, 'epoch': 0.92}
+{'loss': 0.051, 'grad_norm': 0.12138235018319811, 'learning_rate': 5e-05, 'epoch': 0.94}
+{'loss': 0.0494, 'grad_norm': 0.15404765608891605, 'learning_rate': 5e-05, 'epoch': 0.97}
+{'loss': 0.0498, 'grad_norm': 0.1353514557104529, 'learning_rate': 5e-05, 'epoch': 0.99}
+ 10%|██████████████████████▋                                                                                                                                                                                                            | 412/4120 [18:58<2:48:20,  2.72s/it][INFO|trainer.py:3067] 2024-11-12 16:42:28,043 >> Saving model checkpoint to output/flan-t5-large-task-adaptation/tmp-checkpoint-412
+[INFO|configuration_utils.py:473] 2024-11-12 16:42:28,044 >> Configuration saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-412/config.json
+[INFO|configuration_utils.py:614] 2024-11-12 16:42:28,044 >> Configuration saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-412/generation_config.json
+[INFO|modeling_utils.py:2454] 2024-11-12 16:42:29,780 >> Model weights saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-412/model.safetensors
+[INFO|tokenization_utils_base.py:2459] 2024-11-12 16:42:29,782 >> tokenizer config file saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-412/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2468] 2024-11-12 16:42:29,782 >> Special tokens file saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-412/special_tokens_map.json
+[INFO|tokenization_t5_fast.py:202] 2024-11-12 16:42:29,783 >> Copy vocab file to output/flan-t5-large-task-adaptation/tmp-checkpoint-412/spiece.model
+[2024-11-12 16:42:29,807] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step412 is about to be saved!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+[2024-11-12 16:42:29,818] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/flan-t5-large-task-adaptation/tmp-checkpoint-412/global_step412/mp_rank_00_model_states.pt
+[2024-11-12 16:42:29,818] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-large-task-adaptation/tmp-checkpoint-412/global_step412/mp_rank_00_model_states.pt...
+[2024-11-12 16:42:31,844] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-large-task-adaptation/tmp-checkpoint-412/global_step412/mp_rank_00_model_states.pt.
+[2024-11-12 16:42:31,847] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-large-task-adaptation/tmp-checkpoint-412/global_step412/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-12 16:42:33,964] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-large-task-adaptation/tmp-checkpoint-412/global_step412/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-12 16:42:33,964] [INFO] [engine.py:3477:_save_zero_checkpoint] bf16_zero checkpoint saved output/flan-t5-large-task-adaptation/tmp-checkpoint-412/global_step412/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-12 16:42:33,964] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step412 is ready now!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/checkpoint.py:464: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.4 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+{'loss': 0.0488, 'grad_norm': 0.14615211315511528, 'learning_rate': 5e-05, 'epoch': 1.02}
+{'loss': 0.0485, 'grad_norm': 0.13028920205512468, 'learning_rate': 5e-05, 'epoch': 1.04}
+{'loss': 0.0487, 'grad_norm': 0.17735098265296878, 'learning_rate': 5e-05, 'epoch': 1.07}
+{'loss': 0.049, 'grad_norm': 0.13456675465258625, 'learning_rate': 5e-05, 'epoch': 1.09}
+{'loss': 0.0468, 'grad_norm': 0.1044707721976062, 'learning_rate': 5e-05, 'epoch': 1.11}
+{'loss': 0.0471, 'grad_norm': 0.1996299576272123, 'learning_rate': 5e-05, 'epoch': 1.14}
+{'loss': 0.0474, 'grad_norm': 0.09359990960201102, 'learning_rate': 5e-05, 'epoch': 1.16}
+{'loss': 0.0476, 'grad_norm': 0.13324551956452507, 'learning_rate': 5e-05, 'epoch': 1.19}
+{'loss': 0.0468, 'grad_norm': 0.14422156043946088, 'learning_rate': 5e-05, 'epoch': 1.21}
+{'loss': 0.0459, 'grad_norm': 0.12379821091104085, 'learning_rate': 5e-05, 'epoch': 1.24}
+{'loss': 0.046, 'grad_norm': 0.153912112806935, 'learning_rate': 5e-05, 'epoch': 1.26}
+{'loss': 0.0461, 'grad_norm': 0.11028123825972536, 'learning_rate': 5e-05, 'epoch': 1.28}
+{'loss': 0.0469, 'grad_norm': 0.13478252056194265, 'learning_rate': 5e-05, 'epoch': 1.31}
+{'loss': 0.0447, 'grad_norm': 0.13412948096656827, 'learning_rate': 5e-05, 'epoch': 1.33}
+{'loss': 0.0446, 'grad_norm': 0.13345746204826445, 'learning_rate': 5e-05, 'epoch': 1.36}
+{'loss': 0.0457, 'grad_norm': 0.14479070649983602, 'learning_rate': 5e-05, 'epoch': 1.38}
+{'loss': 0.0446, 'grad_norm': 0.09710361036252341, 'learning_rate': 5e-05, 'epoch': 1.41}
+{'loss': 0.0453, 'grad_norm': 0.10695549117982574, 'learning_rate': 5e-05, 'epoch': 1.43}
+{'loss': 0.0436, 'grad_norm': 0.09127918830686368, 'learning_rate': 5e-05, 'epoch': 1.45}
+{'loss': 0.044, 'grad_norm': 0.10956568359688305, 'learning_rate': 5e-05, 'epoch': 1.48}
+{'loss': 0.0441, 'grad_norm': 0.10232428354667918, 'learning_rate': 5e-05, 'epoch': 1.5}
+{'loss': 0.0441, 'grad_norm': 0.1191342031592965, 'learning_rate': 5e-05, 'epoch': 1.53}
+{'loss': 0.0444, 'grad_norm': 0.107368460293137, 'learning_rate': 5e-05, 'epoch': 1.55}
+{'loss': 0.0443, 'grad_norm': 0.10982924463941748, 'learning_rate': 5e-05, 'epoch': 1.57}
+{'loss': 0.0446, 'grad_norm': 0.14481393130619558, 'learning_rate': 5e-05, 'epoch': 1.6}
+{'loss': 0.0431, 'grad_norm': 0.11011617164779253, 'learning_rate': 5e-05, 'epoch': 1.62}
+{'loss': 0.0442, 'grad_norm': 0.11941063879443983, 'learning_rate': 5e-05, 'epoch': 1.65}
+{'loss': 0.0425, 'grad_norm': 0.15551708706429412, 'learning_rate': 5e-05, 'epoch': 1.67}
+{'loss': 0.044, 'grad_norm': 0.11070451162838765, 'learning_rate': 5e-05, 'epoch': 1.7}
+{'loss': 0.0431, 'grad_norm': 0.0893824125013728, 'learning_rate': 5e-05, 'epoch': 1.72}
+{'loss': 0.0431, 'grad_norm': 0.12072277156106564, 'learning_rate': 5e-05, 'epoch': 1.74}
+{'loss': 0.0439, 'grad_norm': 0.10457464779148846, 'learning_rate': 5e-05, 'epoch': 1.77}
+{'loss': 0.042, 'grad_norm': 0.09669443461141458, 'learning_rate': 5e-05, 'epoch': 1.79}
+{'loss': 0.0435, 'grad_norm': 0.14203764097441243, 'learning_rate': 5e-05, 'epoch': 1.82}
+{'loss': 0.0437, 'grad_norm': 0.11780961526430192, 'learning_rate': 5e-05, 'epoch': 1.84}
+{'loss': 0.0419, 'grad_norm': 0.12702011395073892, 'learning_rate': 5e-05, 'epoch': 1.87}
+{'loss': 0.0428, 'grad_norm': 0.0952414353235905, 'learning_rate': 5e-05, 'epoch': 1.89}
+{'loss': 0.0423, 'grad_norm': 0.11203675859068296, 'learning_rate': 5e-05, 'epoch': 1.91}
+{'loss': 0.0423, 'grad_norm': 0.1665525449261333, 'learning_rate': 5e-05, 'epoch': 1.94}
+{'loss': 0.0408, 'grad_norm': 0.09529944353884344, 'learning_rate': 5e-05, 'epoch': 1.96}
+{'loss': 0.0426, 'grad_norm': 0.09357017914443312, 'learning_rate': 5e-05, 'epoch': 1.99}
+ 20%|█████████████████████████████████████████████▍                                                                                                                                                                                     | 825/4120 [37:58<2:29:25,  2.72s/it][INFO|trainer.py:3067] 2024-11-12 17:01:27,070 >> Saving model checkpoint to output/flan-t5-large-task-adaptation/tmp-checkpoint-825
+[INFO|configuration_utils.py:473] 2024-11-12 17:01:27,071 >> Configuration saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-825/config.json
+[INFO|configuration_utils.py:614] 2024-11-12 17:01:27,071 >> Configuration saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-825/generation_config.json
+[INFO|modeling_utils.py:2454] 2024-11-12 17:01:28,838 >> Model weights saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-825/model.safetensors
+[INFO|tokenization_utils_base.py:2459] 2024-11-12 17:01:28,840 >> tokenizer config file saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-825/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2468] 2024-11-12 17:01:28,840 >> Special tokens file saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-825/special_tokens_map.json
+[INFO|tokenization_t5_fast.py:202] 2024-11-12 17:01:28,841 >> Copy vocab file to output/flan-t5-large-task-adaptation/tmp-checkpoint-825/spiece.model
+[2024-11-12 17:01:28,869] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step825 is about to be saved!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+[2024-11-12 17:01:28,879] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/flan-t5-large-task-adaptation/tmp-checkpoint-825/global_step825/mp_rank_00_model_states.pt
+[2024-11-12 17:01:28,879] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-large-task-adaptation/tmp-checkpoint-825/global_step825/mp_rank_00_model_states.pt...
+[2024-11-12 17:01:30,945] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-large-task-adaptation/tmp-checkpoint-825/global_step825/mp_rank_00_model_states.pt.
+[2024-11-12 17:01:30,948] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-large-task-adaptation/tmp-checkpoint-825/global_step825/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-12 17:01:33,055] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-large-task-adaptation/tmp-checkpoint-825/global_step825/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-12 17:01:33,056] [INFO] [engine.py:3477:_save_zero_checkpoint] bf16_zero checkpoint saved output/flan-t5-large-task-adaptation/tmp-checkpoint-825/global_step825/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-12 17:01:33,056] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step825 is ready now!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/checkpoint.py:464: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.4 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+{'loss': 0.0427, 'grad_norm': 0.10271561273612301, 'learning_rate': 5e-05, 'epoch': 2.01}
+{'loss': 0.0409, 'grad_norm': 0.12335488204311591, 'learning_rate': 5e-05, 'epoch': 2.04}
+{'loss': 0.0406, 'grad_norm': 0.12812336972990498, 'learning_rate': 5e-05, 'epoch': 2.06}
+{'loss': 0.0419, 'grad_norm': 0.13882635135837873, 'learning_rate': 5e-05, 'epoch': 2.08}
+{'loss': 0.0415, 'grad_norm': 0.1115554529790678, 'learning_rate': 5e-05, 'epoch': 2.11}
+{'loss': 0.0402, 'grad_norm': 0.08686544633810547, 'learning_rate': 5e-05, 'epoch': 2.13}
+{'loss': 0.0407, 'grad_norm': 0.10911113125462304, 'learning_rate': 5e-05, 'epoch': 2.16}
+{'loss': 0.04, 'grad_norm': 0.09051338240401836, 'learning_rate': 5e-05, 'epoch': 2.18}
+{'loss': 0.0414, 'grad_norm': 0.08415190211604598, 'learning_rate': 5e-05, 'epoch': 2.2}
+{'loss': 0.0407, 'grad_norm': 0.11373031742636826, 'learning_rate': 5e-05, 'epoch': 2.23}
+{'loss': 0.0403, 'grad_norm': 0.15188880995964973, 'learning_rate': 5e-05, 'epoch': 2.25}
+{'loss': 0.0404, 'grad_norm': 0.14430727874187274, 'learning_rate': 5e-05, 'epoch': 2.28}
+{'loss': 0.0389, 'grad_norm': 0.1624526044153515, 'learning_rate': 5e-05, 'epoch': 2.3}
+{'loss': 0.0404, 'grad_norm': 0.13461846457648202, 'learning_rate': 5e-05, 'epoch': 2.33}
+{'loss': 0.041, 'grad_norm': 0.08680553840266164, 'learning_rate': 5e-05, 'epoch': 2.35}
+{'loss': 0.0401, 'grad_norm': 0.08599918763215736, 'learning_rate': 5e-05, 'epoch': 2.37}
+{'loss': 0.0394, 'grad_norm': 0.10112102548889669, 'learning_rate': 5e-05, 'epoch': 2.4}
+{'loss': 0.0404, 'grad_norm': 0.12982724370598767, 'learning_rate': 5e-05, 'epoch': 2.42}
+{'loss': 0.039, 'grad_norm': 0.09555361708358928, 'learning_rate': 5e-05, 'epoch': 2.45}
+{'loss': 0.0394, 'grad_norm': 0.34732028715483365, 'learning_rate': 5e-05, 'epoch': 2.47}
+{'loss': 0.0403, 'grad_norm': 0.1252598966388125, 'learning_rate': 5e-05, 'epoch': 2.5}
+{'loss': 0.0398, 'grad_norm': 0.11448847888652376, 'learning_rate': 5e-05, 'epoch': 2.52}
+{'loss': 0.038, 'grad_norm': 0.1096798361304389, 'learning_rate': 5e-05, 'epoch': 2.54}
+{'loss': 0.039, 'grad_norm': 0.11182990679801151, 'learning_rate': 5e-05, 'epoch': 2.57}
+{'loss': 0.039, 'grad_norm': 0.11253362209512799, 'learning_rate': 5e-05, 'epoch': 2.59}
+{'loss': 0.04, 'grad_norm': 0.11053342518352671, 'learning_rate': 5e-05, 'epoch': 2.62}
+{'loss': 0.0395, 'grad_norm': 0.11116287448341265, 'learning_rate': 5e-05, 'epoch': 2.64}
+{'loss': 0.0395, 'grad_norm': 0.16702144210396466, 'learning_rate': 5e-05, 'epoch': 2.67}
+{'loss': 0.0386, 'grad_norm': 0.1248380050900964, 'learning_rate': 5e-05, 'epoch': 2.69}
+{'loss': 0.0391, 'grad_norm': 0.0808626133965953, 'learning_rate': 5e-05, 'epoch': 2.71}
+{'loss': 0.0381, 'grad_norm': 0.1494982239297157, 'learning_rate': 5e-05, 'epoch': 2.74}
+{'loss': 0.0392, 'grad_norm': 0.2443765415938161, 'learning_rate': 5e-05, 'epoch': 2.76}
+{'loss': 0.0394, 'grad_norm': 0.09886112792919541, 'learning_rate': 5e-05, 'epoch': 2.79}
+{'loss': 0.0394, 'grad_norm': 0.1293695245726705, 'learning_rate': 5e-05, 'epoch': 2.81}
+{'loss': 0.0391, 'grad_norm': 0.08609132924718035, 'learning_rate': 5e-05, 'epoch': 2.83}
+{'loss': 0.0382, 'grad_norm': 0.12170917496585562, 'learning_rate': 5e-05, 'epoch': 2.86}
+{'loss': 0.0401, 'grad_norm': 0.0941074876911128, 'learning_rate': 5e-05, 'epoch': 2.88}
+{'loss': 0.0386, 'grad_norm': 0.12004024863782058, 'learning_rate': 5e-05, 'epoch': 2.91}
+{'loss': 0.0377, 'grad_norm': 0.13452571439929079, 'learning_rate': 5e-05, 'epoch': 2.93}
+{'loss': 0.0378, 'grad_norm': 0.11103949861246931, 'learning_rate': 5e-05, 'epoch': 2.96}
+{'loss': 0.0382, 'grad_norm': 0.11486349390247304, 'learning_rate': 5e-05, 'epoch': 2.98}
+ 30%|███████████████████████████████████████████████████████████████████▉                                                                                                                                                              | 1238/4120 [56:53<2:12:50,  2.77s/it][INFO|trainer.py:3067] 2024-11-12 17:20:22,266 >> Saving model checkpoint to output/flan-t5-large-task-adaptation/tmp-checkpoint-1238
+[INFO|configuration_utils.py:473] 2024-11-12 17:20:22,267 >> Configuration saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-1238/config.json
+[INFO|configuration_utils.py:614] 2024-11-12 17:20:22,267 >> Configuration saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-1238/generation_config.json
+[INFO|modeling_utils.py:2454] 2024-11-12 17:20:23,882 >> Model weights saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-1238/model.safetensors
+[INFO|tokenization_utils_base.py:2459] 2024-11-12 17:20:23,884 >> tokenizer config file saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-1238/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2468] 2024-11-12 17:20:23,884 >> Special tokens file saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-1238/special_tokens_map.json
+[INFO|tokenization_t5_fast.py:202] 2024-11-12 17:20:23,885 >> Copy vocab file to output/flan-t5-large-task-adaptation/tmp-checkpoint-1238/spiece.model
+[2024-11-12 17:20:23,911] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step1238 is about to be saved!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+[2024-11-12 17:20:23,920] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/flan-t5-large-task-adaptation/tmp-checkpoint-1238/global_step1238/mp_rank_00_model_states.pt
+[2024-11-12 17:20:23,920] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-large-task-adaptation/tmp-checkpoint-1238/global_step1238/mp_rank_00_model_states.pt...
+[2024-11-12 17:20:26,063] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-large-task-adaptation/tmp-checkpoint-1238/global_step1238/mp_rank_00_model_states.pt.
+[2024-11-12 17:20:26,065] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-large-task-adaptation/tmp-checkpoint-1238/global_step1238/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-12 17:20:28,224] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-large-task-adaptation/tmp-checkpoint-1238/global_step1238/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-12 17:20:28,225] [INFO] [engine.py:3477:_save_zero_checkpoint] bf16_zero checkpoint saved output/flan-t5-large-task-adaptation/tmp-checkpoint-1238/global_step1238/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-12 17:20:28,225] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step1238 is ready now!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/checkpoint.py:464: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.4 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+{'loss': 0.0385, 'grad_norm': 0.08039352769032088, 'learning_rate': 5e-05, 'epoch': 3.0}
+{'loss': 0.0374, 'grad_norm': 0.14987732246649996, 'learning_rate': 5e-05, 'epoch': 3.03}
+{'loss': 0.0377, 'grad_norm': 0.10170376105409264, 'learning_rate': 5e-05, 'epoch': 3.05}
+{'loss': 0.0372, 'grad_norm': 0.098589032909705, 'learning_rate': 5e-05, 'epoch': 3.08}
+{'loss': 0.0382, 'grad_norm': 0.11934498161095947, 'learning_rate': 5e-05, 'epoch': 3.1}
+{'loss': 0.0376, 'grad_norm': 0.13153722618839064, 'learning_rate': 5e-05, 'epoch': 3.13}
+{'loss': 0.0385, 'grad_norm': 0.15522056855122723, 'learning_rate': 5e-05, 'epoch': 3.15}
+{'loss': 0.0368, 'grad_norm': 0.10424391941592207, 'learning_rate': 5e-05, 'epoch': 3.17}
+{'loss': 0.0377, 'grad_norm': 0.10849534677408014, 'learning_rate': 5e-05, 'epoch': 3.2}
+{'loss': 0.0378, 'grad_norm': 0.11385631934722583, 'learning_rate': 5e-05, 'epoch': 3.22}
+{'loss': 0.0366, 'grad_norm': 0.09645280321463963, 'learning_rate': 5e-05, 'epoch': 3.25}
+{'loss': 0.0377, 'grad_norm': 0.09867848858902689, 'learning_rate': 5e-05, 'epoch': 3.27}
+{'loss': 0.0369, 'grad_norm': 0.0829431197571943, 'learning_rate': 5e-05, 'epoch': 3.29}
+{'loss': 0.0368, 'grad_norm': 0.08955375371095231, 'learning_rate': 5e-05, 'epoch': 3.32}
+{'loss': 0.0362, 'grad_norm': 0.10318244991935734, 'learning_rate': 5e-05, 'epoch': 3.34}
+{'loss': 0.0367, 'grad_norm': 0.09978293743642128, 'learning_rate': 5e-05, 'epoch': 3.37}
+{'loss': 0.0359, 'grad_norm': 0.13783330968929067, 'learning_rate': 5e-05, 'epoch': 3.39}
+{'loss': 0.037, 'grad_norm': 0.06746768098777606, 'learning_rate': 5e-05, 'epoch': 3.42}
+{'loss': 0.0372, 'grad_norm': 0.11709400261881496, 'learning_rate': 5e-05, 'epoch': 3.44}
+{'loss': 0.0368, 'grad_norm': 0.10071157275739263, 'learning_rate': 5e-05, 'epoch': 3.46}
+{'loss': 0.0368, 'grad_norm': 0.12251288865002179, 'learning_rate': 5e-05, 'epoch': 3.49}
+{'loss': 0.0365, 'grad_norm': 0.12753127572326475, 'learning_rate': 5e-05, 'epoch': 3.51}
+{'loss': 0.0362, 'grad_norm': 0.08929216508467398, 'learning_rate': 5e-05, 'epoch': 3.54}
+{'loss': 0.0373, 'grad_norm': 0.11311975839758608, 'learning_rate': 5e-05, 'epoch': 3.56}
+{'loss': 0.0361, 'grad_norm': 0.14171533946399026, 'learning_rate': 5e-05, 'epoch': 3.59}
+{'loss': 0.0366, 'grad_norm': 0.18915307972619513, 'learning_rate': 5e-05, 'epoch': 3.61}
+{'loss': 0.0367, 'grad_norm': 0.14017105346505276, 'learning_rate': 5e-05, 'epoch': 3.63}
+{'loss': 0.0359, 'grad_norm': 0.4497360071048531, 'learning_rate': 5e-05, 'epoch': 3.66}
+{'loss': 0.0362, 'grad_norm': 0.07570093017876535, 'learning_rate': 5e-05, 'epoch': 3.68}
+{'loss': 0.0364, 'grad_norm': 0.07755359061940993, 'learning_rate': 5e-05, 'epoch': 3.71}
+{'loss': 0.0366, 'grad_norm': 0.07180727769166238, 'learning_rate': 5e-05, 'epoch': 3.73}
+{'loss': 0.0362, 'grad_norm': 0.11441138534956292, 'learning_rate': 5e-05, 'epoch': 3.76}
+{'loss': 0.035, 'grad_norm': 0.08285430570482762, 'learning_rate': 5e-05, 'epoch': 3.78}
+{'loss': 0.0358, 'grad_norm': 0.09303945249135738, 'learning_rate': 5e-05, 'epoch': 3.8}
+{'loss': 0.0355, 'grad_norm': 0.10796861230369433, 'learning_rate': 5e-05, 'epoch': 3.83}
+{'loss': 0.0361, 'grad_norm': 0.8775149714179018, 'learning_rate': 5e-05, 'epoch': 3.85}
+{'loss': 0.036, 'grad_norm': 0.11847520092949951, 'learning_rate': 5e-05, 'epoch': 3.88}
+{'loss': 0.0361, 'grad_norm': 0.1025354838882136, 'learning_rate': 5e-05, 'epoch': 3.9}
+{'loss': 0.038, 'grad_norm': 0.08658872481257447, 'learning_rate': 5e-05, 'epoch': 3.92}
+{'loss': 0.0345, 'grad_norm': 0.08658529636448924, 'learning_rate': 5e-05, 'epoch': 3.95}
+{'loss': 0.0354, 'grad_norm': 0.09253652841295489, 'learning_rate': 5e-05, 'epoch': 3.97}
+{'loss': 0.0367, 'grad_norm': 0.2930431271554658, 'learning_rate': 5e-05, 'epoch': 4.0}
+ 40%|█████████████████████████████████████████████████████████████████████████████████████████▊                                                                                                                                      | 1651/4120 [1:15:49<1:53:05,  2.75s/it][INFO|trainer.py:3067] 2024-11-12 17:39:17,337 >> Saving model checkpoint to output/flan-t5-large-task-adaptation/tmp-checkpoint-1651
+[INFO|configuration_utils.py:473] 2024-11-12 17:39:17,338 >> Configuration saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-1651/config.json
+[INFO|configuration_utils.py:614] 2024-11-12 17:39:17,338 >> Configuration saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-1651/generation_config.json
+[INFO|modeling_utils.py:2454] 2024-11-12 17:39:18,989 >> Model weights saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-1651/model.safetensors
+[INFO|tokenization_utils_base.py:2459] 2024-11-12 17:39:18,991 >> tokenizer config file saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-1651/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2468] 2024-11-12 17:39:18,991 >> Special tokens file saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-1651/special_tokens_map.json
+[INFO|tokenization_t5_fast.py:202] 2024-11-12 17:39:18,992 >> Copy vocab file to output/flan-t5-large-task-adaptation/tmp-checkpoint-1651/spiece.model
+[2024-11-12 17:39:19,016] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step1651 is about to be saved!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+[2024-11-12 17:39:19,026] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/flan-t5-large-task-adaptation/tmp-checkpoint-1651/global_step1651/mp_rank_00_model_states.pt
+[2024-11-12 17:39:19,026] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-large-task-adaptation/tmp-checkpoint-1651/global_step1651/mp_rank_00_model_states.pt...
+[2024-11-12 17:39:21,122] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-large-task-adaptation/tmp-checkpoint-1651/global_step1651/mp_rank_00_model_states.pt.
+[2024-11-12 17:39:21,125] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-large-task-adaptation/tmp-checkpoint-1651/global_step1651/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-12 17:39:23,259] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-large-task-adaptation/tmp-checkpoint-1651/global_step1651/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-12 17:39:23,259] [INFO] [engine.py:3477:_save_zero_checkpoint] bf16_zero checkpoint saved output/flan-t5-large-task-adaptation/tmp-checkpoint-1651/global_step1651/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-12 17:39:23,260] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step1651 is ready now!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/checkpoint.py:464: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.4 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+{'loss': 0.036, 'grad_norm': 0.12021515115656776, 'learning_rate': 5e-05, 'epoch': 4.02}
+{'loss': 0.0352, 'grad_norm': 0.0975128790330189, 'learning_rate': 5e-05, 'epoch': 4.05}
+{'loss': 0.0351, 'grad_norm': 0.07822660752888234, 'learning_rate': 5e-05, 'epoch': 4.07}
+{'loss': 0.0353, 'grad_norm': 0.11862314123902226, 'learning_rate': 5e-05, 'epoch': 4.09}
+{'loss': 0.0345, 'grad_norm': 0.167022808234533, 'learning_rate': 5e-05, 'epoch': 4.12}
+{'loss': 0.0359, 'grad_norm': 0.12661391938570415, 'learning_rate': 5e-05, 'epoch': 4.14}
+{'loss': 0.0344, 'grad_norm': 0.07525681791754177, 'learning_rate': 5e-05, 'epoch': 4.17}
+{'loss': 0.0353, 'grad_norm': 0.12038155283279081, 'learning_rate': 5e-05, 'epoch': 4.19}
+{'loss': 0.035, 'grad_norm': 0.12404509227666682, 'learning_rate': 5e-05, 'epoch': 4.22}
+{'loss': 0.0357, 'grad_norm': 0.08889291202340892, 'learning_rate': 5e-05, 'epoch': 4.24}
+{'loss': 0.0347, 'grad_norm': 0.11983536401849311, 'learning_rate': 5e-05, 'epoch': 4.26}
+{'loss': 0.0341, 'grad_norm': 0.12144799485040357, 'learning_rate': 5e-05, 'epoch': 4.29}
+{'loss': 0.0346, 'grad_norm': 0.10461130661067783, 'learning_rate': 5e-05, 'epoch': 4.31}
+{'loss': 0.034, 'grad_norm': 0.08140994259903402, 'learning_rate': 5e-05, 'epoch': 4.34}
+{'loss': 0.0347, 'grad_norm': 0.08104583105856764, 'learning_rate': 5e-05, 'epoch': 4.36}
+{'loss': 0.035, 'grad_norm': 0.07893778187462835, 'learning_rate': 5e-05, 'epoch': 4.39}
+{'loss': 0.0339, 'grad_norm': 0.13482671541667893, 'learning_rate': 5e-05, 'epoch': 4.41}
+{'loss': 0.0356, 'grad_norm': 0.09542565605433004, 'learning_rate': 5e-05, 'epoch': 4.43}
+{'loss': 0.0346, 'grad_norm': 0.08746364777145003, 'learning_rate': 5e-05, 'epoch': 4.46}
+{'loss': 0.0347, 'grad_norm': 0.08724561683468074, 'learning_rate': 5e-05, 'epoch': 4.48}
+{'loss': 0.0338, 'grad_norm': 0.15611136365724798, 'learning_rate': 5e-05, 'epoch': 4.51}
+{'loss': 0.0343, 'grad_norm': 0.10955908304697475, 'learning_rate': 5e-05, 'epoch': 4.53}
+{'loss': 0.034, 'grad_norm': 0.12109593420212292, 'learning_rate': 5e-05, 'epoch': 4.55}
+{'loss': 0.0352, 'grad_norm': 0.10316388181087757, 'learning_rate': 5e-05, 'epoch': 4.58}
+{'loss': 0.0345, 'grad_norm': 0.18050563154655183, 'learning_rate': 5e-05, 'epoch': 4.6}
+{'loss': 0.0346, 'grad_norm': 0.05820623243920561, 'learning_rate': 5e-05, 'epoch': 4.63}
+{'loss': 0.0348, 'grad_norm': 0.10196020587725589, 'learning_rate': 5e-05, 'epoch': 4.65}
+{'loss': 0.0335, 'grad_norm': 0.10526851348826603, 'learning_rate': 5e-05, 'epoch': 4.68}
+{'loss': 0.0343, 'grad_norm': 0.1378096248041328, 'learning_rate': 5e-05, 'epoch': 4.7}
+{'loss': 0.0346, 'grad_norm': 0.10065302417113721, 'learning_rate': 5e-05, 'epoch': 4.72}
+{'loss': 0.0344, 'grad_norm': 0.06256904364709305, 'learning_rate': 5e-05, 'epoch': 4.75}
+{'loss': 0.0336, 'grad_norm': 0.15139127970284333, 'learning_rate': 5e-05, 'epoch': 4.77}
+{'loss': 0.0338, 'grad_norm': 0.11088521591707079, 'learning_rate': 5e-05, 'epoch': 4.8}
+{'loss': 0.0341, 'grad_norm': 0.09643948703877063, 'learning_rate': 5e-05, 'epoch': 4.82}
+{'loss': 0.0343, 'grad_norm': 0.08720797498732735, 'learning_rate': 5e-05, 'epoch': 4.85}
+{'loss': 0.0342, 'grad_norm': 0.08402319498882828, 'learning_rate': 5e-05, 'epoch': 4.87}
+{'loss': 0.0336, 'grad_norm': 0.13008355281147635, 'learning_rate': 5e-05, 'epoch': 4.89}
+{'loss': 0.0342, 'grad_norm': 0.10493708312847543, 'learning_rate': 5e-05, 'epoch': 4.92}
+{'loss': 0.0338, 'grad_norm': 0.13293393978253099, 'learning_rate': 5e-05, 'epoch': 4.94}
+{'loss': 0.0333, 'grad_norm': 0.15606657825567716, 'learning_rate': 5e-05, 'epoch': 4.97}
+{'loss': 0.0336, 'grad_norm': 0.12185088845308875, 'learning_rate': 5e-05, 'epoch': 4.99}
+ 50%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏                                                                                                               | 2063/4120 [1:34:41<1:33:54,  2.74s/it][INFO|trainer.py:3067] 2024-11-12 17:58:11,331 >> Saving model checkpoint to output/flan-t5-large-task-adaptation/tmp-checkpoint-2063
+[INFO|configuration_utils.py:473] 2024-11-12 17:58:11,332 >> Configuration saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-2063/config.json
+[INFO|configuration_utils.py:614] 2024-11-12 17:58:11,332 >> Configuration saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-2063/generation_config.json
+[INFO|modeling_utils.py:2454] 2024-11-12 17:58:12,949 >> Model weights saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-2063/model.safetensors
+[INFO|tokenization_utils_base.py:2459] 2024-11-12 17:58:12,951 >> tokenizer config file saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-2063/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2468] 2024-11-12 17:58:12,951 >> Special tokens file saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-2063/special_tokens_map.json
+[INFO|tokenization_t5_fast.py:202] 2024-11-12 17:58:12,952 >> Copy vocab file to output/flan-t5-large-task-adaptation/tmp-checkpoint-2063/spiece.model
+[2024-11-12 17:58:12,979] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step2063 is about to be saved!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+[2024-11-12 17:58:12,989] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/flan-t5-large-task-adaptation/tmp-checkpoint-2063/global_step2063/mp_rank_00_model_states.pt
+[2024-11-12 17:58:12,989] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-large-task-adaptation/tmp-checkpoint-2063/global_step2063/mp_rank_00_model_states.pt...
+[2024-11-12 17:58:15,180] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-large-task-adaptation/tmp-checkpoint-2063/global_step2063/mp_rank_00_model_states.pt.
+[2024-11-12 17:58:15,183] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-large-task-adaptation/tmp-checkpoint-2063/global_step2063/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-12 17:58:17,385] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-large-task-adaptation/tmp-checkpoint-2063/global_step2063/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-12 17:58:17,386] [INFO] [engine.py:3477:_save_zero_checkpoint] bf16_zero checkpoint saved output/flan-t5-large-task-adaptation/tmp-checkpoint-2063/global_step2063/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-12 17:58:17,386] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step2063 is ready now!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/checkpoint.py:464: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.4 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+{'loss': 0.0338, 'grad_norm': 0.08341835541257067, 'learning_rate': 5e-05, 'epoch': 5.02}
+{'loss': 0.0327, 'grad_norm': 0.09026221077180227, 'learning_rate': 5e-05, 'epoch': 5.04}
+{'loss': 0.0347, 'grad_norm': 0.11889107161152389, 'learning_rate': 5e-05, 'epoch': 5.06}
+{'loss': 0.0335, 'grad_norm': 0.08243141322516376, 'learning_rate': 5e-05, 'epoch': 5.09}
+{'loss': 0.0335, 'grad_norm': 0.17742831738767575, 'learning_rate': 5e-05, 'epoch': 5.11}
+{'loss': 0.0338, 'grad_norm': 0.14231733090582452, 'learning_rate': 5e-05, 'epoch': 5.14}
+{'loss': 0.0324, 'grad_norm': 0.08942052942790374, 'learning_rate': 5e-05, 'epoch': 5.16}
+{'loss': 0.0328, 'grad_norm': 0.07268232626226775, 'learning_rate': 5e-05, 'epoch': 5.18}
+{'loss': 0.034, 'grad_norm': 0.10345744801401889, 'learning_rate': 5e-05, 'epoch': 5.21}
+{'loss': 0.0333, 'grad_norm': 0.09431700309142739, 'learning_rate': 5e-05, 'epoch': 5.23}
+{'loss': 0.0327, 'grad_norm': 0.07790803285766776, 'learning_rate': 5e-05, 'epoch': 5.26}
+{'loss': 0.0319, 'grad_norm': 0.0847112422958037, 'learning_rate': 5e-05, 'epoch': 5.28}
+{'loss': 0.0327, 'grad_norm': 0.10994530053356537, 'learning_rate': 5e-05, 'epoch': 5.31}
+{'loss': 0.033, 'grad_norm': 0.16900091413950427, 'learning_rate': 5e-05, 'epoch': 5.33}
+{'loss': 0.033, 'grad_norm': 0.07969254028985373, 'learning_rate': 5e-05, 'epoch': 5.35}
+{'loss': 0.0326, 'grad_norm': 0.06564641756288878, 'learning_rate': 5e-05, 'epoch': 5.38}
+{'loss': 0.033, 'grad_norm': 0.11410282904820818, 'learning_rate': 5e-05, 'epoch': 5.4}
+{'loss': 0.0334, 'grad_norm': 0.08026907124675978, 'learning_rate': 5e-05, 'epoch': 5.43}
+{'loss': 0.0334, 'grad_norm': 0.07356632352330197, 'learning_rate': 5e-05, 'epoch': 5.45}
+{'loss': 0.0333, 'grad_norm': 0.09602034311986049, 'learning_rate': 5e-05, 'epoch': 5.48}
+{'loss': 0.0326, 'grad_norm': 0.08025805100790147, 'learning_rate': 5e-05, 'epoch': 5.5}
+{'loss': 0.0328, 'grad_norm': 0.15487348280680016, 'learning_rate': 5e-05, 'epoch': 5.52}
+{'loss': 0.0331, 'grad_norm': 0.15531172370332866, 'learning_rate': 5e-05, 'epoch': 5.55}
+{'loss': 0.0326, 'grad_norm': 0.061185510456667265, 'learning_rate': 5e-05, 'epoch': 5.57}
+{'loss': 0.0328, 'grad_norm': 0.08246111071526402, 'learning_rate': 5e-05, 'epoch': 5.6}
+{'loss': 0.0328, 'grad_norm': 0.10142201556041888, 'learning_rate': 5e-05, 'epoch': 5.62}
+{'loss': 0.0335, 'grad_norm': 0.05657202166954633, 'learning_rate': 5e-05, 'epoch': 5.65}
+{'loss': 0.0329, 'grad_norm': 0.1780522930095898, 'learning_rate': 5e-05, 'epoch': 5.67}
+{'loss': 0.032, 'grad_norm': 0.10726939129451288, 'learning_rate': 5e-05, 'epoch': 5.69}
+{'loss': 0.033, 'grad_norm': 0.08930635926716962, 'learning_rate': 5e-05, 'epoch': 5.72}
+{'loss': 0.0333, 'grad_norm': 0.1958125864784252, 'learning_rate': 5e-05, 'epoch': 5.74}
+{'loss': 0.0331, 'grad_norm': 0.12641965581633807, 'learning_rate': 5e-05, 'epoch': 5.77}
+{'loss': 0.0322, 'grad_norm': 0.09633365994969909, 'learning_rate': 5e-05, 'epoch': 5.79}
+{'loss': 0.033, 'grad_norm': 0.1031304833009218, 'learning_rate': 5e-05, 'epoch': 5.81}
+{'loss': 0.0329, 'grad_norm': 0.09997697393737061, 'learning_rate': 5e-05, 'epoch': 5.84}
+{'loss': 0.0322, 'grad_norm': 0.11653390851419103, 'learning_rate': 5e-05, 'epoch': 5.86}
+{'loss': 0.0319, 'grad_norm': 0.089874267578125, 'learning_rate': 5e-05, 'epoch': 5.89}
+{'loss': 0.0329, 'grad_norm': 0.10015678520178663, 'learning_rate': 5e-05, 'epoch': 5.91}
+{'loss': 0.0327, 'grad_norm': 0.09426385898064478, 'learning_rate': 5e-05, 'epoch': 5.94}
+{'loss': 0.0321, 'grad_norm': 0.07555648528082227, 'learning_rate': 5e-05, 'epoch': 5.96}
+{'loss': 0.0326, 'grad_norm': 0.19538119061864712, 'learning_rate': 5e-05, 'epoch': 5.98}
+ 60%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▌                                                                                         | 2476/4120 [1:53:36<1:15:08,  2.74s/it][INFO|trainer.py:3067] 2024-11-12 18:17:05,794 >> Saving model checkpoint to output/flan-t5-large-task-adaptation/tmp-checkpoint-2476
+[INFO|configuration_utils.py:473] 2024-11-12 18:17:05,795 >> Configuration saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-2476/config.json
+[INFO|configuration_utils.py:614] 2024-11-12 18:17:05,795 >> Configuration saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-2476/generation_config.json
+[INFO|modeling_utils.py:2454] 2024-11-12 18:17:07,429 >> Model weights saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-2476/model.safetensors
+[INFO|tokenization_utils_base.py:2459] 2024-11-12 18:17:07,431 >> tokenizer config file saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-2476/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2468] 2024-11-12 18:17:07,432 >> Special tokens file saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-2476/special_tokens_map.json
+[INFO|tokenization_t5_fast.py:202] 2024-11-12 18:17:07,432 >> Copy vocab file to output/flan-t5-large-task-adaptation/tmp-checkpoint-2476/spiece.model
+[2024-11-12 18:17:07,457] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step2476 is about to be saved!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+[2024-11-12 18:17:07,467] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/flan-t5-large-task-adaptation/tmp-checkpoint-2476/global_step2476/mp_rank_00_model_states.pt
+[2024-11-12 18:17:07,467] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-large-task-adaptation/tmp-checkpoint-2476/global_step2476/mp_rank_00_model_states.pt...
+[2024-11-12 18:17:09,696] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-large-task-adaptation/tmp-checkpoint-2476/global_step2476/mp_rank_00_model_states.pt.
+[2024-11-12 18:17:09,699] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-large-task-adaptation/tmp-checkpoint-2476/global_step2476/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-12 18:17:11,974] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-large-task-adaptation/tmp-checkpoint-2476/global_step2476/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-12 18:17:11,974] [INFO] [engine.py:3477:_save_zero_checkpoint] bf16_zero checkpoint saved output/flan-t5-large-task-adaptation/tmp-checkpoint-2476/global_step2476/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-12 18:17:11,975] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step2476 is ready now!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/checkpoint.py:464: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.4 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+{'loss': 0.0327, 'grad_norm': 0.09115470831668794, 'learning_rate': 5e-05, 'epoch': 6.01}
+{'loss': 0.0319, 'grad_norm': 0.08785526836037091, 'learning_rate': 5e-05, 'epoch': 6.03}
+{'loss': 0.0322, 'grad_norm': 0.104817152515462, 'learning_rate': 5e-05, 'epoch': 6.06}
+{'loss': 0.0326, 'grad_norm': 0.09557733735593618, 'learning_rate': 5e-05, 'epoch': 6.08}
+{'loss': 0.0328, 'grad_norm': 0.06439840638334537, 'learning_rate': 5e-05, 'epoch': 6.11}
+{'loss': 0.0314, 'grad_norm': 0.08492322610975236, 'learning_rate': 5e-05, 'epoch': 6.13}
+{'loss': 0.0323, 'grad_norm': 0.10888428963316618, 'learning_rate': 5e-05, 'epoch': 6.15}
+{'loss': 0.0318, 'grad_norm': 0.08057112824444933, 'learning_rate': 5e-05, 'epoch': 6.18}
+{'loss': 0.0321, 'grad_norm': 0.20506889685803742, 'learning_rate': 5e-05, 'epoch': 6.2}
+{'loss': 0.033, 'grad_norm': 0.08053307277184205, 'learning_rate': 5e-05, 'epoch': 6.23}
+{'loss': 0.0316, 'grad_norm': 0.07592025486944055, 'learning_rate': 5e-05, 'epoch': 6.25}
+{'loss': 0.0315, 'grad_norm': 0.06683395594608493, 'learning_rate': 5e-05, 'epoch': 6.27}
+{'loss': 0.0316, 'grad_norm': 0.08751994484699628, 'learning_rate': 5e-05, 'epoch': 6.3}
+{'loss': 0.0321, 'grad_norm': 0.07109471506469833, 'learning_rate': 5e-05, 'epoch': 6.32}
+{'loss': 0.0317, 'grad_norm': 0.0933124643844414, 'learning_rate': 5e-05, 'epoch': 6.35}
+{'loss': 0.0312, 'grad_norm': 0.06176054390519778, 'learning_rate': 5e-05, 'epoch': 6.37}
+{'loss': 0.0306, 'grad_norm': 0.11869654989718018, 'learning_rate': 5e-05, 'epoch': 6.4}
+{'loss': 0.0312, 'grad_norm': 0.0901895068858049, 'learning_rate': 5e-05, 'epoch': 6.42}
+{'loss': 0.031, 'grad_norm': 0.09360332240252384, 'learning_rate': 5e-05, 'epoch': 6.44}
+{'loss': 0.0319, 'grad_norm': 0.07959664204588732, 'learning_rate': 5e-05, 'epoch': 6.47}
+{'loss': 0.031, 'grad_norm': 0.06559965844984045, 'learning_rate': 5e-05, 'epoch': 6.49}
+{'loss': 0.032, 'grad_norm': 0.11256485533222547, 'learning_rate': 5e-05, 'epoch': 6.52}
+{'loss': 0.0327, 'grad_norm': 0.10188642069948461, 'learning_rate': 5e-05, 'epoch': 6.54}
+{'loss': 0.0313, 'grad_norm': 0.09464658231566228, 'learning_rate': 5e-05, 'epoch': 6.57}
+{'loss': 0.0317, 'grad_norm': 0.07506180652886477, 'learning_rate': 5e-05, 'epoch': 6.59}
+{'loss': 0.0317, 'grad_norm': 0.08340684683076317, 'learning_rate': 5e-05, 'epoch': 6.61}
+{'loss': 0.0312, 'grad_norm': 0.11007626128531091, 'learning_rate': 5e-05, 'epoch': 6.64}
+{'loss': 0.0317, 'grad_norm': 0.08422083335893465, 'learning_rate': 5e-05, 'epoch': 6.66}
+{'loss': 0.0308, 'grad_norm': 0.08042085099277069, 'learning_rate': 5e-05, 'epoch': 6.69}
+{'loss': 0.0309, 'grad_norm': 0.09803428911077239, 'learning_rate': 5e-05, 'epoch': 6.71}
+{'loss': 0.0316, 'grad_norm': 0.07873912476953929, 'learning_rate': 5e-05, 'epoch': 6.74}
+{'loss': 0.0311, 'grad_norm': 0.10073042648935261, 'learning_rate': 5e-05, 'epoch': 6.76}
+{'loss': 0.0309, 'grad_norm': 0.09052718449550806, 'learning_rate': 5e-05, 'epoch': 6.78}
+{'loss': 0.0304, 'grad_norm': 0.06634615886055222, 'learning_rate': 5e-05, 'epoch': 6.81}
+{'loss': 0.0317, 'grad_norm': 0.09738533110867643, 'learning_rate': 5e-05, 'epoch': 6.83}
+{'loss': 0.032, 'grad_norm': 0.06651497103248868, 'learning_rate': 5e-05, 'epoch': 6.86}
+{'loss': 0.0306, 'grad_norm': 0.06690846945352205, 'learning_rate': 5e-05, 'epoch': 6.88}
+{'loss': 0.0315, 'grad_norm': 0.0731086371680733, 'learning_rate': 5e-05, 'epoch': 6.9}
+{'loss': 0.0321, 'grad_norm': 0.08705934158920058, 'learning_rate': 5e-05, 'epoch': 6.93}
+{'loss': 0.0311, 'grad_norm': 0.06967370610398468, 'learning_rate': 5e-05, 'epoch': 6.95}
+{'loss': 0.0312, 'grad_norm': 0.0702218557578366, 'learning_rate': 5e-05, 'epoch': 6.98}
+ 70%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▍                                                                   | 2889/4120 [2:12:33<57:27,  2.80s/it][INFO|trainer.py:3067] 2024-11-12 18:36:01,738 >> Saving model checkpoint to output/flan-t5-large-task-adaptation/tmp-checkpoint-2889
+[INFO|configuration_utils.py:473] 2024-11-12 18:36:01,739 >> Configuration saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-2889/config.json
+[INFO|configuration_utils.py:614] 2024-11-12 18:36:01,739 >> Configuration saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-2889/generation_config.json
+[INFO|modeling_utils.py:2454] 2024-11-12 18:36:03,430 >> Model weights saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-2889/model.safetensors
+[INFO|tokenization_utils_base.py:2459] 2024-11-12 18:36:03,431 >> tokenizer config file saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-2889/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2468] 2024-11-12 18:36:03,432 >> Special tokens file saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-2889/special_tokens_map.json
+[INFO|tokenization_t5_fast.py:202] 2024-11-12 18:36:03,432 >> Copy vocab file to output/flan-t5-large-task-adaptation/tmp-checkpoint-2889/spiece.model
+[2024-11-12 18:36:03,456] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step2889 is about to be saved!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+[2024-11-12 18:36:03,466] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/flan-t5-large-task-adaptation/tmp-checkpoint-2889/global_step2889/mp_rank_00_model_states.pt
+[2024-11-12 18:36:03,466] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-large-task-adaptation/tmp-checkpoint-2889/global_step2889/mp_rank_00_model_states.pt...
+[2024-11-12 18:36:05,645] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-large-task-adaptation/tmp-checkpoint-2889/global_step2889/mp_rank_00_model_states.pt.
+[2024-11-12 18:36:05,647] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-large-task-adaptation/tmp-checkpoint-2889/global_step2889/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-12 18:36:07,776] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-large-task-adaptation/tmp-checkpoint-2889/global_step2889/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-12 18:36:07,776] [INFO] [engine.py:3477:_save_zero_checkpoint] bf16_zero checkpoint saved output/flan-t5-large-task-adaptation/tmp-checkpoint-2889/global_step2889/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-12 18:36:07,776] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step2889 is ready now!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/checkpoint.py:464: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.4 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+{'loss': 0.0319, 'grad_norm': 0.10082491013996793, 'learning_rate': 5e-05, 'epoch': 7.0}
+{'loss': 0.0314, 'grad_norm': 0.08380785400128157, 'learning_rate': 5e-05, 'epoch': 7.03}
+{'loss': 0.0319, 'grad_norm': 0.09444086506413138, 'learning_rate': 5e-05, 'epoch': 7.05}
+{'loss': 0.0307, 'grad_norm': 0.11072222312725447, 'learning_rate': 5e-05, 'epoch': 7.07}
+{'loss': 0.0306, 'grad_norm': 0.061710521671605206, 'learning_rate': 5e-05, 'epoch': 7.1}
+{'loss': 0.0304, 'grad_norm': 0.06737709712239723, 'learning_rate': 5e-05, 'epoch': 7.12}
+{'loss': 0.0312, 'grad_norm': 0.09849665468968852, 'learning_rate': 5e-05, 'epoch': 7.15}
+{'loss': 0.0307, 'grad_norm': 0.08344893490107753, 'learning_rate': 5e-05, 'epoch': 7.17}
+{'loss': 0.0312, 'grad_norm': 0.11757398293888911, 'learning_rate': 5e-05, 'epoch': 7.2}
+{'loss': 0.031, 'grad_norm': 0.105186544025268, 'learning_rate': 5e-05, 'epoch': 7.22}
+{'loss': 0.0308, 'grad_norm': 0.07614260196624262, 'learning_rate': 5e-05, 'epoch': 7.24}
+{'loss': 0.0303, 'grad_norm': 0.06848186010007307, 'learning_rate': 5e-05, 'epoch': 7.27}
+{'loss': 0.0302, 'grad_norm': 0.08699913629649167, 'learning_rate': 5e-05, 'epoch': 7.29}
+{'loss': 0.031, 'grad_norm': 0.07185412536572255, 'learning_rate': 5e-05, 'epoch': 7.32}
+{'loss': 0.031, 'grad_norm': 0.07693627615980995, 'learning_rate': 5e-05, 'epoch': 7.34}
+{'loss': 0.03, 'grad_norm': 0.07260851124893522, 'learning_rate': 5e-05, 'epoch': 7.37}
+{'loss': 0.0301, 'grad_norm': 0.06784642066096236, 'learning_rate': 5e-05, 'epoch': 7.39}
+{'loss': 0.0305, 'grad_norm': 0.08705204822182314, 'learning_rate': 5e-05, 'epoch': 7.41}
+{'loss': 0.0306, 'grad_norm': 0.07063574135379475, 'learning_rate': 5e-05, 'epoch': 7.44}
+{'loss': 0.0315, 'grad_norm': 0.0869285726757736, 'learning_rate': 5e-05, 'epoch': 7.46}
+{'loss': 0.0302, 'grad_norm': 0.06280532406862657, 'learning_rate': 5e-05, 'epoch': 7.49}
+{'loss': 0.0305, 'grad_norm': 0.15834345892372578, 'learning_rate': 5e-05, 'epoch': 7.51}
+{'loss': 0.0314, 'grad_norm': 0.097254149399606, 'learning_rate': 5e-05, 'epoch': 7.53}
+{'loss': 0.0302, 'grad_norm': 0.09317206522320667, 'learning_rate': 5e-05, 'epoch': 7.56}
+{'loss': 0.0309, 'grad_norm': 0.1253445392066421, 'learning_rate': 5e-05, 'epoch': 7.58}
+{'loss': 0.0303, 'grad_norm': 0.06238542052677309, 'learning_rate': 5e-05, 'epoch': 7.61}
+{'loss': 0.0305, 'grad_norm': 0.06626014906140494, 'learning_rate': 5e-05, 'epoch': 7.63}
+{'loss': 0.0302, 'grad_norm': 0.11631469742576342, 'learning_rate': 5e-05, 'epoch': 7.66}
+{'loss': 0.0314, 'grad_norm': 0.10847482481386483, 'learning_rate': 5e-05, 'epoch': 7.68}
+{'loss': 0.0309, 'grad_norm': 0.09979758526639049, 'learning_rate': 5e-05, 'epoch': 7.7}
+{'loss': 0.0297, 'grad_norm': 0.06663365555707479, 'learning_rate': 5e-05, 'epoch': 7.73}
+{'loss': 0.0306, 'grad_norm': 0.08468744775464322, 'learning_rate': 5e-05, 'epoch': 7.75}
+{'loss': 0.0305, 'grad_norm': 0.07207643707737667, 'learning_rate': 5e-05, 'epoch': 7.78}
+{'loss': 0.0303, 'grad_norm': 0.060838795464609546, 'learning_rate': 5e-05, 'epoch': 7.8}
+{'loss': 0.0307, 'grad_norm': 0.10050727490497423, 'learning_rate': 5e-05, 'epoch': 7.83}
+{'loss': 0.0301, 'grad_norm': 0.09803057455305032, 'learning_rate': 5e-05, 'epoch': 7.85}
+{'loss': 0.0302, 'grad_norm': 0.08808653243428563, 'learning_rate': 5e-05, 'epoch': 7.87}
+{'loss': 0.0303, 'grad_norm': 0.10913846290265403, 'learning_rate': 5e-05, 'epoch': 7.9}
+{'loss': 0.0305, 'grad_norm': 0.08955344692243845, 'learning_rate': 5e-05, 'epoch': 7.92}
+{'loss': 0.0309, 'grad_norm': 0.07628283610525333, 'learning_rate': 5e-05, 'epoch': 7.95}
+{'loss': 0.0313, 'grad_norm': 0.08036041223548998, 'learning_rate': 5e-05, 'epoch': 7.97}
+{'loss': 0.0301, 'grad_norm': 0.07029679904580916, 'learning_rate': 5e-05, 'epoch': 8.0}
+ 80%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▏                                            | 3302/4120 [2:31:28<38:53,  2.85s/it][INFO|trainer.py:3067] 2024-11-12 18:54:55,842 >> Saving model checkpoint to output/flan-t5-large-task-adaptation/tmp-checkpoint-3302
+[INFO|configuration_utils.py:473] 2024-11-12 18:54:55,843 >> Configuration saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-3302/config.json
+[INFO|configuration_utils.py:614] 2024-11-12 18:54:55,843 >> Configuration saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-3302/generation_config.json
+[INFO|modeling_utils.py:2454] 2024-11-12 18:54:57,461 >> Model weights saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-3302/model.safetensors
+[INFO|tokenization_utils_base.py:2459] 2024-11-12 18:54:57,463 >> tokenizer config file saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-3302/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2468] 2024-11-12 18:54:57,464 >> Special tokens file saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-3302/special_tokens_map.json
+[INFO|tokenization_t5_fast.py:202] 2024-11-12 18:54:57,464 >> Copy vocab file to output/flan-t5-large-task-adaptation/tmp-checkpoint-3302/spiece.model
+[2024-11-12 18:54:57,490] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step3302 is about to be saved!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+[2024-11-12 18:54:57,500] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/flan-t5-large-task-adaptation/tmp-checkpoint-3302/global_step3302/mp_rank_00_model_states.pt
+[2024-11-12 18:54:57,500] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-large-task-adaptation/tmp-checkpoint-3302/global_step3302/mp_rank_00_model_states.pt...
+[2024-11-12 18:54:59,644] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-large-task-adaptation/tmp-checkpoint-3302/global_step3302/mp_rank_00_model_states.pt.
+[2024-11-12 18:54:59,646] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-large-task-adaptation/tmp-checkpoint-3302/global_step3302/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-12 18:55:01,873] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-large-task-adaptation/tmp-checkpoint-3302/global_step3302/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-12 18:55:01,873] [INFO] [engine.py:3477:_save_zero_checkpoint] bf16_zero checkpoint saved output/flan-t5-large-task-adaptation/tmp-checkpoint-3302/global_step3302/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-12 18:55:01,873] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step3302 is ready now!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/checkpoint.py:464: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.4 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+{'loss': 0.0303, 'grad_norm': 0.06730553092915148, 'learning_rate': 5e-05, 'epoch': 8.02}
+{'loss': 0.0299, 'grad_norm': 0.10045131915539066, 'learning_rate': 5e-05, 'epoch': 8.04}
+{'loss': 0.0296, 'grad_norm': 0.09349893190703296, 'learning_rate': 5e-05, 'epoch': 8.07}
+{'loss': 0.0302, 'grad_norm': 0.09985780123815159, 'learning_rate': 5e-05, 'epoch': 8.09}
+{'loss': 0.0301, 'grad_norm': 0.060506870913213384, 'learning_rate': 5e-05, 'epoch': 8.12}
+{'loss': 0.03, 'grad_norm': 0.0688347770602629, 'learning_rate': 5e-05, 'epoch': 8.14}
+{'loss': 0.0304, 'grad_norm': 0.0788255928453261, 'learning_rate': 5e-05, 'epoch': 8.16}
+{'loss': 0.029, 'grad_norm': 0.12116885547946206, 'learning_rate': 5e-05, 'epoch': 8.19}
+{'loss': 0.0305, 'grad_norm': 0.09246258608078002, 'learning_rate': 5e-05, 'epoch': 8.21}
+{'loss': 0.0298, 'grad_norm': 0.09531073998561611, 'learning_rate': 5e-05, 'epoch': 8.24}
+{'loss': 0.0293, 'grad_norm': 0.0932086174266671, 'learning_rate': 5e-05, 'epoch': 8.26}
+{'loss': 0.0303, 'grad_norm': 0.07783507852081303, 'learning_rate': 5e-05, 'epoch': 8.29}
+{'loss': 0.0295, 'grad_norm': 0.07431665037017307, 'learning_rate': 5e-05, 'epoch': 8.31}
+{'loss': 0.0302, 'grad_norm': 0.061508267666850094, 'learning_rate': 5e-05, 'epoch': 8.33}
+{'loss': 0.0297, 'grad_norm': 0.08161896459354227, 'learning_rate': 5e-05, 'epoch': 8.36}
+{'loss': 0.0297, 'grad_norm': 0.11698324761599617, 'learning_rate': 5e-05, 'epoch': 8.38}
+{'loss': 0.0309, 'grad_norm': 0.10517310278128678, 'learning_rate': 5e-05, 'epoch': 8.41}
+{'loss': 0.0289, 'grad_norm': 0.1005005149697637, 'learning_rate': 5e-05, 'epoch': 8.43}
+{'loss': 0.0296, 'grad_norm': 0.07703117621594313, 'learning_rate': 5e-05, 'epoch': 8.46}
+{'loss': 0.0295, 'grad_norm': 0.09934906980359118, 'learning_rate': 5e-05, 'epoch': 8.48}
+{'loss': 0.0302, 'grad_norm': 0.11905181811191874, 'learning_rate': 5e-05, 'epoch': 8.5}
+{'loss': 0.0297, 'grad_norm': 0.07129802712812303, 'learning_rate': 5e-05, 'epoch': 8.53}
+{'loss': 0.0296, 'grad_norm': 0.06503217133680986, 'learning_rate': 5e-05, 'epoch': 8.55}
+{'loss': 0.0296, 'grad_norm': 0.057952649847758414, 'learning_rate': 5e-05, 'epoch': 8.58}
+{'loss': 0.0291, 'grad_norm': 0.106517736487314, 'learning_rate': 5e-05, 'epoch': 8.6}
+{'loss': 0.0294, 'grad_norm': 0.09484135171444098, 'learning_rate': 5e-05, 'epoch': 8.63}
+{'loss': 0.03, 'grad_norm': 0.07920965121288001, 'learning_rate': 5e-05, 'epoch': 8.65}
+{'loss': 0.0297, 'grad_norm': 0.07021958782101966, 'learning_rate': 5e-05, 'epoch': 8.67}
+{'loss': 0.03, 'grad_norm': 0.09127582125108837, 'learning_rate': 5e-05, 'epoch': 8.7}
+{'loss': 0.029, 'grad_norm': 0.10940788404812929, 'learning_rate': 5e-05, 'epoch': 8.72}
+{'loss': 0.0295, 'grad_norm': 0.08765302171474286, 'learning_rate': 5e-05, 'epoch': 8.75}
+{'loss': 0.0308, 'grad_norm': 0.06760099580765969, 'learning_rate': 5e-05, 'epoch': 8.77}
+{'loss': 0.0295, 'grad_norm': 0.0785528122200532, 'learning_rate': 5e-05, 'epoch': 8.79}
+{'loss': 0.0292, 'grad_norm': 0.07793355671639543, 'learning_rate': 5e-05, 'epoch': 8.82}
+{'loss': 0.0303, 'grad_norm': 0.08785246179458793, 'learning_rate': 5e-05, 'epoch': 8.84}
+{'loss': 0.0298, 'grad_norm': 0.06784712759380049, 'learning_rate': 5e-05, 'epoch': 8.87}
+{'loss': 0.0297, 'grad_norm': 0.06758608771141997, 'learning_rate': 5e-05, 'epoch': 8.89}
+{'loss': 0.0302, 'grad_norm': 0.06940921417138862, 'learning_rate': 5e-05, 'epoch': 8.92}
+{'loss': 0.0294, 'grad_norm': 0.06265918011366071, 'learning_rate': 5e-05, 'epoch': 8.94}
+{'loss': 0.0294, 'grad_norm': 0.08080239557373765, 'learning_rate': 5e-05, 'epoch': 8.96}
+{'loss': 0.0289, 'grad_norm': 0.08117606370672177, 'learning_rate': 5e-05, 'epoch': 8.99}
+ 90%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                      | 3714/4120 [2:50:21<18:43,  2.77s/it][INFO|trainer.py:3067] 2024-11-12 19:13:51,399 >> Saving model checkpoint to output/flan-t5-large-task-adaptation/tmp-checkpoint-3714
+[INFO|configuration_utils.py:473] 2024-11-12 19:13:51,400 >> Configuration saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-3714/config.json
+[INFO|configuration_utils.py:614] 2024-11-12 19:13:51,400 >> Configuration saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-3714/generation_config.json
+[INFO|modeling_utils.py:2454] 2024-11-12 19:13:53,085 >> Model weights saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-3714/model.safetensors
+[INFO|tokenization_utils_base.py:2459] 2024-11-12 19:13:53,087 >> tokenizer config file saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-3714/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2468] 2024-11-12 19:13:53,087 >> Special tokens file saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-3714/special_tokens_map.json
+[INFO|tokenization_t5_fast.py:202] 2024-11-12 19:13:53,088 >> Copy vocab file to output/flan-t5-large-task-adaptation/tmp-checkpoint-3714/spiece.model
+[2024-11-12 19:13:53,113] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step3714 is about to be saved!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+[2024-11-12 19:13:53,123] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/flan-t5-large-task-adaptation/tmp-checkpoint-3714/global_step3714/mp_rank_00_model_states.pt
+[2024-11-12 19:13:53,123] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-large-task-adaptation/tmp-checkpoint-3714/global_step3714/mp_rank_00_model_states.pt...
+[2024-11-12 19:13:55,440] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-large-task-adaptation/tmp-checkpoint-3714/global_step3714/mp_rank_00_model_states.pt.
+[2024-11-12 19:13:55,443] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-large-task-adaptation/tmp-checkpoint-3714/global_step3714/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-12 19:13:57,912] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-large-task-adaptation/tmp-checkpoint-3714/global_step3714/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-12 19:13:57,913] [INFO] [engine.py:3477:_save_zero_checkpoint] bf16_zero checkpoint saved output/flan-t5-large-task-adaptation/tmp-checkpoint-3714/global_step3714/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-12 19:13:57,913] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step3714 is ready now!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/checkpoint.py:464: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.4 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+{'loss': 0.029, 'grad_norm': 0.06761370022914069, 'learning_rate': 5e-05, 'epoch': 9.01}
+{'loss': 0.0295, 'grad_norm': 0.06172332950394094, 'learning_rate': 5e-05, 'epoch': 9.04}
+{'loss': 0.0297, 'grad_norm': 0.09134239448333761, 'learning_rate': 5e-05, 'epoch': 9.06}
+{'loss': 0.029, 'grad_norm': 0.08300290093196189, 'learning_rate': 5e-05, 'epoch': 9.09}
+{'loss': 0.0286, 'grad_norm': 0.07082146309634896, 'learning_rate': 5e-05, 'epoch': 9.11}
+{'loss': 0.0294, 'grad_norm': 0.09971206177846766, 'learning_rate': 5e-05, 'epoch': 9.13}
+{'loss': 0.0281, 'grad_norm': 0.06907487129507663, 'learning_rate': 5e-05, 'epoch': 9.16}
+{'loss': 0.0289, 'grad_norm': 0.05229095956873953, 'learning_rate': 5e-05, 'epoch': 9.18}
+{'loss': 0.0294, 'grad_norm': 0.072465131489179, 'learning_rate': 5e-05, 'epoch': 9.21}
+{'loss': 0.0289, 'grad_norm': 0.06553588618212898, 'learning_rate': 5e-05, 'epoch': 9.23}
+{'loss': 0.0291, 'grad_norm': 0.08122820263779174, 'learning_rate': 5e-05, 'epoch': 9.25}
+{'loss': 0.0289, 'grad_norm': 0.08487557090646625, 'learning_rate': 5e-05, 'epoch': 9.28}
+{'loss': 0.0287, 'grad_norm': 0.09853274396319696, 'learning_rate': 5e-05, 'epoch': 9.3}
+{'loss': 0.0293, 'grad_norm': 0.06216045436992604, 'learning_rate': 5e-05, 'epoch': 9.33}
+{'loss': 0.0293, 'grad_norm': 0.11588549122825824, 'learning_rate': 5e-05, 'epoch': 9.35}
+{'loss': 0.0292, 'grad_norm': 0.1262413539262871, 'learning_rate': 5e-05, 'epoch': 9.38}
+{'loss': 0.0286, 'grad_norm': 0.11390439009750523, 'learning_rate': 5e-05, 'epoch': 9.4}
+{'loss': 0.0292, 'grad_norm': 0.0779050143819463, 'learning_rate': 5e-05, 'epoch': 9.42}
+{'loss': 0.0288, 'grad_norm': 0.08239121872604614, 'learning_rate': 5e-05, 'epoch': 9.45}
+{'loss': 0.0294, 'grad_norm': 0.10312597245422546, 'learning_rate': 5e-05, 'epoch': 9.47}
+{'loss': 0.0292, 'grad_norm': 0.08931316353996564, 'learning_rate': 5e-05, 'epoch': 9.5}
+{'loss': 0.0285, 'grad_norm': 0.12951386185461972, 'learning_rate': 5e-05, 'epoch': 9.52}
+{'loss': 0.0283, 'grad_norm': 0.086799479079819, 'learning_rate': 5e-05, 'epoch': 9.55}
+{'loss': 0.0283, 'grad_norm': 0.07070142746568306, 'learning_rate': 5e-05, 'epoch': 9.57}
+{'loss': 0.0288, 'grad_norm': 0.07441811387855524, 'learning_rate': 5e-05, 'epoch': 9.59}
+{'loss': 0.0288, 'grad_norm': 0.07385174459234993, 'learning_rate': 5e-05, 'epoch': 9.62}
+{'loss': 0.0284, 'grad_norm': 0.07751396659491115, 'learning_rate': 5e-05, 'epoch': 9.64}
+{'loss': 0.0295, 'grad_norm': 0.12170239507613248, 'learning_rate': 5e-05, 'epoch': 9.67}
+{'loss': 0.0294, 'grad_norm': 0.0699435195241401, 'learning_rate': 5e-05, 'epoch': 9.69}
+{'loss': 0.0286, 'grad_norm': 0.06568701870417101, 'learning_rate': 5e-05, 'epoch': 9.72}
+{'loss': 0.029, 'grad_norm': 0.05351983231343643, 'learning_rate': 5e-05, 'epoch': 9.74}
+{'loss': 0.028, 'grad_norm': 0.05782618038594755, 'learning_rate': 5e-05, 'epoch': 9.76}
+{'loss': 0.0289, 'grad_norm': 0.08910242846217406, 'learning_rate': 5e-05, 'epoch': 9.79}
+{'loss': 0.0289, 'grad_norm': 0.07939393851515263, 'learning_rate': 5e-05, 'epoch': 9.81}
+{'loss': 0.0296, 'grad_norm': 0.08044618827296438, 'learning_rate': 5e-05, 'epoch': 9.84}
+{'loss': 0.0291, 'grad_norm': 0.0897928435773272, 'learning_rate': 5e-05, 'epoch': 9.86}
+{'loss': 0.0283, 'grad_norm': 0.07273007008814998, 'learning_rate': 5e-05, 'epoch': 9.88}
+{'loss': 0.0281, 'grad_norm': 0.2127247960697012, 'learning_rate': 5e-05, 'epoch': 9.91}
+{'loss': 0.0286, 'grad_norm': 0.10949003182098167, 'learning_rate': 5e-05, 'epoch': 9.93}
+{'loss': 0.0291, 'grad_norm': 0.06926169920814501, 'learning_rate': 5e-05, 'epoch': 9.96}
+{'loss': 0.0288, 'grad_norm': 0.07987045481634238, 'learning_rate': 5e-05, 'epoch': 9.98}
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4120/4120 [3:08:57<00:00,  2.73s/it][INFO|trainer.py:3067] 2024-11-12 19:32:25,250 >> Saving model checkpoint to output/flan-t5-large-task-adaptation/tmp-checkpoint-4120
+[INFO|configuration_utils.py:473] 2024-11-12 19:32:25,251 >> Configuration saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-4120/config.json
+[INFO|configuration_utils.py:614] 2024-11-12 19:32:25,251 >> Configuration saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-4120/generation_config.json
+[INFO|modeling_utils.py:2454] 2024-11-12 19:32:27,147 >> Model weights saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-4120/model.safetensors
+[INFO|tokenization_utils_base.py:2459] 2024-11-12 19:32:27,149 >> tokenizer config file saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-4120/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2468] 2024-11-12 19:32:27,149 >> Special tokens file saved in output/flan-t5-large-task-adaptation/tmp-checkpoint-4120/special_tokens_map.json
+[INFO|tokenization_t5_fast.py:202] 2024-11-12 19:32:27,150 >> Copy vocab file to output/flan-t5-large-task-adaptation/tmp-checkpoint-4120/spiece.model
+[2024-11-12 19:32:27,175] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step4120 is about to be saved!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+[2024-11-12 19:32:27,215] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/flan-t5-large-task-adaptation/tmp-checkpoint-4120/global_step4120/mp_rank_00_model_states.pt
+[2024-11-12 19:32:27,215] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-large-task-adaptation/tmp-checkpoint-4120/global_step4120/mp_rank_00_model_states.pt...
+[2024-11-12 19:32:29,794] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-large-task-adaptation/tmp-checkpoint-4120/global_step4120/mp_rank_00_model_states.pt.
+[2024-11-12 19:32:29,796] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-large-task-adaptation/tmp-checkpoint-4120/global_step4120/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-12 19:32:32,174] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-large-task-adaptation/tmp-checkpoint-4120/global_step4120/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-12 19:32:32,174] [INFO] [engine.py:3477:_save_zero_checkpoint] bf16_zero checkpoint saved output/flan-t5-large-task-adaptation/tmp-checkpoint-4120/global_step4120/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-12 19:32:32,174] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step4120 is ready now!
+[INFO|trainer.py:2067] 2024-11-12 19:32:32,250 >>
+
+Training completed. Do not forget to share your model on huggingface.co/models =)
+
+
+{'train_runtime': 11345.3205, 'train_samples_per_second': 93.13, 'train_steps_per_second': 0.363, 'train_loss': 0.03911161211509149, 'epoch': 9.98}
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4120/4120 [3:09:05<00:00,  2.75s/it]
+[INFO|trainer.py:3067] 2024-11-12 19:32:32,710 >> Saving model checkpoint to output/flan-t5-large-task-adaptation
+[INFO|configuration_utils.py:473] 2024-11-12 19:32:32,711 >> Configuration saved in output/flan-t5-large-task-adaptation/config.json
+[INFO|configuration_utils.py:614] 2024-11-12 19:32:32,711 >> Configuration saved in output/flan-t5-large-task-adaptation/generation_config.json
+[INFO|modeling_utils.py:2454] 2024-11-12 19:32:34,292 >> Model weights saved in output/flan-t5-large-task-adaptation/model.safetensors
+[INFO|tokenization_utils_base.py:2459] 2024-11-12 19:32:34,293 >> tokenizer config file saved in output/flan-t5-large-task-adaptation/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2468] 2024-11-12 19:32:34,294 >> Special tokens file saved in output/flan-t5-large-task-adaptation/special_tokens_map.json
+[INFO|tokenization_t5_fast.py:202] 2024-11-12 19:32:34,294 >> Copy vocab file to output/flan-t5-large-task-adaptation/spiece.model
+***** train metrics *****
+  epoch                    =       9.98
+  train_loss               =     0.0391
+  train_runtime            = 3:09:05.32
+  train_samples            =     105659
+  train_samples_per_second =      93.13
+  train_steps_per_second   =      0.363
+11/12/2024 19:32:34 - INFO - __main__ - Metrics {'train_runtime': 11345.3205, 'train_samples_per_second': 93.13, 'train_steps_per_second': 0.363, 'train_loss': 0.03911161211509149, 'epoch': 9.98, 'train_samples': 105659}
+11/12/2024 19:32:34 - INFO - __main__ - *** Predict ***
+[INFO|gner_trainer.py:60] 2024-11-12 19:32:34,321 >> ***** Running Prediction *****
+[INFO|gner_trainer.py:62] 2024-11-12 19:32:34,321 >>   Num examples = 6470
+[INFO|gner_trainer.py:65] 2024-11-12 19:32:34,321 >>   Batch size = 8
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3580.25it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3530.34it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3529.00it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3513.71it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3495.52it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3501.28it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3516.59it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3560.88it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4006.11it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4013.00it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4004.78it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3981.27it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3937.91it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3961.43it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3974.92it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1366.27it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3972.79it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1363.70it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1356.19it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1355.41it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1349.20it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1357.09it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1357.15it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1361.53it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1075.00it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1078.93it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1071.87it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1077.78it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1071.83it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1063.54it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1070.59it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1071.11it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 982.62it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 985.96it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 987.97it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 978.03it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 980.54it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 970.07it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 978.68it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 980.89it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 966.56it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 964.82it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 969.50it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 966.75it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 963.42it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 956.02it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 962.72it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 961.75it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1102.53it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1104.28it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1108.23it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1104.70it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1102.56it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1095.30it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1102.15it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1100.02it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 102/102 [10:46<00:00,  6.34s/it]
+***** predict metrics *****
+  predict_average_f1                    =      0.627
+  predict_crossner_ai_f1                =     0.6119
+  predict_crossner_ai_precision         =     0.5804
+  predict_crossner_ai_recall            =     0.6472
+  predict_crossner_literature_f1        =     0.5571
+  predict_crossner_literature_precision =     0.5672
+  predict_crossner_literature_recall    =     0.5474
+  predict_crossner_music_f1             =     0.7513
+  predict_crossner_music_precision      =     0.7527
+  predict_crossner_music_recall         =       0.75
+  predict_crossner_politics_f1          =     0.6652
+  predict_crossner_politics_precision   =     0.6578
+  predict_crossner_politics_recall      =     0.6728
+  predict_crossner_science_f1           =     0.7053
+  predict_crossner_science_precision    =     0.6561
+  predict_crossner_science_recall       =     0.7625
+  predict_mit-movie_f1                  =      0.606
+  predict_mit-movie_precision           =     0.6658
+  predict_mit-movie_recall              =     0.5561
+  predict_mit-restaurant_f1             =     0.4921
+  predict_mit-restaurant_precision      =     0.6477
+  predict_mit-restaurant_recall         =     0.3968
+  predict_runtime                       = 0:10:49.66
+  predict_samples                       =       6470
+  predict_samples_per_second            =      9.959
+  predict_steps_per_second              =      0.157
+[2024-11-12 19:43:27,344] [INFO] [launch.py:347:main] Process 3615252 exits successfully.
+[2024-11-12 19:43:27,345] [INFO] [launch.py:347:main] Process 3615256 exits successfully.
+[2024-11-12 19:43:27,345] [INFO] [launch.py:347:main] Process 3615254 exits successfully.
+[2024-11-12 19:43:28,345] [INFO] [launch.py:347:main] Process 3615257 exits successfully.
+[2024-11-12 19:43:28,345] [INFO] [launch.py:347:main] Process 3615255 exits successfully.
+[2024-11-12 19:43:28,345] [INFO] [launch.py:347:main] Process 3615258 exits successfully.
+[2024-11-12 19:43:28,345] [INFO] [launch.py:347:main] Process 3615251 exits successfully.
+[2024-11-12 19:43:28,346] [INFO] [launch.py:347:main] Process 3615253 exits successfully.
+(GNER) chrisjihee@dgx-a100:~/proj/GNER$
