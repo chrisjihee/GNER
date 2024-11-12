@@ -1222,4 +1222,3 @@ Training completed. Do not forget to share your model on huggingface.co/models =
 [2024-11-12 07:30:03,925] [INFO] [launch.py:347:main] Process 2932255 exits successfully.
 [2024-11-12 07:30:04,925] [INFO] [launch.py:347:main] Process 2932252 exits successfully.
 [2024-11-12 07:30:04,925] [INFO] [launch.py:347:main] Process 2932253 exits successfully.
-(GNER) chrisjihee@dgx-a100:~/proj/GNER$
