@@ -11,7 +11,7 @@ OUTPUT_DIR=output/flan-t5-large-task-adaptation
 DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero0_t5.json
 RUN_NAME=flan-t5-large-experiment
 
-deepspeed --include="localhost:3,4,5,6" --master_port $port src/run.py \
+deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --bf16 True --tf32 True \
     --do_train \
     --do_predict \
