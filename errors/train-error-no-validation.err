@@ -1,0 +1,381 @@
+(GNER) chrisjihee@dgx-a100:~/proj/GNER$ bash scripts/train_t5_base_task_adaptation-full.sh
+++ shuf -i25000-30000 -n1
++ port=29108
++ MODEL_NAME_OR_PATH=google/flan-t5-base
++ DATA_DIR=data
++ TRAIN_JSON_DIR=data/pile-ner.json
++ DATA_CONFIG_DIR=configs/dataset_configs/task_adaptation_configs
++ INSTRUCTION_FILE=configs/instruction_configs/instruction.json
++ OUTPUT_DIR=output/flan-t5-base-task-adaptation
++ DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero0_t5.json
++ RUN_NAME=flan-t5-base-experiment
++ deepspeed --include=localhost:0,1,2,3,4,5,6,7 --master_port 29108 src/run.py --do_train --do_predict --predict_with_generate --model_name_or_path google/flan-t5-base --data_dir data --preprocessing_num_workers 12 --load_best_model_at_end True --metric_for_best_model eval_average_f1 --greater_is_better True --train_json_dir data/pile-ner.json --data_config_dir configs/dataset_configs/task_adaptation_configs --instruction_file configs/instruction_configs/instruction.json --output_dir output/flan-t5-base-task-adaptation --per_device_train_batch_size 32 --per_device_eval_batch_size 8 --gradient_accumulation_steps 1 --learning_rate 5e-05 --num_train_epochs 12 --deepspeed configs/deepspeed_configs/deepspeed_zero0_t5.json --run_name flan-t5-base-experiment --max_source_length 640 --max_target_length 640 --generation_max_length 640 --overwrite_output_dir --overwrite_cache --lr_scheduler_type constant --warmup_steps 0 --logging_strategy steps --logging_steps 10 --evaluation_strategy epoch --save_strategy epoch --seed 1234
+[2024-11-12 13:54:35,294] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-12 13:54:36,503] [WARNING] [runner.py:202:fetch_hostfile] Unable to find hostfile, will proceed with training with local resources only.
+[2024-11-12 13:54:39,082] [INFO] [runner.py:568:main] cmd = /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11 -u -m deepspeed.launcher.launch --world_info=eyJsb2NhbGhvc3QiOiBbMCwgMSwgMiwgMywgNCwgNSwgNiwgN119 --master_addr=127.0.0.1 --master_port=29108 --enable_each_rank_log=None src/run.py --do_train --do_predict --predict_with_generate --model_name_or_path google/flan-t5-base --data_dir data --preprocessing_num_workers 12 --load_best_model_at_end True --metric_for_best_model eval_average_f1 --greater_is_better True --train_json_dir data/pile-ner.json --data_config_dir configs/dataset_configs/task_adaptation_configs --instruction_file configs/instruction_configs/instruction.json --output_dir output/flan-t5-base-task-adaptation --per_device_train_batch_size 32 --per_device_eval_batch_size 8 --gradient_accumulation_steps 1 --learning_rate 5e-05 --num_train_epochs 12 --deepspeed configs/deepspeed_configs/deepspeed_zero0_t5.json --run_name flan-t5-base-experiment --max_source_length 640 --max_target_length 640 --generation_max_length 640 --overwrite_output_dir --overwrite_cache --lr_scheduler_type constant --warmup_steps 0 --logging_strategy steps --logging_steps 10 --evaluation_strategy epoch --save_strategy epoch --seed 1234
+[2024-11-12 13:54:40,337] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-12 13:54:41,329] [INFO] [launch.py:145:main] WORLD INFO DICT: {'localhost': [0, 1, 2, 3, 4, 5, 6, 7]}
+[2024-11-12 13:54:41,329] [INFO] [launch.py:151:main] nnodes=1, num_local_procs=8, node_rank=0
+[2024-11-12 13:54:41,329] [INFO] [launch.py:162:main] global_rank_mapping=defaultdict(<class 'list'>, {'localhost': [0, 1, 2, 3, 4, 5, 6, 7]})
+[2024-11-12 13:54:41,329] [INFO] [launch.py:163:main] dist_world_size=8
+[2024-11-12 13:54:41,329] [INFO] [launch.py:165:main] Setting CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+[2024-11-12 13:54:46,232] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-12 13:54:46,250] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-12 13:54:46,268] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-12 13:54:46,286] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-12 13:54:46,330] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-12 13:54:46,345] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-12 13:54:46,358] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-12 13:54:46,365] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-12 13:54:46,536] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-12 13:54:46,553] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-12 13:54:46,566] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-12 13:54:46,574] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-12 13:54:46,606] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-12 13:54:46,645] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-12 13:54:46,646] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-12 13:54:46,653] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-12 13:54:46,653] [INFO] [comm.py:668:init_distributed] Initializing TorchBackend in DeepSpeed with backend nccl
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/12/2024 13:54:50 - WARNING - __main__ - Process rank: 3, device: cuda:3, n_gpu: 1distributed training: True, 16-bits training: False
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/12/2024 13:54:50 - WARNING - __main__ - Process rank: 6, device: cuda:6, n_gpu: 1distributed training: True, 16-bits training: False
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/12/2024 13:54:50 - WARNING - __main__ - Process rank: 2, device: cuda:2, n_gpu: 1distributed training: True, 16-bits training: False
+11/12/2024 13:54:50 - WARNING - __main__ - Process rank: 1, device: cuda:1, n_gpu: 1distributed training: True, 16-bits training: False
+11/12/2024 13:54:50 - WARNING - __main__ - Process rank: 5, device: cuda:5, n_gpu: 1distributed training: True, 16-bits training: False
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/12/2024 13:54:50 - WARNING - __main__ - Process rank: 4, device: cuda:4, n_gpu: 1distributed training: True, 16-bits training: False
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/12/2024 13:54:50 - WARNING - __main__ - Process rank: 7, device: cuda:7, n_gpu: 1distributed training: True, 16-bits training: False
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/12/2024 13:54:50 - WARNING - __main__ - Process rank: 0, device: cuda:0, n_gpu: 1distributed training: True, 16-bits training: False
+11/12/2024 13:54:50 - INFO - __main__ - Training/evaluation parameters Seq2SeqTrainingArguments(
+_n_gpu=1,
+accelerator_config={'split_batches': False, 'dispatch_batches': None, 'even_batches': True, 'use_seedable_sampler': True},
+adafactor=False,
+adam_beta1=0.9,
+adam_beta2=0.999,
+adam_epsilon=1e-08,
+auto_find_batch_size=False,
+bf16=False,
+bf16_full_eval=False,
+data_seed=None,
+dataloader_drop_last=False,
+dataloader_num_workers=0,
+dataloader_persistent_workers=False,
+dataloader_pin_memory=True,
+dataloader_prefetch_factor=None,
+ddp_backend=None,
+ddp_broadcast_buffers=None,
+ddp_bucket_cap_mb=None,
+ddp_find_unused_parameters=None,
+ddp_timeout=1800,
+debug=[],
+deepspeed=configs/deepspeed_configs/deepspeed_zero0_t5.json,
+disable_tqdm=False,
+dispatch_batches=None,
+do_eval=True,
+do_predict=True,
+do_train=True,
+eval_accumulation_steps=None,
+eval_delay=0,
+eval_steps=None,
+evaluation_strategy=IntervalStrategy.EPOCH,
+fp16=False,
+fp16_backend=auto,
+fp16_full_eval=False,
+fp16_opt_level=O1,
+fsdp=[],
+fsdp_config={'min_num_params': 0, 'xla': False, 'xla_fsdp_v2': False, 'xla_fsdp_grad_ckpt': False},
+fsdp_min_num_params=0,
+fsdp_transformer_layer_cls_to_wrap=None,
+full_determinism=False,
+generation_config=None,
+generation_max_length=640,
+generation_num_beams=None,
+gradient_accumulation_steps=1,
+gradient_checkpointing=False,
+gradient_checkpointing_kwargs=None,
+greater_is_better=True,
+group_by_length=False,
+half_precision_backend=auto,
+hub_always_push=False,
+hub_model_id=None,
+hub_private_repo=False,
+hub_strategy=HubStrategy.EVERY_SAVE,
+hub_token=<HUB_TOKEN>,
+ignore_data_skip=False,
+include_inputs_for_metrics=False,
+include_num_input_tokens_seen=False,
+include_tokens_per_second=False,
+jit_mode_eval=False,
+label_names=None,
+label_smoothing_factor=0.0,
+learning_rate=5e-05,
+length_column_name=length,
+load_best_model_at_end=True,
+local_rank=0,
+log_level=passive,
+log_level_replica=warning,
+log_on_each_node=True,
+logging_dir=output/flan-t5-base-task-adaptation/runs/Nov12_13-54-43_dgx-a100,
+logging_first_step=False,
+logging_nan_inf_filter=True,
+logging_steps=10,
+logging_strategy=IntervalStrategy.STEPS,
+lr_scheduler_kwargs={},
+lr_scheduler_type=SchedulerType.CONSTANT,
+max_grad_norm=1.0,
+max_steps=-1,
+metric_for_best_model=eval_average_f1,
+mp_parameters=,
+neftune_noise_alpha=None,
+no_cuda=False,
+num_train_epochs=12.0,
+optim=OptimizerNames.ADAMW_TORCH,
+optim_args=None,
+output_dir=output/flan-t5-base-task-adaptation,
+overwrite_output_dir=True,
+past_index=-1,
+per_device_eval_batch_size=8,
+per_device_train_batch_size=32,
+predict_with_generate=True,
+prediction_loss_only=False,
+push_to_hub=False,
+push_to_hub_model_id=None,
+push_to_hub_organization=None,
+push_to_hub_token=<PUSH_TO_HUB_TOKEN>,
+ray_scope=last,
+remove_unused_columns=True,
+report_to=[],
+resume_from_checkpoint=None,
+run_name=flan-t5-base-experiment,
+save_on_each_node=False,
+save_only_model=False,
+save_safetensors=True,
+save_steps=500,
+save_strategy=IntervalStrategy.EPOCH,
+save_total_limit=None,
+seed=1234,
+skip_memory_metrics=True,
+sortish_sampler=False,
+split_batches=None,
+tf32=None,
+torch_compile=False,
+torch_compile_backend=None,
+torch_compile_mode=None,
+torchdynamo=None,
+tpu_metrics_debug=False,
+tpu_num_cores=None,
+use_cpu=False,
+use_ipex=False,
+use_legacy_prediction_loop=False,
+use_mps_device=False,
+warmup_ratio=0.0,
+warmup_steps=0,
+weight_decay=0.0,
+)
+Using custom data configuration default-e60fd0a2766fdda3
+11/12/2024 13:54:50 - INFO - datasets.builder - Using custom data configuration default-e60fd0a2766fdda3
+Loading Dataset Infos from /raid/chrisjihee/.cache/huggingface/modules/datasets_modules/datasets/gner_dataset/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+11/12/2024 13:54:50 - INFO - datasets.info - Loading Dataset Infos from /raid/chrisjihee/.cache/huggingface/modules/datasets_modules/datasets/gner_dataset/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+Overwrite dataset info from restored data version if exists.
+11/12/2024 13:54:50 - INFO - datasets.builder - Overwrite dataset info from restored data version if exists.
+Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+11/12/2024 13:54:50 - INFO - datasets.info - Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+Found cached dataset gner_dataset (/raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89)
+11/12/2024 13:54:50 - INFO - datasets.builder - Found cached dataset gner_dataset (/raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89)
+Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+11/12/2024 13:54:50 - INFO - datasets.info - Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+Listing files in /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+11/12/2024 13:54:50 - INFO - datasets.arrow_dataset - Listing files in /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+Listing files in /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+11/12/2024 13:54:50 - INFO - datasets.arrow_dataset - Listing files in /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+[INFO|configuration_utils.py:728] 2024-11-12 13:54:50,515 >> loading configuration file config.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--google--flan-t5-base/snapshots/7bcac572ce56db69c1ea7c8af255c5d7c9672fc2/config.json
+[INFO|configuration_utils.py:791] 2024-11-12 13:54:50,517 >> Model config T5Config {
+  "_name_or_path": "google/flan-t5-base",
+  "architectures": [
+    "T5ForConditionalGeneration"
+  ],
+  "classifier_dropout": 0.0,
+  "d_ff": 2048,
+  "d_kv": 64,
+  "d_model": 768,
+  "decoder_start_token_id": 0,
+  "dense_act_fn": "gelu_new",
+  "dropout_rate": 0.1,
+  "eos_token_id": 1,
+  "feed_forward_proj": "gated-gelu",
+  "initializer_factor": 1.0,
+  "is_encoder_decoder": true,
+  "is_gated_act": true,
+  "layer_norm_epsilon": 1e-06,
+  "model_type": "t5",
+  "n_positions": 512,
+  "num_decoder_layers": 12,
+  "num_heads": 12,
+  "num_layers": 12,
+  "output_past": true,
+  "pad_token_id": 0,
+  "relative_attention_max_distance": 128,
+  "relative_attention_num_buckets": 32,
+  "task_specific_params": {
+    "summarization": {
+      "early_stopping": true,
+      "length_penalty": 2.0,
+      "max_length": 200,
+      "min_length": 30,
+      "no_repeat_ngram_size": 3,
+      "num_beams": 4,
+      "prefix": "summarize: "
+    },
+    "translation_en_to_de": {
+      "early_stopping": true,
+      "max_length": 300,
+      "num_beams": 4,
+      "prefix": "translate English to German: "
+    },
+    "translation_en_to_fr": {
+      "early_stopping": true,
+      "max_length": 300,
+      "num_beams": 4,
+      "prefix": "translate English to French: "
+    },
+    "translation_en_to_ro": {
+      "early_stopping": true,
+      "max_length": 300,
+      "num_beams": 4,
+      "prefix": "translate English to Romanian: "
+    }
+  },
+  "tie_word_embeddings": false,
+  "transformers_version": "4.38.2",
+  "use_cache": true,
+  "vocab_size": 32128
+}
+
+[INFO|tokenization_utils_base.py:2046] 2024-11-12 13:54:50,713 >> loading file spiece.model from cache at /raid/chrisjihee/.cache/huggingface/hub/models--google--flan-t5-base/snapshots/7bcac572ce56db69c1ea7c8af255c5d7c9672fc2/spiece.model
+[INFO|tokenization_utils_base.py:2046] 2024-11-12 13:54:50,713 >> loading file tokenizer.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--google--flan-t5-base/snapshots/7bcac572ce56db69c1ea7c8af255c5d7c9672fc2/tokenizer.json
+[INFO|tokenization_utils_base.py:2046] 2024-11-12 13:54:50,713 >> loading file added_tokens.json from cache at None
+[INFO|tokenization_utils_base.py:2046] 2024-11-12 13:54:50,713 >> loading file special_tokens_map.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--google--flan-t5-base/snapshots/7bcac572ce56db69c1ea7c8af255c5d7c9672fc2/special_tokens_map.json
+[INFO|tokenization_utils_base.py:2046] 2024-11-12 13:54:50,713 >> loading file tokenizer_config.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--google--flan-t5-base/snapshots/7bcac572ce56db69c1ea7c8af255c5d7c9672fc2/tokenizer_config.json
+[INFO|modeling_utils.py:3257] 2024-11-12 13:54:50,794 >> loading weights file model.safetensors from cache at /raid/chrisjihee/.cache/huggingface/hub/models--google--flan-t5-base/snapshots/7bcac572ce56db69c1ea7c8af255c5d7c9672fc2/model.safetensors
+[INFO|configuration_utils.py:845] 2024-11-12 13:54:50,802 >> Generate config GenerationConfig {
+  "decoder_start_token_id": 0,
+  "eos_token_id": 1,
+  "pad_token_id": 0
+}
+
+[INFO|modeling_utils.py:3992] 2024-11-12 13:54:59,622 >> All model checkpoint weights were used when initializing T5ForConditionalGeneration.
+
+[INFO|modeling_utils.py:4000] 2024-11-12 13:54:59,622 >> All the weights of T5ForConditionalGeneration were initialized from the model checkpoint at google/flan-t5-base.
+If your task is similar to the task the model of the checkpoint was trained on, you can already use T5ForConditionalGeneration for predictions without further training.
+[INFO|configuration_utils.py:800] 2024-11-12 13:54:59,826 >> loading configuration file generation_config.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--google--flan-t5-base/snapshots/7bcac572ce56db69c1ea7c8af255c5d7c9672fc2/generation_config.json
+[INFO|configuration_utils.py:845] 2024-11-12 13:54:59,826 >> Generate config GenerationConfig {
+  "decoder_start_token_id": 0,
+  "eos_token_id": 1,
+  "pad_token_id": 0
+}
+
+Using custom data configuration default-7c1e414cce45c188
+11/12/2024 13:55:00 - INFO - datasets.builder - Using custom data configuration default-7c1e414cce45c188
+Loading Dataset Infos from /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/datasets/packaged_modules/json
+11/12/2024 13:55:00 - INFO - datasets.info - Loading Dataset Infos from /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/datasets/packaged_modules/json
+Overwrite dataset info from restored data version if exists.
+11/12/2024 13:55:00 - INFO - datasets.builder - Overwrite dataset info from restored data version if exists.
+Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092
+11/12/2024 13:55:00 - INFO - datasets.info - Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092
+Found cached dataset json (/raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092)
+11/12/2024 13:55:00 - INFO - datasets.builder - Found cached dataset json (/raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092)
+Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092
+11/12/2024 13:55:00 - INFO - datasets.info - Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092
+11/12/2024 13:55:00 - INFO - __main__ - Use data/pile-ner.json as train dataset, len(dataset) = 105659
+11/12/2024 13:55:00 - INFO - __main__ - len(dataset) = 105659
+Process #0 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00000_of_00012.arrow
+11/12/2024 13:55:00 - INFO - datasets.arrow_dataset - Process #0 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00000_of_00012.arrow
+Process #1 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00001_of_00012.arrow
+11/12/2024 13:55:00 - INFO - datasets.arrow_dataset - Process #1 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00001_of_00012.arrow
+Process #2 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00002_of_00012.arrow
+11/12/2024 13:55:00 - INFO - datasets.arrow_dataset - Process #2 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00002_of_00012.arrow
+Process #3 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00003_of_00012.arrow
+11/12/2024 13:55:00 - INFO - datasets.arrow_dataset - Process #3 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00003_of_00012.arrow
+Process #4 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00004_of_00012.arrow
+11/12/2024 13:55:00 - INFO - datasets.arrow_dataset - Process #4 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00004_of_00012.arrow
+Process #5 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00005_of_00012.arrow
+11/12/2024 13:55:00 - INFO - datasets.arrow_dataset - Process #5 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00005_of_00012.arrow
+Process #6 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00006_of_00012.arrow
+11/12/2024 13:55:00 - INFO - datasets.arrow_dataset - Process #6 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00006_of_00012.arrow
+Process #7 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00007_of_00012.arrow
+11/12/2024 13:55:00 - INFO - datasets.arrow_dataset - Process #7 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00007_of_00012.arrow
+Process #8 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00008_of_00012.arrow
+11/12/2024 13:55:00 - INFO - datasets.arrow_dataset - Process #8 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00008_of_00012.arrow
+Process #9 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00009_of_00012.arrow
+11/12/2024 13:55:00 - INFO - datasets.arrow_dataset - Process #9 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00009_of_00012.arrow
+Process #10 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00010_of_00012.arrow
+11/12/2024 13:55:00 - INFO - datasets.arrow_dataset - Process #10 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00010_of_00012.arrow
+Process #11 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00011_of_00012.arrow
+11/12/2024 13:55:00 - INFO - datasets.arrow_dataset - Process #11 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00011_of_00012.arrow
+Spawning 12 processes
+11/12/2024 13:55:00 - INFO - datasets.arrow_dataset - Spawning 12 processes
+Running tokenizer on train dataset (num_proc=12):   0%|                                                                                                             | 0/105659 [00:00<?, ? examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00000_of_00012.arrow
+11/12/2024 13:55:00 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00000_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00002_of_00012.arrow
+11/12/2024 13:55:00 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00002_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00001_of_00012.arrow
+11/12/2024 13:55:00 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00001_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00003_of_00012.arrow
+11/12/2024 13:55:00 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00003_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00004_of_00012.arrow
+11/12/2024 13:55:00 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00004_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00005_of_00012.arrow
+11/12/2024 13:55:00 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00005_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00006_of_00012.arrow
+11/12/2024 13:55:00 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00006_of_00012.arrow
+Running tokenizer on train dataset (num_proc=12):   0%|                                                                                                   | 46/105659 [00:00<06:19, 278.37 examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00007_of_00012.arrow
+11/12/2024 13:55:01 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00007_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00008_of_00012.arrow
+11/12/2024 13:55:01 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00008_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00009_of_00012.arrow
+11/12/2024 13:55:01 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00009_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00010_of_00012.arrow
+11/12/2024 13:55:01 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00010_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00011_of_00012.arrow
+11/12/2024 13:55:01 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-47476eb9d775be9d_00011_of_00012.arrow
+Running tokenizer on train dataset (num_proc=12): 100%|██████████████████████████████████████████████████████████████████████████████████████████████| 105659/105659 [00:11<00:00, 9048.47 examples/s]
+Concatenating 12 shards
+11/12/2024 13:55:12 - INFO - datasets.arrow_dataset - Concatenating 12 shards
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/raid/chrisjihee/proj/GNER/src/run.py", line 510, in <module>
+[rank0]:     main()
+[rank0]:   File "/raid/chrisjihee/proj/GNER/src/run.py", line 373, in main
+[rank0]:     raise ValueError("--do_eval requires a validation dataset")
+[rank0]: ValueError: --do_eval requires a validation dataset
+Running tokenizer on train dataset (num_proc=12):   6%|█████▌                                                                                          | 6162/105659 [00:00<00:10, 9418.59 examples/s][2024-11-12 13:55:17,337] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 3467240
+[2024-11-12 13:55:17,337] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 3467241
+Running tokenizer on train dataset (num_proc=12):  10%|█████████                                                                                     | 10252/105659 [00:01<00:09, 10233.58 examples/s][2024-11-12 13:55:17,761] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 3467242
+Running tokenizer on train dataset (num_proc=12):  13%|████████████▎                                                                                  | 13750/105659 [00:01<00:10, 8717.36 examples/s][2024-11-12 13:55:18,242] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 3467243
+Running tokenizer on train dataset (num_proc=12):  18%|████████████████▊                                                                             | 18895/105659 [00:02<00:08, 10228.00 examples/s][2024-11-12 13:55:18,681] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 3467244
+Running tokenizer on train dataset (num_proc=12):  22%|████████████████████▏                                                                         | 22733/105659 [00:02<00:07, 10956.76 examples/s][2024-11-12 13:55:19,079] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 3467245
+Running tokenizer on train dataset (num_proc=12):  24%|██████████████████████▌                                                                        | 25152/105659 [00:02<00:10, 7839.64 examples/s][2024-11-12 13:55:19,478] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 3467246
+Running tokenizer on train dataset (num_proc=12):  28%|██████████████████████████▎                                                                    | 29297/105659 [00:03<00:07, 9760.36 examples/s][2024-11-12 13:55:19,873] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 3467247
+[2024-11-12 13:55:20,268] [ERROR] [launch.py:321:sigkill_handler] ['/raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11', '-u', 'src/run.py', '--local_rank=7', '--do_train', '--do_predict', '--predict_with_generate', '--model_name_or_path', 'google/flan-t5-base', '--data_dir', 'data', '--preprocessing_num_workers', '12', '--load_best_model_at_end', 'True', '--metric_for_best_model', 'eval_average_f1', '--greater_is_better', 'True', '--train_json_dir', 'data/pile-ner.json', '--data_config_dir', 'configs/dataset_configs/task_adaptation_configs', '--instruction_file', 'configs/instruction_configs/instruction.json', '--output_dir', 'output/flan-t5-base-task-adaptation', '--per_device_train_batch_size', '32', '--per_device_eval_batch_size', '8', '--gradient_accumulation_steps', '1', '--learning_rate', '5e-05', '--num_train_epochs', '12', '--deepspeed', 'configs/deepspeed_configs/deepspeed_zero0_t5.json', '--run_name', 'flan-t5-base-experiment', '--max_source_length', '640', '--max_target_length', '640', '--generation_max_length', '640', '--overwrite_output_dir', '--overwrite_cache', '--lr_scheduler_type', 'constant', '--warmup_steps', '0', '--logging_strategy', 'steps', '--logging_steps', '10', '--evaluation_strategy', 'epoch', '--save_strategy', 'epoch', '--seed', '1234'] exits with return code = 1
+(GNER) chrisjihee@dgx-a100:~/proj/GNER$
