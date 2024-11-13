@@ -8,6 +8,7 @@ TRAIN_JSON_DIR=data/pile-ner.json
 DATA_CONFIG_DIR=configs/dataset_configs/task_adaptation_configs
 INSTRUCTION_FILE=configs/instruction_configs/instruction.json
 OUTPUT_DIR=output/flan-t5-xxl-task-adaptation
+DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero2_t5.json
 RUN_NAME=flan-t5-xxl-experiment
 
 deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
@@ -24,16 +25,15 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --data_config_dir $DATA_CONFIG_DIR \
     --instruction_file $INSTRUCTION_FILE \
     --output_dir $OUTPUT_DIR \
-    --per_device_train_batch_size 4 \
-    --per_device_eval_batch_size 8 \
-    --gradient_accumulation_steps 8 \
+    --per_device_train_batch_size 1 \
+    --per_device_eval_batch_size 4 \
+    --gradient_accumulation_steps 32 \
     --gradient_checkpointing True \
     --learning_rate 5e-05 \
     --lr_scheduler_type constant \
     --warmup_steps 0 \
     --num_train_epochs 6 \
-    --fsdp "full_shard auto_wrap" \
-    --fsdp_transformer_layer_cls_to_wrap 'T5Block' \
+    --deepspeed $DEEPSPEED_CONFIG \
     --run_name $RUN_NAME \
     --max_source_length 640 \
     --max_target_length 640 \
