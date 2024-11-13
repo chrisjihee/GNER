@@ -8,7 +8,7 @@ TRAIN_JSON_DIR=data/pile-ner.json
 DATA_CONFIG_DIR=configs/dataset_configs/task_adaptation_configs
 INSTRUCTION_FILE=configs/instruction_configs/instruction.json
 OUTPUT_DIR=output/flan-t5-xxl-task-adaptation
-DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero2_t5.json
+DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero3_t5.json
 RUN_NAME=flan-t5-xxl-experiment
 
 deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
