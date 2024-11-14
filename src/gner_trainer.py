@@ -1,5 +1,5 @@
 import torch
-from transformers import *  # for is_torch_tpu_available
+from transformers import is_torch_tpu_available
 from transformers.trainer_seq2seq import Seq2SeqTrainer
 from transformers.trainer import *
 
