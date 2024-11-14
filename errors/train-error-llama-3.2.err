@@ -1,0 +1,175 @@
+(GNER) chrisjihee@dgx-a100:~/proj/GNER$ bash scripts/train_llama3_1b_task_adaptation.sh
+++ shuf -i25000-30000 -n1
++ port=27804
++ MODEL_NAME_OR_PATH=meta-llama/Llama-3.2-1B
++ DATA_DIR=data
++ TRAIN_JSON_DIR=data/pile-ner.json
++ DATA_CONFIG_DIR=configs/dataset_configs/task_adaptation_configs
++ INSTRUCTION_FILE=configs/instruction_configs/instruction.json
++ OUTPUT_DIR=output/llama3-1b-task-adaptation
++ DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero2_llama.json
++ RUN_NAME=llama3-1B-experiment
++ deepspeed --include=localhost:0,1,2,3,4,5,6,7 --master_port 27804 src/run.py --bf16 True --tf32 True --do_train --do_predict --predict_with_generate --model_name_or_path meta-llama/Llama-3.2-1B --data_dir data --preprocessing_num_workers 12 --metric_for_best_model eval_average_f1 --greater_is_better True --train_json_dir data/pile-ner.json --data_config_dir configs/dataset_configs/task_adaptation_configs --instruction_file configs/instruction_configs/instruction.json --output_dir output/llama3-1b-task-adaptation --per_device_train_batch_size 1 --per_device_eval_batch_size 4 --gradient_accumulation_steps 32 --gradient_checkpointing True --learning_rate 2e-05 --lr_scheduler_type cosine --warmup_ratio 0.04 --weight_decay 0. --num_train_epochs 3 --deepspeed configs/deepspeed_configs/deepspeed_zero2_llama.json --run_name llama3-1B-experiment --max_source_length 640 --max_target_length 640 --generation_max_length 1280 --overwrite_output_dir --overwrite_cache --logging_strategy steps --logging_steps 10 --evaluation_strategy no --save_strategy steps --save_steps 100 --seed 1234
+[2024-11-14 23:36:34,081] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-14 23:36:35,491] [WARNING] [runner.py:202:fetch_hostfile] Unable to find hostfile, will proceed with training with local resources only.
+[2024-11-14 23:36:38,237] [INFO] [runner.py:568:main] cmd = /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11 -u -m deepspeed.launcher.launch --world_info=eyJsb2NhbGhvc3QiOiBbMCwgMSwgMiwgMywgNCwgNSwgNiwgN119 --master_addr=127.0.0.1 --master_port=27804 --enable_each_rank_log=None src/run.py --bf16 True --tf32 True --do_train --do_predict --predict_with_generate --model_name_or_path meta-llama/Llama-3.2-1B --data_dir data --preprocessing_num_workers 12 --metric_for_best_model eval_average_f1 --greater_is_better True --train_json_dir data/pile-ner.json --data_config_dir configs/dataset_configs/task_adaptation_configs --instruction_file configs/instruction_configs/instruction.json --output_dir output/llama3-1b-task-adaptation --per_device_train_batch_size 1 --per_device_eval_batch_size 4 --gradient_accumulation_steps 32 --gradient_checkpointing True --learning_rate 2e-05 --lr_scheduler_type cosine --warmup_ratio 0.04 --weight_decay 0. --num_train_epochs 3 --deepspeed configs/deepspeed_configs/deepspeed_zero2_llama.json --run_name llama3-1B-experiment --max_source_length 640 --max_target_length 640 --generation_max_length 1280 --overwrite_output_dir --overwrite_cache --logging_strategy steps --logging_steps 10 --evaluation_strategy no --save_strategy steps --save_steps 100 --seed 1234
+[2024-11-14 23:36:42,223] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-14 23:36:43,523] [INFO] [launch.py:145:main] WORLD INFO DICT: {'localhost': [0, 1, 2, 3, 4, 5, 6, 7]}
+[2024-11-14 23:36:43,523] [INFO] [launch.py:151:main] nnodes=1, num_local_procs=8, node_rank=0
+[2024-11-14 23:36:43,523] [INFO] [launch.py:162:main] global_rank_mapping=defaultdict(<class 'list'>, {'localhost': [0, 1, 2, 3, 4, 5, 6, 7]})
+[2024-11-14 23:36:43,523] [INFO] [launch.py:163:main] dist_world_size=8
+[2024-11-14 23:36:43,523] [INFO] [launch.py:165:main] Setting CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+[2024-11-14 23:36:51,219] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-14 23:36:51,260] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-14 23:36:51,305] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-14 23:36:51,416] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-14 23:36:51,445] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-14 23:36:51,449] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-14 23:36:51,452] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-14 23:36:51,458] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-14 23:36:51,561] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-14 23:36:51,587] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-14 23:36:51,587] [INFO] [comm.py:668:init_distributed] Initializing TorchBackend in DeepSpeed with backend nccl
+[2024-11-14 23:36:51,618] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-14 23:36:51,684] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-14 23:36:51,706] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-14 23:36:51,713] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-14 23:36:51,715] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-14 23:36:51,767] [INFO] [comm.py:637:init_distributed] cdb=None
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/14/2024 23:36:51 - WARNING - __main__ - Process rank: 3, device: cuda:3, n_gpu: 1distributed training: True, 16-bits training: True
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/14/2024 23:36:51 - WARNING - __main__ - Process rank: 7, device: cuda:7, n_gpu: 1distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/14/2024 23:36:51 - WARNING - __main__ - Process rank: 4, device: cuda:4, n_gpu: 1distributed training: True, 16-bits training: True
+11/14/2024 23:36:51 - WARNING - __main__ - Process rank: 6, device: cuda:6, n_gpu: 1distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/14/2024 23:36:51 - WARNING - __main__ - Process rank: 2, device: cuda:2, n_gpu: 1distributed training: True, 16-bits training: True
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/14/2024 23:36:51 - WARNING - __main__ - Process rank: 1, device: cuda:1, n_gpu: 1distributed training: True, 16-bits training: True
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/huggingface_hub/file_download.py:797: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+config.json: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 843/843 [00:00<00:00, 8.97MB/s]
+[rank3]: Traceback (most recent call last):
+[rank3]:   File "/raid/chrisjihee/proj/GNER/src/run.py", line 510, in <module>
+[rank3]:     main()
+[rank3]:   File "/raid/chrisjihee/proj/GNER/src/run.py", line 235, in main
+[rank3]:     config = AutoConfig.from_pretrained(
+[rank3]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/models/auto/configuration_auto.py", line 1135, in from_pretrained
+[rank3]:     return config_class.from_dict(config_dict, **unused_kwargs)
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/configuration_utils.py", line 763, in from_dict
+[rank3]:     config = cls(**config_dict)
+[rank3]:              ^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/models/llama/configuration_llama.py", line 160, in __init__
+[rank3]:     self._rope_scaling_validation()
+[rank3]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/models/llama/configuration_llama.py", line 180, in _rope_scaling_validation
+[rank3]:     raise ValueError(
+[rank3]: ValueError: `rope_scaling` must be a dictionary with with two fields, `type` and `factor`, got {'factor': 32.0, 'high_freq_factor': 4.0, 'low_freq_factor': 1.0, 'original_max_position_embeddings': 8192, 'rope_type': 'llama3'}
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/raid/chrisjihee/proj/GNER/src/run.py", line 510, in <module>
+[rank1]:     main()
+[rank1]:   File "/raid/chrisjihee/proj/GNER/src/run.py", line 235, in main
+[rank1]:     config = AutoConfig.from_pretrained(
+[rank1]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/models/auto/configuration_auto.py", line 1135, in from_pretrained
+[rank1]:     return config_class.from_dict(config_dict, **unused_kwargs)
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/configuration_utils.py", line 763, in from_dict
+[rank1]:     config = cls(**config_dict)
+[rank1]:              ^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/models/llama/configuration_llama.py", line 160, in __init__
+[rank1]:     self._rope_scaling_validation()
+[rank1]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/models/llama/configuration_llama.py", line 180, in _rope_scaling_validation
+[rank1]:     raise ValueError(
+[rank1]: ValueError: `rope_scaling` must be a dictionary with with two fields, `type` and `factor`, got {'factor': 32.0, 'high_freq_factor': 4.0, 'low_freq_factor': 1.0, 'original_max_position_embeddings': 8192, 'rope_type': 'llama3'}
+[rank7]: Traceback (most recent call last):
+[rank7]:   File "/raid/chrisjihee/proj/GNER/src/run.py", line 510, in <module>
+[rank7]:     main()
+[rank7]:   File "/raid/chrisjihee/proj/GNER/src/run.py", line 235, in main
+[rank7]:     config = AutoConfig.from_pretrained(
+[rank7]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank7]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/models/auto/configuration_auto.py", line 1135, in from_pretrained
+[rank7]:     return config_class.from_dict(config_dict, **unused_kwargs)
+[rank7]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank7]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/configuration_utils.py", line 763, in from_dict
+[rank7]:     config = cls(**config_dict)
+[rank7]:              ^^^^^^^^^^^^^^^^^^
+[rank7]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/models/llama/configuration_llama.py", line 160, in __init__
+[rank7]:     self._rope_scaling_validation()
+[rank7]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/models/llama/configuration_llama.py", line 180, in _rope_scaling_validation
+[rank7]:     raise ValueError(
+[rank7]: ValueError: `rope_scaling` must be a dictionary with with two fields, `type` and `factor`, got {'factor': 32.0, 'high_freq_factor': 4.0, 'low_freq_factor': 1.0, 'original_max_position_embeddings': 8192, 'rope_type': 'llama3'}
+[rank6]: Traceback (most recent call last):
+[rank6]:   File "/raid/chrisjihee/proj/GNER/src/run.py", line 510, in <module>
+[rank6]:     main()
+[rank6]:   File "/raid/chrisjihee/proj/GNER/src/run.py", line 235, in main
+[rank6]:     config = AutoConfig.from_pretrained(
+[rank6]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank6]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/models/auto/configuration_auto.py", line 1135, in from_pretrained
+[rank6]:     return config_class.from_dict(config_dict, **unused_kwargs)
+[rank6]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank6]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/configuration_utils.py", line 763, in from_dict
+[rank6]:     config = cls(**config_dict)
+[rank6]:              ^^^^^^^^^^^^^^^^^^
+[rank6]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/models/llama/configuration_llama.py", line 160, in __init__
+[rank6]:     self._rope_scaling_validation()
+[rank6]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/models/llama/configuration_llama.py", line 180, in _rope_scaling_validation
+[rank6]:     raise ValueError(
+[rank6]: ValueError: `rope_scaling` must be a dictionary with with two fields, `type` and `factor`, got {'factor': 32.0, 'high_freq_factor': 4.0, 'low_freq_factor': 1.0, 'original_max_position_embeddings': 8192, 'rope_type': 'llama3'}
+[rank2]: Traceback (most recent call last):
+[rank2]:   File "/raid/chrisjihee/proj/GNER/src/run.py", line 510, in <module>
+[rank2]:     main()
+[rank2]:   File "/raid/chrisjihee/proj/GNER/src/run.py", line 235, in main
+[rank2]:     config = AutoConfig.from_pretrained(
+[rank2]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/models/auto/configuration_auto.py", line 1135, in from_pretrained
+[rank2]:     return config_class.from_dict(config_dict, **unused_kwargs)
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/configuration_utils.py", line 763, in from_dict
+[rank2]:     config = cls(**config_dict)
+[rank2]:              ^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/models/llama/configuration_llama.py", line 160, in __init__
+[rank2]:     self._rope_scaling_validation()
+[rank2]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/models/llama/configuration_llama.py", line 180, in _rope_scaling_validation
+[rank2]:     raise ValueError(
+[rank2]: ValueError: `rope_scaling` must be a dictionary with with two fields, `type` and `factor`, got {'factor': 32.0, 'high_freq_factor': 4.0, 'low_freq_factor': 1.0, 'original_max_position_embeddings': 8192, 'rope_type': 'llama3'}
+[rank4]: Traceback (most recent call last):
+[rank4]:   File "/raid/chrisjihee/proj/GNER/src/run.py", line 510, in <module>
+[rank4]:     main()
+[rank4]:   File "/raid/chrisjihee/proj/GNER/src/run.py", line 235, in main
+[rank4]:     config = AutoConfig.from_pretrained(
+[rank4]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank4]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/models/auto/configuration_auto.py", line 1135, in from_pretrained
+[rank4]:     return config_class.from_dict(config_dict, **unused_kwargs)
+[rank4]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank4]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/configuration_utils.py", line 763, in from_dict
+[rank4]:     config = cls(**config_dict)
+[rank4]:              ^^^^^^^^^^^^^^^^^^
+[rank4]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/models/llama/configuration_llama.py", line 160, in __init__
+[rank4]:     self._rope_scaling_validation()
+[rank4]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/models/llama/configuration_llama.py", line 180, in _rope_scaling_validation
+[rank4]:     raise ValueError(
+[rank4]: ValueError: `rope_scaling` must be a dictionary with with two fields, `type` and `factor`, got {'factor': 32.0, 'high_freq_factor': 4.0, 'low_freq_factor': 1.0, 'original_max_position_embeddings': 8192, 'rope_type': 'llama3'}
+[2024-11-14 23:36:54,528] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 1812698
+[2024-11-14 23:36:54,823] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 1812699
+[2024-11-14 23:36:54,860] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 1812700
+[2024-11-14 23:36:54,896] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 1812701
+[2024-11-14 23:36:54,896] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 1812702
+[2024-11-14 23:36:54,932] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 1812703
+[2024-11-14 23:36:55,180] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 1812704
+[2024-11-14 23:36:55,215] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 1812705
+[2024-11-14 23:36:55,251] [ERROR] [launch.py:321:sigkill_handler] ['/raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11', '-u', 'src/run.py', '--local_rank=7', '--bf16', 'True', '--tf32', 'True', '--do_train', '--do_predict', '--predict_with_generate', '--model_name_or_path', 'meta-llama/Llama-3.2-1B', '--data_dir', 'data', '--preprocessing_num_workers', '12', '--metric_for_best_model', 'eval_average_f1', '--greater_is_better', 'True', '--train_json_dir', 'data/pile-ner.json', '--data_config_dir', 'configs/dataset_configs/task_adaptation_configs', '--instruction_file', 'configs/instruction_configs/instruction.json', '--output_dir', 'output/llama3-1b-task-adaptation', '--per_device_train_batch_size', '1', '--per_device_eval_batch_size', '4', '--gradient_accumulation_steps', '32', '--gradient_checkpointing', 'True', '--learning_rate', '2e-05', '--lr_scheduler_type', 'cosine', '--warmup_ratio', '0.04', '--weight_decay', '0.', '--num_train_epochs', '3', '--deepspeed', 'configs/deepspeed_configs/deepspeed_zero2_llama.json', '--run_name', 'llama3-1B-experiment', '--max_source_length', '640', '--max_target_length', '640', '--generation_max_length', '1280', '--overwrite_output_dir', '--overwrite_cache', '--logging_strategy', 'steps', '--logging_steps', '10', '--evaluation_strategy', 'no', '--save_strategy', 'steps', '--save_steps', '100', '--seed', '1234'] exits with return code = 1
+(GNER) chrisjihee@dgx-a100:~/proj/GNER$
