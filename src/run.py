@@ -248,9 +248,6 @@ def main():
         token=model_args.token,
         trust_remote_code=model_args.trust_remote_code,
     )
-    if tokenizer.pad_token is None:
-        # tokenizer.pad_token = tokenizer.unk_token
-        tokenizer.pad_token = tokenizer.eos_token  # for LLaMA-3
     MODEL_CLASS = AutoModelForSeq2SeqLM if is_encoder_decoder else AutoModelForCausalLM
     model = MODEL_CLASS.from_pretrained(
         model_args.model_name_or_path,
@@ -261,6 +258,11 @@ def main():
         token=model_args.token,
         trust_remote_code=model_args.trust_remote_code,
     )
+    if tokenizer.unk_token is None:
+        tokenizer.add_special_tokens({'unk_token': '<unk>'})
+        model.resize_token_embeddings(len(tokenizer))
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.unk_token
 
     def preprocess_function(example):
         # remove pairs where at least one record is None
