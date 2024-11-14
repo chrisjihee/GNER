@@ -249,7 +249,8 @@ def main():
         trust_remote_code=model_args.trust_remote_code,
     )
     if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.unk_token
+        # tokenizer.pad_token = tokenizer.unk_token
+        tokenizer.pad_token = tokenizer.eos_token  # for LLaMA-3
     MODEL_CLASS = AutoModelForSeq2SeqLM if is_encoder_decoder else AutoModelForCausalLM
     model = MODEL_CLASS.from_pretrained(
         model_args.model_name_or_path,
