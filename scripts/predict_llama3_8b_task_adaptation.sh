@@ -2,7 +2,8 @@ set -x
 
 port=$(shuf -i25000-30000 -n1)
 
-MODEL_NAME_OR_PATH=output/llama3-8b-task-adaptation/checkpoint-1236
+MODEL_NAME_OR_PATH=meta-llama/Llama-3.1-8B
+MODEL_CHECKPOINT_PATH=output/llama3-8b-task-adaptation/checkpoint-1236
 DATA_DIR=data
 DATA_CONFIG_DIR=configs/dataset_configs/task_adaptation_configs
 INSTRUCTION_FILE=configs/instruction_configs/instruction.json
@@ -14,7 +15,7 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --do_predict \
     --predict_with_generate \
     --model_name_or_path $MODEL_NAME_OR_PATH \
-    --resume_from_checkpoint $MODEL_NAME_OR_PATH \
+    --resume_from_checkpoint $MODEL_CHECKPOINT_PATH \
     --data_dir $DATA_DIR \
     --preprocessing_num_workers 12 \
     --data_config_dir $DATA_CONFIG_DIR \
