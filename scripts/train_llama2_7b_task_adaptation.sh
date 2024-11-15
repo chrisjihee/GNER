@@ -45,7 +45,7 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --overwrite_cache \
     --logging_strategy "steps" \
     --logging_steps 10 \
-    --evaluation_strategy no \
+    --eval_strategy no \
     --save_strategy "steps" \
     --save_steps 100 \
     --seed 1234
