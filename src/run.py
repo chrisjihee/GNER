@@ -258,6 +258,7 @@ def main():
         token=model_args.token,
         trust_remote_code=model_args.trust_remote_code,
     )
+    # https://stackoverflow.com/questions/70544129/transformers-asking-to-pad-but-the-tokenizer-does-not-have-a-padding-token
     if tokenizer.unk_token is None:
         tokenizer.add_special_tokens({'unk_token': '<unk>'})
         model.resize_token_embeddings(len(tokenizer))
