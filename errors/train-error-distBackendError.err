@@ -1,0 +1,442 @@
+(GNER) chrisjihee@dgx-a100:~/proj/GNER$ bash scripts/train_llama3_8b_task_adaptation.sh
+++ shuf -i25000-30000 -n1
++ port=27550
++ MODEL_NAME_OR_PATH=meta-llama/Meta-Llama-3-8B
++ DATA_DIR=data
++ TRAIN_JSON_DIR=data/pile-ner.json
++ DATA_CONFIG_DIR=configs/dataset_configs/task_adaptation_configs
++ INSTRUCTION_FILE=configs/instruction_configs/instruction.json
++ OUTPUT_DIR=output/llama3-8b-task-adaptation
++ DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero2_llama.json
++ RUN_NAME=llama3-8B-experiment
++ deepspeed --include=localhost:0,1,2,3,4,5,6,7 --master_port 27550 src/run.py --bf16 True --tf32 True --do_train --do_predict --predict_with_generate --model_name_or_path meta-llama/Meta-Llama-3-8B --data_dir data --preprocessing_num_workers 12 --metric_for_best_model eval_average_f1 --greater_is_better True --train_json_dir data/pile-ner.json --data_config_dir configs/dataset_configs/task_adaptation_configs --instruction_file configs/instruction_configs/instruction.json --output_dir output/llama3-8b-task-adaptation --per_device_train_batch_size 1 --per_device_eval_batch_size 4 --gradient_accumulation_steps 32 --gradient_checkpointing True --learning_rate 2e-05 --lr_scheduler_type cosine --warmup_ratio 0.04 --weight_decay 0. --num_train_epochs 3 --deepspeed configs/deepspeed_configs/deepspeed_zero2_llama.json --run_name llama3-8B-experiment --max_source_length 640 --max_target_length 640 --generation_max_length 1280 --overwrite_output_dir --overwrite_cache --logging_strategy steps --logging_steps 10 --evaluation_strategy no --save_strategy steps --save_steps 100 --seed 1234
+[2024-11-15 15:23:58,802] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-15 15:24:00,169] [WARNING] [runner.py:202:fetch_hostfile] Unable to find hostfile, will proceed with training with local resources only.
+[2024-11-15 15:24:02,883] [INFO] [runner.py:568:main] cmd = /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11 -u -m deepspeed.launcher.launch --world_info=eyJsb2NhbGhvc3QiOiBbMCwgMSwgMiwgMywgNCwgNSwgNiwgN119 --master_addr=127.0.0.1 --master_port=27550 --enable_each_rank_log=None src/run.py --bf16 True --tf32 True --do_train --do_predict --predict_with_generate --model_name_or_path meta-llama/Meta-Llama-3-8B --data_dir data --preprocessing_num_workers 12 --metric_for_best_model eval_average_f1 --greater_is_better True --train_json_dir data/pile-ner.json --data_config_dir configs/dataset_configs/task_adaptation_configs --instruction_file configs/instruction_configs/instruction.json --output_dir output/llama3-8b-task-adaptation --per_device_train_batch_size 1 --per_device_eval_batch_size 4 --gradient_accumulation_steps 32 --gradient_checkpointing True --learning_rate 2e-05 --lr_scheduler_type cosine --warmup_ratio 0.04 --weight_decay 0. --num_train_epochs 3 --deepspeed configs/deepspeed_configs/deepspeed_zero2_llama.json --run_name llama3-8B-experiment --max_source_length 640 --max_target_length 640 --generation_max_length 1280 --overwrite_output_dir --overwrite_cache --logging_strategy steps --logging_steps 10 --evaluation_strategy no --save_strategy steps --save_steps 100 --seed 1234
+[2024-11-15 15:24:06,807] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-15 15:24:08,123] [INFO] [launch.py:145:main] WORLD INFO DICT: {'localhost': [0, 1, 2, 3, 4, 5, 6, 7]}
+[2024-11-15 15:24:08,123] [INFO] [launch.py:151:main] nnodes=1, num_local_procs=8, node_rank=0
+[2024-11-15 15:24:08,123] [INFO] [launch.py:162:main] global_rank_mapping=defaultdict(<class 'list'>, {'localhost': [0, 1, 2, 3, 4, 5, 6, 7]})
+[2024-11-15 15:24:08,123] [INFO] [launch.py:163:main] dist_world_size=8
+[2024-11-15 15:24:08,123] [INFO] [launch.py:165:main] Setting CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/training_args.py:1568: FutureWarning: `evaluation_strategy` is deprecated and will be removed in version 4.46 of 🤗 Transformers. Use `eval_strategy` instead
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/training_args.py:1568: FutureWarning: `evaluation_strategy` is deprecated and will be removed in version 4.46 of 🤗 Transformers. Use `eval_strategy` instead
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/training_args.py:1568: FutureWarning: `evaluation_strategy` is deprecated and will be removed in version 4.46 of 🤗 Transformers. Use `eval_strategy` instead
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/training_args.py:1568: FutureWarning: `evaluation_strategy` is deprecated and will be removed in version 4.46 of 🤗 Transformers. Use `eval_strategy` instead
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/training_args.py:1568: FutureWarning: `evaluation_strategy` is deprecated and will be removed in version 4.46 of 🤗 Transformers. Use `eval_strategy` instead
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/training_args.py:1568: FutureWarning: `evaluation_strategy` is deprecated and will be removed in version 4.46 of 🤗 Transformers. Use `eval_strategy` instead
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/training_args.py:1568: FutureWarning: `evaluation_strategy` is deprecated and will be removed in version 4.46 of 🤗 Transformers. Use `eval_strategy` instead
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/training_args.py:1568: FutureWarning: `evaluation_strategy` is deprecated and will be removed in version 4.46 of 🤗 Transformers. Use `eval_strategy` instead
+  warnings.warn(
+[2024-11-15 15:24:12,973] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-15 15:24:13,058] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-15 15:24:13,140] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-15 15:24:13,235] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-15 15:24:16,223] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-15 15:24:16,313] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-15 15:24:16,339] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-15 15:24:16,352] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-15 15:24:16,367] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-15 15:24:16,382] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-15 15:24:16,396] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-15 15:24:16,495] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-15 15:24:16,513] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-15 15:24:16,513] [INFO] [comm.py:668:init_distributed] Initializing TorchBackend in DeepSpeed with backend nccl
+[2024-11-15 15:24:16,528] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-15 15:24:16,544] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-15 15:24:16,551] [INFO] [comm.py:637:init_distributed] cdb=None
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/15/2024 15:24:16 - WARNING - __main__ - Process rank: 4, device: cuda:4, n_gpu: 1distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/15/2024 15:24:16 - WARNING - __main__ - Process rank: 6, device: cuda:6, n_gpu: 1distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/15/2024 15:24:16 - WARNING - __main__ - Process rank: 2, device: cuda:2, n_gpu: 1distributed training: True, 16-bits training: True
+Loading checkpoint shards:  50%|████████████████████████████████████████████████████████████████████                                                                    | 2/4 [00:02<00:02,  1.10s/it]Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/15/2024 15:24:20 - WARNING - __main__ - Process rank: 7, device: cuda:7, n_gpu: 1distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/15/2024 15:24:20 - WARNING - __main__ - Process rank: 1, device: cuda:1, n_gpu: 1distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/15/2024 15:24:20 - WARNING - __main__ - Process rank: 3, device: cuda:3, n_gpu: 1distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/15/2024 15:24:20 - WARNING - __main__ - Process rank: 5, device: cuda:5, n_gpu: 1distributed training: True, 16-bits training: True
+11/15/2024 15:24:20 - WARNING - __main__ - Process rank: 0, device: cuda:0, n_gpu: 1distributed training: True, 16-bits training: True
+11/15/2024 15:24:20 - INFO - __main__ - Training/evaluation parameters Seq2SeqTrainingArguments(
+_n_gpu=1,
+accelerator_config={'split_batches': False, 'dispatch_batches': None, 'even_batches': True, 'use_seedable_sampler': True, 'non_blocking': False, 'gradient_accumulation_kwargs': None, 'use_configured_state': False},
+adafactor=False,
+adam_beta1=0.9,
+adam_beta2=0.999,
+adam_epsilon=1e-08,
+auto_find_batch_size=False,
+average_tokens_across_devices=False,
+batch_eval_metrics=False,
+bf16=True,
+bf16_full_eval=False,
+data_seed=None,
+dataloader_drop_last=False,
+dataloader_num_workers=0,
+dataloader_persistent_workers=False,
+dataloader_pin_memory=True,
+dataloader_prefetch_factor=None,
+ddp_backend=None,
+ddp_broadcast_buffers=None,
+ddp_bucket_cap_mb=None,
+ddp_find_unused_parameters=None,
+ddp_timeout=1800,
+debug=[],
+deepspeed=configs/deepspeed_configs/deepspeed_zero2_llama.json,
+disable_tqdm=False,
+dispatch_batches=None,
+do_eval=False,
+do_predict=True,
+do_train=True,
+eval_accumulation_steps=None,
+eval_delay=0,
+eval_do_concat_batches=True,
+eval_on_start=False,
+eval_steps=None,
+eval_strategy=IntervalStrategy.NO,
+eval_use_gather_object=False,
+evaluation_strategy=no,
+fp16=False,
+fp16_backend=auto,
+fp16_full_eval=False,
+fp16_opt_level=O1,
+fsdp=[],
+fsdp_config={'min_num_params': 0, 'xla': False, 'xla_fsdp_v2': False, 'xla_fsdp_grad_ckpt': False},
+fsdp_min_num_params=0,
+fsdp_transformer_layer_cls_to_wrap=None,
+full_determinism=False,
+generation_config=None,
+generation_max_length=1280,
+generation_num_beams=None,
+gradient_accumulation_steps=32,
+gradient_checkpointing=True,
+gradient_checkpointing_kwargs=None,
+greater_is_better=True,
+group_by_length=False,
+half_precision_backend=auto,
+hub_always_push=False,
+hub_model_id=None,
+hub_private_repo=False,
+hub_strategy=HubStrategy.EVERY_SAVE,
+hub_token=<HUB_TOKEN>,
+ignore_data_skip=False,
+include_for_metrics=[],
+include_inputs_for_metrics=False,
+include_num_input_tokens_seen=False,
+include_tokens_per_second=False,
+jit_mode_eval=False,
+label_names=None,
+label_smoothing_factor=0.0,
+learning_rate=2e-05,
+length_column_name=length,
+load_best_model_at_end=False,
+local_rank=0,
+log_level=passive,
+log_level_replica=warning,
+log_on_each_node=True,
+logging_dir=output/llama3-8b-task-adaptation/runs/Nov15_15-24-11_dgx-a100,
+logging_first_step=False,
+logging_nan_inf_filter=True,
+logging_steps=10,
+logging_strategy=IntervalStrategy.STEPS,
+lr_scheduler_kwargs={},
+lr_scheduler_type=SchedulerType.COSINE,
+max_grad_norm=1.0,
+max_steps=-1,
+metric_for_best_model=eval_average_f1,
+mp_parameters=,
+neftune_noise_alpha=None,
+no_cuda=False,
+num_train_epochs=3.0,
+optim=OptimizerNames.ADAMW_TORCH,
+optim_args=None,
+optim_target_modules=None,
+output_dir=output/llama3-8b-task-adaptation,
+overwrite_output_dir=True,
+past_index=-1,
+per_device_eval_batch_size=4,
+per_device_train_batch_size=1,
+predict_with_generate=True,
+prediction_loss_only=False,
+push_to_hub=False,
+push_to_hub_model_id=None,
+push_to_hub_organization=None,
+push_to_hub_token=<PUSH_TO_HUB_TOKEN>,
+ray_scope=last,
+remove_unused_columns=True,
+report_to=[],
+restore_callback_states_from_checkpoint=False,
+resume_from_checkpoint=None,
+run_name=llama3-8B-experiment,
+save_on_each_node=False,
+save_only_model=False,
+save_safetensors=True,
+save_steps=100,
+save_strategy=IntervalStrategy.STEPS,
+save_total_limit=None,
+seed=1234,
+skip_memory_metrics=True,
+sortish_sampler=False,
+split_batches=None,
+tf32=True,
+torch_compile=False,
+torch_compile_backend=None,
+torch_compile_mode=None,
+torch_empty_cache_steps=None,
+torchdynamo=None,
+tpu_metrics_debug=False,
+tpu_num_cores=None,
+use_cpu=False,
+use_ipex=False,
+use_legacy_prediction_loop=False,
+use_liger_kernel=False,
+use_mps_device=False,
+warmup_ratio=0.04,
+warmup_steps=0,
+weight_decay=0.0,
+)
+Using custom data configuration default-e60fd0a2766fdda3
+11/15/2024 15:24:20 - INFO - datasets.builder - Using custom data configuration default-e60fd0a2766fdda3
+Loading Dataset Infos from /raid/chrisjihee/.cache/huggingface/modules/datasets_modules/datasets/gner_dataset/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+11/15/2024 15:24:20 - INFO - datasets.info - Loading Dataset Infos from /raid/chrisjihee/.cache/huggingface/modules/datasets_modules/datasets/gner_dataset/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+Overwrite dataset info from restored data version if exists.
+11/15/2024 15:24:20 - INFO - datasets.builder - Overwrite dataset info from restored data version if exists.
+Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+11/15/2024 15:24:20 - INFO - datasets.info - Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+Found cached dataset gner_dataset (/raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89)
+11/15/2024 15:24:20 - INFO - datasets.builder - Found cached dataset gner_dataset (/raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89)
+Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+11/15/2024 15:24:20 - INFO - datasets.info - Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+Listing files in /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+11/15/2024 15:24:20 - INFO - datasets.arrow_dataset - Listing files in /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+Listing files in /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+11/15/2024 15:24:20 - INFO - datasets.arrow_dataset - Listing files in /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+[INFO|configuration_utils.py:679] 2024-11-15 15:24:20,809 >> loading configuration file config.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--meta-llama--Meta-Llama-3-8B/snapshots/8cde5ca8380496c9a6cc7ef3a8b46a0372a1d920/config.json
+[INFO|configuration_utils.py:746] 2024-11-15 15:24:20,812 >> Model config LlamaConfig {
+  "_name_or_path": "meta-llama/Meta-Llama-3-8B",
+  "architectures": [
+    "LlamaForCausalLM"
+  ],
+  "attention_bias": false,
+  "attention_dropout": 0.0,
+  "bos_token_id": 128000,
+  "eos_token_id": 128001,
+  "head_dim": 128,
+  "hidden_act": "silu",
+  "hidden_size": 4096,
+  "initializer_range": 0.02,
+  "intermediate_size": 14336,
+  "max_position_embeddings": 8192,
+  "mlp_bias": false,
+  "model_type": "llama",
+  "num_attention_heads": 32,
+  "num_hidden_layers": 32,
+  "num_key_value_heads": 8,
+  "pretraining_tp": 1,
+  "rms_norm_eps": 1e-05,
+  "rope_scaling": null,
+  "rope_theta": 500000.0,
+  "tie_word_embeddings": false,
+  "torch_dtype": "bfloat16",
+  "transformers_version": "4.46.2",
+  "use_cache": true,
+  "vocab_size": 128256
+}
+
+Loading checkpoint shards:  50%|████████████████████████████████████████████████████████████████████                                                                    | 2/4 [00:03<00:03,  1.52s/it][INFO|tokenization_utils_base.py:2211] 2024-11-15 15:24:21,020 >> loading file tokenizer.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--meta-llama--Meta-Llama-3-8B/snapshots/8cde5ca8380496c9a6cc7ef3a8b46a0372a1d920/tokenizer.json
+[INFO|tokenization_utils_base.py:2211] 2024-11-15 15:24:21,020 >> loading file tokenizer.model from cache at None
+[INFO|tokenization_utils_base.py:2211] 2024-11-15 15:24:21,020 >> loading file added_tokens.json from cache at None
+[INFO|tokenization_utils_base.py:2211] 2024-11-15 15:24:21,020 >> loading file special_tokens_map.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--meta-llama--Meta-Llama-3-8B/snapshots/8cde5ca8380496c9a6cc7ef3a8b46a0372a1d920/special_tokens_map.json
+[INFO|tokenization_utils_base.py:2211] 2024-11-15 15:24:21,020 >> loading file tokenizer_config.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--meta-llama--Meta-Llama-3-8B/snapshots/8cde5ca8380496c9a6cc7ef3a8b46a0372a1d920/tokenizer_config.json
+Loading checkpoint shards:   0%|                                                                                                                                                | 0/4 [00:00<?, ?it/s][INFO|tokenization_utils_base.py:2475] 2024-11-15 15:24:21,760 >> Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+[INFO|modeling_utils.py:3937] 2024-11-15 15:24:21,793 >> loading weights file model.safetensors from cache at /raid/chrisjihee/.cache/huggingface/hub/models--meta-llama--Meta-Llama-3-8B/snapshots/8cde5ca8380496c9a6cc7ef3a8b46a0372a1d920/model.safetensors.index.json
+[INFO|configuration_utils.py:1096] 2024-11-15 15:24:21,811 >> Generate config GenerationConfig {
+  "bos_token_id": 128000,
+  "eos_token_id": 128001
+}
+
+Loading checkpoint shards: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4/4 [00:04<00:00,  1.00s/it]
+Loading checkpoint shards: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4/4 [00:04<00:00,  1.13s/it]
+Loading checkpoint shards: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4/4 [00:07<00:00,  1.99s/it]
+Loading checkpoint shards:  25%|██████████████████████████████████                                                                                                      | 1/4 [00:04<00:14,  4.91s/it][WARNING|logging.py:328] 2024-11-15 15:24:27,430 >> The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+[WARNING|logging.py:328] 2024-11-15 15:24:27,831 >> The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+Loading checkpoint shards:  75%|██████████████████████████████████████████████████████████████████████████████████████████████████████                                  | 3/4 [00:11<00:03,  3.45s/it][WARNING|logging.py:328] 2024-11-15 15:24:32,883 >> The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+Loading checkpoint shards: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4/4 [00:11<00:00,  2.95s/it]
+Loading checkpoint shards: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4/4 [00:15<00:00,  3.75s/it]
+[INFO|modeling_utils.py:4800] 2024-11-15 15:24:37,005 >> All model checkpoint weights were used when initializing LlamaForCausalLM.
+
+[INFO|modeling_utils.py:4808] 2024-11-15 15:24:37,005 >> All the weights of LlamaForCausalLM were initialized from the model checkpoint at meta-llama/Meta-Llama-3-8B.
+If your task is similar to the task the model of the checkpoint was trained on, you can already use LlamaForCausalLM for predictions without further training.
+[INFO|configuration_utils.py:1051] 2024-11-15 15:24:37,221 >> loading configuration file generation_config.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--meta-llama--Meta-Llama-3-8B/snapshots/8cde5ca8380496c9a6cc7ef3a8b46a0372a1d920/generation_config.json
+[INFO|configuration_utils.py:1096] 2024-11-15 15:24:37,222 >> Generate config GenerationConfig {
+  "bos_token_id": 128000,
+  "do_sample": true,
+  "eos_token_id": 128001,
+  "max_length": 4096,
+  "temperature": 0.6,
+  "top_p": 0.9
+}
+
+Loading checkpoint shards: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4/4 [00:15<00:00,  3.95s/it]
+[INFO|modeling_utils.py:2231] 2024-11-15 15:24:37,250 >> You are resizing the embedding layer without providing a `pad_to_multiple_of` parameter. This means that the new embedding dimension will be 128257. This might induce some performance reduction as *Tensor Cores* will not be available. For more details about this, or help on choosing the correct value for resizing, refer to this guide: https://docs.nvidia.com/deeplearning/performance/dl-performance-matrix-multiplication/index.html#requirements-tc
+Loading checkpoint shards: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4/4 [00:16<00:00,  4.09s/it]
+Loading checkpoint shards: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4/4 [00:16<00:00,  4.09s/it]
+[WARNING|logging.py:328] 2024-11-15 15:24:38,688 >> The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+[WARNING|logging.py:328] 2024-11-15 15:24:41,655 >> The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+[WARNING|logging.py:328] 2024-11-15 15:24:41,869 >> The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+[WARNING|logging.py:328] 2024-11-15 15:24:42,808 >> The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+[WARNING|logging.py:328] 2024-11-15 15:24:43,091 >> The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+[WARNING|logging.py:328] 2024-11-15 15:43:26,061 >> The new lm_head weights will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+[WARNING|logging.py:328] 2024-11-15 16:03:18,843 >> The new lm_head weights will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+[WARNING|logging.py:328] 2024-11-15 16:03:21,443 >> The new lm_head weights will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+[WARNING|logging.py:328] 2024-11-15 16:03:43,610 >> The new lm_head weights will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+[WARNING|logging.py:328] 2024-11-15 16:04:12,688 >> The new lm_head weights will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+[WARNING|logging.py:328] 2024-11-15 16:04:17,308 >> The new lm_head weights will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+[WARNING|logging.py:328] 2024-11-15 16:04:57,487 >> The new lm_head weights will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+[WARNING|logging.py:328] 2024-11-15 16:05:52,621 >> The new lm_head weights will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+[rank4]:[W socket.cpp:432] [c10d] While waitForInput, poolFD failed with (errno: 11 - Resource temporarily unavailable).
+[rank4]: Traceback (most recent call last):
+[rank4]:   File "/raid/chrisjihee/proj/GNER/src/run.py", line 514, in <module>
+[rank4]:     main()
+[rank4]:   File "/raid/chrisjihee/proj/GNER/src/run.py", line 361, in main
+[rank4]:     with training_args.main_process_first(desc="train dataset map pre-processing"):
+[rank4]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/contextlib.py", line 137, in __enter__
+[rank4]:     return next(self.gen)
+[rank4]:            ^^^^^^^^^^^^^^
+[rank4]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/training_args.py", line 2482, in main_process_first
+[rank4]:     dist.barrier()
+[rank4]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/distributed/c10d_logger.py", line 75, in wrapper
+[rank4]:     return func(*args, **kwargs)
+[rank4]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank4]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py", line 3683, in barrier
+[rank4]:     work = default_pg.barrier(opts=opts)
+[rank4]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank4]: torch.distributed.DistBackendError: [4] is setting up NCCL communicator and retrieving ncclUniqueId from [0] via c10d key-value store by key '0', but store->get('0') got error: Socket Timeout
+[rank4]: Exception raised from doWait at ../torch/csrc/distributed/c10d/TCPStore.cpp:563 (most recent call first):
+[rank4]: frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x57 (0x7ff23c0d0897 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libc10.so)
+[rank4]: frame #1: <unknown function> + 0x166ffe7 (0x7ff2243defe7 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank4]: frame #2: c10d::TCPStore::doGet(std::string const&) + 0x32 (0x7ff2288a3f82 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank4]: frame #3: c10d::TCPStore::get(std::string const&) + 0xa1 (0x7ff2288a4fd1 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank4]: frame #4: c10d::PrefixStore::get(std::string const&) + 0x31 (0x7ff228859371 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank4]: frame #5: c10d::PrefixStore::get(std::string const&) + 0x31 (0x7ff228859371 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank4]: frame #6: c10d::PrefixStore::get(std::string const&) + 0x31 (0x7ff228859371 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank4]: frame #7: c10d::ProcessGroupNCCL::broadcastUniqueNCCLID(ncclUniqueId*, bool, std::string const&, int) + 0xa9 (0x7ff1ec237589 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+[rank4]: frame #8: c10d::ProcessGroupNCCL::getNCCLComm(std::string const&, c10::Device&, c10d::OpType, int, bool) + 0xc50 (0x7ff1ec23ea10 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+[rank4]: frame #9: <unknown function> + 0x118c260 (0x7ff1ec247260 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+[rank4]: frame #10: c10d::ProcessGroupNCCL::allreduce_impl(at::Tensor&, c10d::AllreduceOptions const&) + 0x10 (0x7ff1ec2485e0 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+[rank4]: frame #11: c10d::ProcessGroupNCCL::barrier(c10d::BarrierOptions const&) + 0x66a (0x7ff1ec25712a in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+[rank4]: frame #12: <unknown function> + 0x5adc8f2 (0x7ff22884b8f2 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank4]: frame #13: <unknown function> + 0x5ae7320 (0x7ff228856320 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank4]: frame #14: <unknown function> + 0x5ae7425 (0x7ff228856425 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank4]: frame #15: <unknown function> + 0x5124446 (0x7ff227e93446 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank4]: frame #16: <unknown function> + 0x1acf4b8 (0x7ff22483e4b8 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank4]: frame #17: <unknown function> + 0x5af17d4 (0x7ff2288607d4 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank4]: frame #18: <unknown function> + 0x5af2585 (0x7ff228861585 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank4]: frame #19: <unknown function> + 0xd2d4d8 (0x7ff23b4164d8 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+[rank4]: frame #20: <unknown function> + 0x47f0d4 (0x7ff23ab680d4 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+[rank4]: frame #21: <unknown function> + 0x1f8f36 (0x55b95d313f36 in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank4]: frame #22: _PyObject_MakeTpCall + 0x29b (0x55b95d2f197b in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank4]: frame #23: _PyEval_EvalFrameDefault + 0x694 (0x55b95d2fef94 in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank4]: frame #24: _PyFunction_Vectorcall + 0x17f (0x55b95d3237df in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank4]: frame #25: _PyEval_EvalFrameDefault + 0x45c7 (0x55b95d302ec7 in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank4]: frame #26: <unknown function> + 0x272f07 (0x55b95d38df07 in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank4]: frame #27: _PyEval_EvalFrameDefault + 0x149e (0x55b95d2ffd9e in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank4]: frame #28: <unknown function> + 0x2276c2 (0x55b95d3426c2 in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank4]: frame #29: _PyEval_EvalFrameDefault + 0x4abe (0x55b95d3033be in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank4]: frame #30: <unknown function> + 0x29ac5d (0x55b95d3b5c5d in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank4]: frame #31: PyEval_EvalCode + 0x9f (0x55b95d3b539f in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank4]: frame #32: <unknown function> + 0x2b831a (0x55b95d3d331a in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank4]: frame #33: <unknown function> + 0x2b3f93 (0x55b95d3cef93 in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank4]: frame #34: <unknown function> + 0x2c9540 (0x55b95d3e4540 in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank4]: frame #35: _PyRun_SimpleFileObject + 0x1bc (0x55b95d3e3ecc in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank4]: frame #36: _PyRun_AnyFileObject + 0x44 (0x55b95d3e3c64 in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank4]: frame #37: Py_RunMain + 0x383 (0x55b95d3de233 in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank4]: frame #38: Py_BytesMain + 0x37 (0x55b95d3a5617 in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank4]: frame #39: <unknown function> + 0x29d90 (0x7ff2ec4e8d90 in /lib/x86_64-linux-gnu/libc.so.6)
+[rank4]: frame #40: __libc_start_main + 0x80 (0x7ff2ec4e8e40 in /lib/x86_64-linux-gnu/libc.so.6)
+[rank4]: frame #41: <unknown function> + 0x28a4ca (0x55b95d3a54ca in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank4]: . This may indicate a possible application crash on rank 0 or a network set up issue.
+[2024-11-15 16:31:05,467] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 2500434
+[rank3]: Traceback (most recent call last):
+[rank3]:   File "/raid/chrisjihee/proj/GNER/src/run.py", line 514, in <module>
+[rank3]:     main()
+[rank3]:   File "/raid/chrisjihee/proj/GNER/src/run.py", line 361, in main
+[rank3]:     with training_args.main_process_first(desc="train dataset map pre-processing"):
+[rank3]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/contextlib.py", line 137, in __enter__
+[rank3]:     return next(self.gen)
+[rank3]:            ^^^^^^^^^^^^^^
+[rank3]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/transformers/training_args.py", line 2482, in main_process_first
+[rank3]:     dist.barrier()
+[rank3]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/distributed/c10d_logger.py", line 75, in wrapper
+[rank3]:     return func(*args, **kwargs)
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py", line 3683, in barrier
+[rank3]:     work = default_pg.barrier(opts=opts)
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]: torch.distributed.DistBackendError: [3] is setting up NCCL communicator and retrieving ncclUniqueId from [0] via c10d key-value store by key '0', but store->get('0') got error: Connection reset by peer
+[rank3]: Exception raised from recvBytes at ../torch/csrc/distributed/c10d/Utils.hpp:672 (most recent call first):
+[rank3]: frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x57 (0x7fea1157a897 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libc10.so)
+[rank3]: frame #1: <unknown function> + 0x5b3a23e (0x7fe9fdca923e in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank3]: frame #2: c10d::TCPStore::doWait(c10::ArrayRef<std::string>, std::chrono::duration<long, std::ratio<1l, 1000l> >) + 0x2c7 (0x7fe9fdca3c87 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank3]: frame #3: c10d::TCPStore::doGet(std::string const&) + 0x32 (0x7fe9fdca3f82 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank3]: frame #4: c10d::TCPStore::get(std::string const&) + 0xa1 (0x7fe9fdca4fd1 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank3]: frame #5: c10d::PrefixStore::get(std::string const&) + 0x31 (0x7fe9fdc59371 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank3]: frame #6: c10d::PrefixStore::get(std::string const&) + 0x31 (0x7fe9fdc59371 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank3]: frame #7: c10d::PrefixStore::get(std::string const&) + 0x31 (0x7fe9fdc59371 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank3]: frame #8: c10d::ProcessGroupNCCL::broadcastUniqueNCCLID(ncclUniqueId*, bool, std::string const&, int) + 0xa9 (0x7fe9c1637589 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+[rank3]: frame #9: c10d::ProcessGroupNCCL::getNCCLComm(std::string const&, c10::Device&, c10d::OpType, int, bool) + 0xc50 (0x7fe9c163ea10 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+[rank3]: frame #10: <unknown function> + 0x118c260 (0x7fe9c1647260 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+[rank3]: frame #11: c10d::ProcessGroupNCCL::allreduce_impl(at::Tensor&, c10d::AllreduceOptions const&) + 0x10 (0x7fe9c16485e0 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+[rank3]: frame #12: c10d::ProcessGroupNCCL::barrier(c10d::BarrierOptions const&) + 0x66a (0x7fe9c165712a in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+[rank3]: frame #13: <unknown function> + 0x5adc8f2 (0x7fe9fdc4b8f2 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank3]: frame #14: <unknown function> + 0x5ae7320 (0x7fe9fdc56320 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank3]: frame #15: <unknown function> + 0x5ae7425 (0x7fe9fdc56425 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank3]: frame #16: <unknown function> + 0x5124446 (0x7fe9fd293446 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank3]: frame #17: <unknown function> + 0x1acf4b8 (0x7fe9f9c3e4b8 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank3]: frame #18: <unknown function> + 0x5af17d4 (0x7fe9fdc607d4 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank3]: frame #19: <unknown function> + 0x5af2585 (0x7fe9fdc61585 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+[rank3]: frame #20: <unknown function> + 0xd2d4d8 (0x7fea108164d8 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+[rank3]: frame #21: <unknown function> + 0x47f0d4 (0x7fea0ff680d4 in /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+[rank3]: frame #22: <unknown function> + 0x1f8f36 (0x56358d18ff36 in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank3]: frame #23: _PyObject_MakeTpCall + 0x29b (0x56358d16d97b in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank3]: frame #24: _PyEval_EvalFrameDefault + 0x694 (0x56358d17af94 in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank3]: frame #25: _PyFunction_Vectorcall + 0x17f (0x56358d19f7df in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank3]: frame #26: _PyEval_EvalFrameDefault + 0x45c7 (0x56358d17eec7 in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank3]: frame #27: <unknown function> + 0x272f07 (0x56358d209f07 in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank3]: frame #28: _PyEval_EvalFrameDefault + 0x149e (0x56358d17bd9e in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank3]: frame #29: <unknown function> + 0x2276c2 (0x56358d1be6c2 in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank3]: frame #30: _PyEval_EvalFrameDefault + 0x4abe (0x56358d17f3be in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank3]: frame #31: <unknown function> + 0x29ac5d (0x56358d231c5d in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank3]: frame #32: PyEval_EvalCode + 0x9f (0x56358d23139f in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank3]: frame #33: <unknown function> + 0x2b831a (0x56358d24f31a in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank3]: frame #34: <unknown function> + 0x2b3f93 (0x56358d24af93 in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank3]: frame #35: <unknown function> + 0x2c9540 (0x56358d260540 in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank3]: frame #36: _PyRun_SimpleFileObject + 0x1bc (0x56358d25fecc in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank3]: frame #37: _PyRun_AnyFileObject + 0x44 (0x56358d25fc64 in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank3]: frame #38: Py_RunMain + 0x383 (0x56358d25a233 in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank3]: frame #39: Py_BytesMain + 0x37 (0x56358d221617 in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank3]: frame #40: <unknown function> + 0x29d90 (0x7feac1a0ed90 in /lib/x86_64-linux-gnu/libc.so.6)
+[rank3]: frame #41: __libc_start_main + 0x80 (0x7feac1a0ee40 in /lib/x86_64-linux-gnu/libc.so.6)
+[rank3]: frame #42: <unknown function> + 0x28a4ca (0x56358d2214ca in /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11)
+[rank3]: . This may indicate a possible application crash on rank 0 or a network set up issue.
+[2024-11-15 16:31:08,322] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 2500435
+[2024-11-15 16:31:10,978] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 2500436
+[2024-11-15 16:31:13,584] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 2500437
+[2024-11-15 16:31:14,936] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 2500438
+[2024-11-15 16:31:14,936] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 2500439
+[2024-11-15 16:31:17,825] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 2500440
+[2024-11-15 16:31:20,344] [INFO] [launch.py:315:sigkill_handler] Killing subprocess 2500441
+[2024-11-15 16:31:22,943] [ERROR] [launch.py:321:sigkill_handler] ['/raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11', '-u', 'src/run.py', '--local_rank=7', '--bf16', 'True', '--tf32', 'True', '--do_train', '--do_predict', '--predict_with_generate', '--model_name_or_path', 'meta-llama/Meta-Llama-3-8B', '--data_dir', 'data', '--preprocessing_num_workers', '12', '--metric_for_best_model', 'eval_average_f1', '--greater_is_better', 'True', '--train_json_dir', 'data/pile-ner.json', '--data_config_dir', 'configs/dataset_configs/task_adaptation_configs', '--instruction_file', 'configs/instruction_configs/instruction.json', '--output_dir', 'output/llama3-8b-task-adaptation', '--per_device_train_batch_size', '1', '--per_device_eval_batch_size', '4', '--gradient_accumulation_steps', '32', '--gradient_checkpointing', 'True', '--learning_rate', '2e-05', '--lr_scheduler_type', 'cosine', '--warmup_ratio', '0.04', '--weight_decay', '0.', '--num_train_epochs', '3', '--deepspeed', 'configs/deepspeed_configs/deepspeed_zero2_llama.json', '--run_name', 'llama3-8B-experiment', '--max_source_length', '640', '--max_target_length', '640', '--generation_max_length', '1280', '--overwrite_output_dir', '--overwrite_cache', '--logging_strategy', 'steps', '--logging_steps', '10', '--evaluation_strategy', 'no', '--save_strategy', 'steps', '--save_steps', '100', '--seed', '1234'] exits with return code = 1
++ --logging_strategy steps --logging_steps 10 --evaluation_strategy no --save_strategy steps --save_steps 100 --seed 1234
+scripts/train_llama3_8b_task_adaptation.sh: line 51: --logging_strategy: command not found
+(GNER) chrisjihee@dgx-a100:~/proj/GNER$
