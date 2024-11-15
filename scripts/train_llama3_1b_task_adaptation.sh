@@ -33,7 +33,7 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --lr_scheduler_type "cosine" \
     --warmup_ratio 0.04 \
     --weight_decay 0. \
-    --num_train_epochs 0.1 \
+    --num_train_epochs 3 \
     --deepspeed $DEEPSPEED_CONFIG \
     --run_name $RUN_NAME \
     --max_source_length 640 \
