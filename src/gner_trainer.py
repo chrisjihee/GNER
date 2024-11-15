@@ -1,5 +1,5 @@
 import torch
-from transformers import is_torch_tpu_available
+from transformers import is_torch_xla_available
 from transformers.trainer_seq2seq import Seq2SeqTrainer
 from transformers.trainer import *
 
@@ -103,7 +103,7 @@ class GNERTrainer(Seq2SeqTrainer):
             main_input_name = getattr(self.model, "main_input_name", "input_ids")
             inputs_decode = self._prepare_input(inputs[main_input_name]) if args.include_inputs_for_metrics else None
 
-            if is_torch_tpu_available():
+            if is_torch_xla_available():  # FutureWarning: `is_torch_tpu_available` is deprecated and will be removed in 4.41.0. Please use the `is_torch_xla_available` instead.
                 xm.mark_step()
 
             # Update containers on host
