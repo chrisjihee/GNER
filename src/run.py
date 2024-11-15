@@ -448,7 +448,7 @@ def main():
         args=training_args,
         train_dataset=train_dataset if training_args.do_train else None,
         eval_dataset=eval_dataset if training_args.do_eval else None,
-        tokenizer=tokenizer,
+        processing_class=tokenizer,  # FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `GNERTrainer.__init__`. Use `processing_class` instead.
         data_collator=data_collator,
         compute_metrics=compute_ner_metrics if training_args.predict_with_generate else None,
     )
