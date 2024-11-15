@@ -11,6 +11,7 @@ OUTPUT_DIR=output/llama3-8b-task-adaptation-predict
 DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero3_llama.json
 RUN_NAME=llama3-8B-experiment
 
+# TODO: --include="localhost:0,1,2,3,4,5,6,7" -> "localhost:0,1,2,3"
 deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --bf16 True --tf32 True \
     --do_predict \
@@ -22,7 +23,7 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --data_config_dir $DATA_CONFIG_DIR \
     --instruction_file $INSTRUCTION_FILE \
     --output_dir $OUTPUT_DIR \
-    --per_device_eval_batch_size 4 \
+    --per_device_eval_batch_size 80 \
     --deepspeed $DEEPSPEED_CONFIG \
     --run_name $RUN_NAME \
     --max_source_length 640 \
