@@ -11,6 +11,8 @@ OUTPUT_DIR=output/llama2-7b-task-adaptation
 DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero2_llama.json
 RUN_NAME=llama2-7B-experiment
 
+# TODO: MODEL_NAME_OR_PATH=meta-llama/Llama-2-7b-hf -> meta-llama/Llama-2-7b-chat-hf
+# TODO: generation_max_length 1280 -> 640
 deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --bf16 True --tf32 True \
     --do_train \
