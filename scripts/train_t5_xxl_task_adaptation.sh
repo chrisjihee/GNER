@@ -19,18 +19,16 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --model_name_or_path $MODEL_NAME_OR_PATH \
     --data_dir $DATA_DIR \
     --preprocessing_num_workers 12 \
-    --metric_for_best_model "eval_average_f1" \
-    --greater_is_better True \
     --train_json_dir $TRAIN_JSON_DIR \
     --data_config_dir $DATA_CONFIG_DIR \
     --instruction_file $INSTRUCTION_FILE \
     --output_dir $OUTPUT_DIR \
+    --per_device_eval_batch_size 40 \
     --per_device_train_batch_size 1 \
-    --per_device_eval_batch_size 4 \
     --gradient_accumulation_steps 32 \
     --gradient_checkpointing True \
-    --learning_rate 5e-05 \
     --lr_scheduler_type constant \
+    --learning_rate 5e-05 \
     --warmup_steps 0 \
     --num_train_epochs 6 \
     --deepspeed $DEEPSPEED_CONFIG \
@@ -39,7 +37,6 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --max_target_length 640 \
     --generation_max_length 640 \
     --overwrite_output_dir \
-    --overwrite_cache \
     --logging_strategy steps \
     --logging_steps 10 \
     --eval_strategy no \
