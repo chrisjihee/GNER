@@ -8,7 +8,7 @@ TRAIN_JSON_DIR=data/pile-ner.json
 DATA_CONFIG_DIR=configs/dataset_configs/task_adaptation_configs
 INSTRUCTION_FILE=configs/instruction_configs/instruction.json
 OUTPUT_DIR=output/llama3-3b-task-adaptation
-DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero0_llama.json  # TODO zero2 -> zero0
+DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero0_llama.json
 RUN_NAME=llama3-3B-experiment
 
 deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
