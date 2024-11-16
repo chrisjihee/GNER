@@ -38,7 +38,7 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --run_name $RUN_NAME \
     --max_source_length 640 \
     --max_target_length 640 \
-    --generation_max_length 1280 \
+    --generation_max_length 640 \
     --overwrite_output_dir \
     --logging_strategy steps \
     --logging_steps 10 \
