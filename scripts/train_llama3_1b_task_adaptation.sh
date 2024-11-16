@@ -11,8 +11,6 @@ OUTPUT_DIR=output/llama3-1b-task-adaptation
 DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero0_llama.json
 RUN_NAME=llama3-1B-experiment
 
-# TODO: num_train_epochs 3 -> 10
-# TODO: generation_max_length 1280 -> 640
 deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --bf16 True --tf32 True \
     --do_train \
@@ -33,7 +31,7 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --learning_rate 2e-05 \
     --warmup_ratio 0.04 \
     --weight_decay 0. \
-    --num_train_epochs 1 \
+    --num_train_epochs 3 \
     --deepspeed $DEEPSPEED_CONFIG \
     --run_name $RUN_NAME \
     --max_source_length 640 \
