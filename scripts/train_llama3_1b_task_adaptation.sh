@@ -11,9 +11,8 @@ OUTPUT_DIR=output/llama3-1b-task-adaptation
 DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero2_llama.json  # TODO zero2 -> zero0
 RUN_NAME=llama3-1B-experiment
 
-# TODO: per_device_train_batch_size 1 -> 4
-# TODO: generation_max_length 1280 -> 640
 # TODO: num_train_epochs 3 -> 10
+# TODO: generation_max_length 1280 -> 640
 deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --bf16 True --tf32 True \
     --do_train \
@@ -22,18 +21,16 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --model_name_or_path $MODEL_NAME_OR_PATH \
     --data_dir $DATA_DIR \
     --preprocessing_num_workers 12 \
-    --metric_for_best_model "eval_average_f1" \
-    --greater_is_better True \
     --train_json_dir $TRAIN_JSON_DIR \
     --data_config_dir $DATA_CONFIG_DIR \
     --instruction_file $INSTRUCTION_FILE \
     --output_dir $OUTPUT_DIR \
-    --per_device_train_batch_size 1 \
-    --per_device_eval_batch_size 4 \
-    --gradient_accumulation_steps 32 \
+    --per_device_eval_batch_size 40 \
+    --per_device_train_batch_size 4 \
+    --gradient_accumulation_steps 8 \
     --gradient_checkpointing True \
+    --lr_scheduler_type cosine \
     --learning_rate 2e-05 \
-    --lr_scheduler_type "cosine" \
     --warmup_ratio 0.04 \
     --weight_decay 0. \
     --num_train_epochs 3 \
@@ -43,10 +40,8 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --max_target_length 640 \
     --generation_max_length 1280 \
     --overwrite_output_dir \
-    --overwrite_cache \
-    --logging_strategy "steps" \
+    --logging_strategy steps \
     --logging_steps 10 \
     --eval_strategy no \
-    --save_strategy "steps" \
-    --save_steps 100 \
+    --save_strategy epoch \
     --seed 1234
