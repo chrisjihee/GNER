@@ -8,7 +8,7 @@ TRAIN_JSON_DIR=data/pile-ner.json
 DATA_CONFIG_DIR=configs/dataset_configs/task_adaptation_configs
 INSTRUCTION_FILE=configs/instruction_configs/instruction.json
 OUTPUT_DIR=output/llama3-1b-task-adaptation
-DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero2_llama.json  # TODO zero2 -> zero0
+DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero0_llama.json
 RUN_NAME=llama3-1B-experiment
 
 # TODO: num_train_epochs 3 -> 10
@@ -26,8 +26,8 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --instruction_file $INSTRUCTION_FILE \
     --output_dir $OUTPUT_DIR \
     --per_device_eval_batch_size 40 \
-    --per_device_train_batch_size 4 \
-    --gradient_accumulation_steps 8 \
+    --per_device_train_batch_size 8 \
+    --gradient_accumulation_steps 4 \
     --gradient_checkpointing True \
     --lr_scheduler_type cosine \
     --learning_rate 2e-05 \
