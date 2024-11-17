@@ -1,16 +1,13 @@
 set -x
-
 port=$(shuf -i25000-30000 -n1)
-
-MODEL_NAME_OR_PATH=astronomer/Llama-3-8B-Special-Tokens-Adjusted
 DATA_DIR=data
 TRAIN_JSON_DIR=data/pile-ner.json
-DATA_CONFIG_DIR=configs/dataset_configs/task_adaptation_configs
 INSTRUCTION_FILE=configs/instruction_configs/instruction.json
-OUTPUT_DIR=output/llama30-8b-sta-task-adaptation
+DATA_CONFIG_DIR=configs/dataset_configs/task_adaptation_configs
 DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero3_llama.json
+MODEL_NAME_OR_PATH=astronomer/Llama-3-8B-Special-Tokens-Adjusted
+OUTPUT_DIR=output/llama30-8b-sta-task-adaptation
 RUN_NAME=llama30-8B-sta-experiment
-
 deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --bf16 True --tf32 True \
     --do_train \
