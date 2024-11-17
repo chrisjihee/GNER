@@ -1,0 +1,1249 @@
+(GNER) chrisjihee@dgx-a100:~/proj/GNER$ bash scripts/train_llama31_8b-inst_task_adaptation.sh
+++ shuf -i25000-30000 -n1
++ port=29818
++ DATA_DIR=data
++ TRAIN_JSON_DIR=data/pile-ner.json
++ INSTRUCTION_FILE=configs/instruction_configs/instruction.json
++ DATA_CONFIG_DIR=configs/dataset_configs/task_adaptation_configs
++ DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero3_llama.json
++ MODEL_NAME_OR_PATH=meta-llama/Llama-3.1-8B-Instruct
++ OUTPUT_DIR=output/llama31-8b-inst-task-adaptation
++ RUN_NAME=llama31-8B-inst-experiment
++ deepspeed --include=localhost:0,1,2,3,4,5,6,7 --master_port 29818 src/run.py --bf16 True --tf32 True --do_train --do_predict --predict_with_generate --model_name_or_path meta-llama/Llama-3.1-8B-Instruct --data_dir data --preprocessing_num_workers 12 --train_json_dir data/pile-ner.json --data_config_dir configs/dataset_configs/task_adaptation_configs --instruction_file configs/instruction_configs/instruction.json --output_dir output/llama31-8b-inst-task-adaptation --per_device_eval_batch_size 40 --per_device_train_batch_size 1 --gradient_accumulation_steps 32 --gradient_checkpointing False --lr_scheduler_type cosine --learning_rate 2e-05 --warmup_ratio 0.04 --weight_decay 0. --num_train_epochs 3 --deepspeed configs/deepspeed_configs/deepspeed_zero3_llama.json --run_name llama31-8B-inst-experiment --max_source_length 640 --max_target_length 640 --generation_max_length 640 --overwrite_output_dir --logging_strategy steps --logging_steps 10 --eval_strategy no --save_strategy epoch --seed 1234
+[2024-11-17 16:37:21,705] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-17 16:37:22,851] [WARNING] [runner.py:202:fetch_hostfile] Unable to find hostfile, will proceed with training with local resources only.
+[2024-11-17 16:37:25,185] [INFO] [runner.py:568:main] cmd = /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11 -u -m deepspeed.launcher.launch --world_info=eyJsb2NhbGhvc3QiOiBbMCwgMSwgMiwgMywgNCwgNSwgNiwgN119 --master_addr=127.0.0.1 --master_port=29818 --enable_each_rank_log=None src/run.py --bf16 True --tf32 True --do_train --do_predict --predict_with_generate --model_name_or_path meta-llama/Llama-3.1-8B-Instruct --data_dir data --preprocessing_num_workers 12 --train_json_dir data/pile-ner.json --data_config_dir configs/dataset_configs/task_adaptation_configs --instruction_file configs/instruction_configs/instruction.json --output_dir output/llama31-8b-inst-task-adaptation --per_device_eval_batch_size 40 --per_device_train_batch_size 1 --gradient_accumulation_steps 32 --gradient_checkpointing False --lr_scheduler_type cosine --learning_rate 2e-05 --warmup_ratio 0.04 --weight_decay 0. --num_train_epochs 3 --deepspeed configs/deepspeed_configs/deepspeed_zero3_llama.json --run_name llama31-8B-inst-experiment --max_source_length 640 --max_target_length 640 --generation_max_length 640 --overwrite_output_dir --logging_strategy steps --logging_steps 10 --eval_strategy no --save_strategy epoch --seed 1234
+[2024-11-17 16:37:29,159] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-17 16:37:30,427] [INFO] [launch.py:145:main] WORLD INFO DICT: {'localhost': [0, 1, 2, 3, 4, 5, 6, 7]}
+[2024-11-17 16:37:30,427] [INFO] [launch.py:151:main] nnodes=1, num_local_procs=8, node_rank=0
+[2024-11-17 16:37:30,427] [INFO] [launch.py:162:main] global_rank_mapping=defaultdict(<class 'list'>, {'localhost': [0, 1, 2, 3, 4, 5, 6, 7]})
+[2024-11-17 16:37:30,427] [INFO] [launch.py:163:main] dist_world_size=8
+[2024-11-17 16:37:30,427] [INFO] [launch.py:165:main] Setting CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+[2024-11-17 16:37:35,696] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-17 16:37:35,863] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-17 16:37:36,828] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-17 16:37:36,994] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-17 16:37:38,860] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-17 16:37:38,886] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-17 16:37:38,911] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-17 16:37:38,995] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-17 16:37:39,016] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-17 16:37:39,027] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-17 16:37:39,027] [INFO] [comm.py:668:init_distributed] Initializing TorchBackend in DeepSpeed with backend nccl
+[2024-11-17 16:37:39,028] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-17 16:37:39,054] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-17 16:37:39,080] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-17 16:37:39,171] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-17 16:37:39,195] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-17 16:37:39,207] [INFO] [comm.py:637:init_distributed] cdb=None
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/17/2024 16:37:39 - WARNING - __main__ - Process rank: 3, device: cuda:3, n_gpu: 1distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/17/2024 16:37:39 - WARNING - __main__ - Process rank: 2, device: cuda:2, n_gpu: 1distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/17/2024 16:37:39 - WARNING - __main__ - Process rank: 4, device: cuda:4, n_gpu: 1distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/17/2024 16:37:39 - WARNING - __main__ - Process rank: 7, device: cuda:7, n_gpu: 1distributed training: True, 16-bits training: True
+11/17/2024 16:37:39 - WARNING - __main__ - Process rank: 1, device: cuda:1, n_gpu: 1distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/17/2024 16:37:43 - WARNING - __main__ - Process rank: 5, device: cuda:5, n_gpu: 1distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/17/2024 16:37:43 - WARNING - __main__ - Process rank: 0, device: cuda:0, n_gpu: 1distributed training: True, 16-bits training: True
+11/17/2024 16:37:43 - INFO - __main__ - Training/evaluation parameters Seq2SeqTrainingArguments(
+_n_gpu=1,
+accelerator_config={'split_batches': False, 'dispatch_batches': None, 'even_batches': True, 'use_seedable_sampler': True, 'non_blocking': False, 'gradient_accumulation_kwargs': None, 'use_configured_state': False},
+adafactor=False,
+adam_beta1=0.9,
+adam_beta2=0.999,
+adam_epsilon=1e-08,
+auto_find_batch_size=False,
+average_tokens_across_devices=False,
+batch_eval_metrics=False,
+bf16=True,
+bf16_full_eval=False,
+data_seed=None,
+dataloader_drop_last=False,
+dataloader_num_workers=0,
+dataloader_persistent_workers=False,
+dataloader_pin_memory=True,
+dataloader_prefetch_factor=None,
+ddp_backend=None,
+ddp_broadcast_buffers=None,
+ddp_bucket_cap_mb=None,
+ddp_find_unused_parameters=None,
+ddp_timeout=1800,
+debug=[],
+deepspeed=configs/deepspeed_configs/deepspeed_zero3_llama.json,
+disable_tqdm=False,
+dispatch_batches=None,
+do_eval=False,
+do_predict=True,
+do_train=True,
+eval_accumulation_steps=None,
+eval_delay=0,
+eval_do_concat_batches=True,
+eval_on_start=False,
+eval_steps=None,
+eval_strategy=IntervalStrategy.NO,
+eval_use_gather_object=False,
+evaluation_strategy=None,
+fp16=False,
+fp16_backend=auto,
+fp16_full_eval=False,
+fp16_opt_level=O1,
+fsdp=[],
+fsdp_config={'min_num_params': 0, 'xla': False, 'xla_fsdp_v2': False, 'xla_fsdp_grad_ckpt': False},
+fsdp_min_num_params=0,
+fsdp_transformer_layer_cls_to_wrap=None,
+full_determinism=False,
+generation_config=None,
+generation_max_length=640,
+generation_num_beams=None,
+gradient_accumulation_steps=32,
+gradient_checkpointing=False,
+gradient_checkpointing_kwargs=None,
+greater_is_better=None,
+group_by_length=False,
+half_precision_backend=auto,
+hub_always_push=False,
+hub_model_id=None,
+hub_private_repo=False,
+hub_strategy=HubStrategy.EVERY_SAVE,
+hub_token=<HUB_TOKEN>,
+ignore_data_skip=False,
+include_for_metrics=[],
+include_inputs_for_metrics=False,
+include_num_input_tokens_seen=False,
+include_tokens_per_second=False,
+jit_mode_eval=False,
+label_names=None,
+label_smoothing_factor=0.0,
+learning_rate=2e-05,
+length_column_name=length,
+load_best_model_at_end=False,
+local_rank=0,
+log_level=passive,
+log_level_replica=warning,
+log_on_each_node=True,
+logging_dir=output/llama31-8b-inst-task-adaptation/runs/Nov17_16-37-34_dgx-a100,
+logging_first_step=False,
+logging_nan_inf_filter=True,
+logging_steps=10,
+logging_strategy=IntervalStrategy.STEPS,
+lr_scheduler_kwargs={},
+lr_scheduler_type=SchedulerType.COSINE,
+max_grad_norm=1.0,
+max_steps=-1,
+metric_for_best_model=None,
+mp_parameters=,
+neftune_noise_alpha=None,
+no_cuda=False,
+num_train_epochs=3.0,
+optim=OptimizerNames.ADAMW_TORCH,
+optim_args=None,
+optim_target_modules=None,
+output_dir=output/llama31-8b-inst-task-adaptation,
+overwrite_output_dir=True,
+past_index=-1,
+per_device_eval_batch_size=40,
+per_device_train_batch_size=1,
+predict_with_generate=True,
+prediction_loss_only=False,
+push_to_hub=False,
+push_to_hub_model_id=None,
+push_to_hub_organization=None,
+push_to_hub_token=<PUSH_TO_HUB_TOKEN>,
+ray_scope=last,
+remove_unused_columns=True,
+report_to=[],
+restore_callback_states_from_checkpoint=False,
+resume_from_checkpoint=None,
+run_name=llama31-8B-inst-experiment,
+save_on_each_node=False,
+save_only_model=False,
+save_safetensors=True,
+save_steps=500,
+save_strategy=IntervalStrategy.EPOCH,
+save_total_limit=None,
+seed=1234,
+skip_memory_metrics=True,
+sortish_sampler=False,
+split_batches=None,
+tf32=True,
+torch_compile=False,
+torch_compile_backend=None,
+torch_compile_mode=None,
+torch_empty_cache_steps=None,
+torchdynamo=None,
+tpu_metrics_debug=False,
+tpu_num_cores=None,
+use_cpu=False,
+use_ipex=False,
+use_legacy_prediction_loop=False,
+use_liger_kernel=False,
+use_mps_device=False,
+warmup_ratio=0.04,
+warmup_steps=0,
+weight_decay=0.0,
+)
+11/17/2024 16:37:43 - WARNING - __main__ - Process rank: 6, device: cuda:6, n_gpu: 1distributed training: True, 16-bits training: True
+Using custom data configuration default-e60fd0a2766fdda3
+11/17/2024 16:37:43 - INFO - datasets.builder - Using custom data configuration default-e60fd0a2766fdda3
+Loading Dataset Infos from /raid/chrisjihee/.cache/huggingface/modules/datasets_modules/datasets/gner_dataset/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+11/17/2024 16:37:43 - INFO - datasets.info - Loading Dataset Infos from /raid/chrisjihee/.cache/huggingface/modules/datasets_modules/datasets/gner_dataset/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+Overwrite dataset info from restored data version if exists.
+11/17/2024 16:37:43 - INFO - datasets.builder - Overwrite dataset info from restored data version if exists.
+Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+11/17/2024 16:37:43 - INFO - datasets.info - Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+Found cached dataset gner_dataset (/raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89)
+11/17/2024 16:37:43 - INFO - datasets.builder - Found cached dataset gner_dataset (/raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89)
+Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+11/17/2024 16:37:43 - INFO - datasets.info - Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+Listing files in /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+11/17/2024 16:37:43 - INFO - datasets.arrow_dataset - Listing files in /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+Listing files in /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+11/17/2024 16:37:43 - INFO - datasets.arrow_dataset - Listing files in /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89
+[INFO|configuration_utils.py:679] 2024-11-17 16:37:43,543 >> loading configuration file config.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/config.json
+[INFO|configuration_utils.py:746] 2024-11-17 16:37:43,545 >> Model config LlamaConfig {
+  "_name_or_path": "meta-llama/Llama-3.1-8B-Instruct",
+  "architectures": [
+    "LlamaForCausalLM"
+  ],
+  "attention_bias": false,
+  "attention_dropout": 0.0,
+  "bos_token_id": 128000,
+  "eos_token_id": [
+    128001,
+    128008,
+    128009
+  ],
+  "head_dim": 128,
+  "hidden_act": "silu",
+  "hidden_size": 4096,
+  "initializer_range": 0.02,
+  "intermediate_size": 14336,
+  "max_position_embeddings": 131072,
+  "mlp_bias": false,
+  "model_type": "llama",
+  "num_attention_heads": 32,
+  "num_hidden_layers": 32,
+  "num_key_value_heads": 8,
+  "pretraining_tp": 1,
+  "rms_norm_eps": 1e-05,
+  "rope_scaling": {
+    "factor": 8.0,
+    "high_freq_factor": 4.0,
+    "low_freq_factor": 1.0,
+    "original_max_position_embeddings": 8192,
+    "rope_type": "llama3"
+  },
+  "rope_theta": 500000.0,
+  "tie_word_embeddings": false,
+  "torch_dtype": "bfloat16",
+  "transformers_version": "4.46.2",
+  "use_cache": true,
+  "vocab_size": 128256
+}
+
+[INFO|tokenization_utils_base.py:2211] 2024-11-17 16:37:43,773 >> loading file tokenizer.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/tokenizer.json
+[INFO|tokenization_utils_base.py:2211] 2024-11-17 16:37:43,773 >> loading file tokenizer.model from cache at None
+[INFO|tokenization_utils_base.py:2211] 2024-11-17 16:37:43,773 >> loading file added_tokens.json from cache at None
+[INFO|tokenization_utils_base.py:2211] 2024-11-17 16:37:43,773 >> loading file special_tokens_map.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/special_tokens_map.json
+[INFO|tokenization_utils_base.py:2211] 2024-11-17 16:37:43,773 >> loading file tokenizer_config.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2475] 2024-11-17 16:37:44,134 >> Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+[INFO|modeling_utils.py:3937] 2024-11-17 16:37:44,158 >> loading weights file model.safetensors from cache at /raid/chrisjihee/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/model.safetensors.index.json
+[INFO|modeling_utils.py:4080] 2024-11-17 16:37:44,159 >> Detected DeepSpeed ZeRO-3: activating zero.init() for this model
+[INFO|configuration_utils.py:1096] 2024-11-17 16:37:44,164 >> Generate config GenerationConfig {
+  "bos_token_id": 128000,
+  "eos_token_id": [
+    128001,
+    128008,
+    128009
+  ]
+}
+
+Loading checkpoint shards:   0%|                                                                                                                                                | 0/4 [00:00<?, ?it/s][2024-11-17 16:37:48,499] [INFO] [partition_parameters.py:349:__exit__] finished initializing model - num_params = 291, num_elems = 8.03B
+Loading checkpoint shards: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4/4 [00:02<00:00,  1.86it/s]
+Loading checkpoint shards: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4/4 [00:02<00:00,  1.84it/s]
+Loading checkpoint shards: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4/4 [00:02<00:00,  1.85it/s]
+Loading checkpoint shards: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4/4 [00:02<00:00,  1.84it/s]
+Loading checkpoint shards: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4/4 [00:02<00:00,  1.83it/s]
+Loading checkpoint shards: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4/4 [00:02<00:00,  1.84it/s]
+Loading checkpoint shards: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4/4 [00:02<00:00,  1.82it/s]
+Loading checkpoint shards: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4/4 [00:03<00:00,  1.26it/s]
+[INFO|modeling_utils.py:4800] 2024-11-17 16:37:51,711 >> All model checkpoint weights were used when initializing LlamaForCausalLM.
+
+[INFO|modeling_utils.py:4808] 2024-11-17 16:37:51,711 >> All the weights of LlamaForCausalLM were initialized from the model checkpoint at meta-llama/Llama-3.1-8B-Instruct.
+If your task is similar to the task the model of the checkpoint was trained on, you can already use LlamaForCausalLM for predictions without further training.
+[INFO|configuration_utils.py:1051] 2024-11-17 16:37:51,925 >> loading configuration file generation_config.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659/generation_config.json
+[INFO|configuration_utils.py:1096] 2024-11-17 16:37:51,926 >> Generate config GenerationConfig {
+  "bos_token_id": 128000,
+  "do_sample": true,
+  "eos_token_id": [
+    128001,
+    128008,
+    128009
+  ],
+  "temperature": 0.6,
+  "top_p": 0.9
+}
+
+Using custom data configuration default-7c1e414cce45c188
+11/17/2024 16:37:52 - INFO - datasets.builder - Using custom data configuration default-7c1e414cce45c188
+Loading Dataset Infos from /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/datasets/packaged_modules/json
+11/17/2024 16:37:52 - INFO - datasets.info - Loading Dataset Infos from /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/datasets/packaged_modules/json
+Overwrite dataset info from restored data version if exists.
+11/17/2024 16:37:52 - INFO - datasets.builder - Overwrite dataset info from restored data version if exists.
+Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092
+11/17/2024 16:37:52 - INFO - datasets.info - Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092
+Found cached dataset json (/raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092)
+11/17/2024 16:37:52 - INFO - datasets.builder - Found cached dataset json (/raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092)
+Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092
+11/17/2024 16:37:52 - INFO - datasets.info - Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092
+11/17/2024 16:37:52 - INFO - __main__ - Use data/pile-ner.json as train dataset, len(dataset) = 105659
+11/17/2024 16:37:52 - INFO - __main__ - len(dataset) = 105659
+Process #0 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00000_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #0 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00000_of_00012.arrow
+Process #1 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00001_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #1 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00001_of_00012.arrow
+Process #2 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00002_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #2 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00002_of_00012.arrow
+Process #3 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00003_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #3 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00003_of_00012.arrow
+Process #4 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00004_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #4 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00004_of_00012.arrow
+Process #5 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00005_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #5 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00005_of_00012.arrow
+Process #6 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00006_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #6 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00006_of_00012.arrow
+Process #7 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00007_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #7 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00007_of_00012.arrow
+Process #8 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00008_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #8 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00008_of_00012.arrow
+Process #9 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00009_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #9 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00009_of_00012.arrow
+Process #10 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00010_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #10 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00010_of_00012.arrow
+Process #11 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00011_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #11 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_00011_of_00012.arrow
+Loading cached processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_*_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Loading cached processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-7c1e414cce45c188/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-b7a4361a6c911d3e_*_of_00012.arrow
+Concatenating 12 shards
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Concatenating 12 shards
+Process #0 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00000_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #0 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00000_of_00012.arrow
+Process #1 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00001_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #1 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00001_of_00012.arrow
+Process #2 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00002_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #2 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00002_of_00012.arrow
+Process #3 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00003_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #3 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00003_of_00012.arrow
+Process #4 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00004_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #4 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00004_of_00012.arrow
+Process #5 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00005_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #5 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00005_of_00012.arrow
+Process #6 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00006_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #6 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00006_of_00012.arrow
+Process #7 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00007_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #7 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00007_of_00012.arrow
+Process #8 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00008_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #8 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00008_of_00012.arrow
+Process #9 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00009_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #9 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00009_of_00012.arrow
+Process #10 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00010_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #10 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00010_of_00012.arrow
+Process #11 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00011_of_00012.arrow
+11/17/2024 16:37:52 - INFO - datasets.arrow_dataset - Process #11 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00011_of_00012.arrow
+Spawning 12 processes
+11/17/2024 16:37:53 - INFO - datasets.arrow_dataset - Spawning 12 processes
+Running tokenizer on prediction dataset (num_proc=12):   0%|                                                                                                          | 0/6470 [00:00<?, ? examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00000_of_00012.arrow
+11/17/2024 16:37:53 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00000_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00001_of_00012.arrow
+11/17/2024 16:37:53 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00001_of_00012.arrow
+Running tokenizer on prediction dataset (num_proc=12):   7%|██████▌                                                                                        | 451/6470 [00:00<00:10, 573.52 examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00002_of_00012.arrow
+11/17/2024 16:37:54 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00002_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00003_of_00012.arrow
+11/17/2024 16:37:54 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00003_of_00012.arrow
+Running tokenizer on prediction dataset (num_proc=12):  15%|██████████████▎                                                                               | 989/6470 [00:01<00:04, 1239.52 examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00004_of_00012.arrow
+11/17/2024 16:37:54 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00004_of_00012.arrow
+Running tokenizer on prediction dataset (num_proc=12):  34%|███████████████████████████████▏                                                             | 2174/6470 [00:01<00:01, 2548.39 examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00005_of_00012.arrow
+11/17/2024 16:37:54 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00005_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00006_of_00012.arrow
+11/17/2024 16:37:54 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00006_of_00012.arrow
+Running tokenizer on prediction dataset (num_proc=12):  50%|██████████████████████████████████████████████▋                                              | 3252/6470 [00:01<00:00, 3226.10 examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00007_of_00012.arrow
+11/17/2024 16:37:54 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00007_of_00012.arrow
+Running tokenizer on prediction dataset (num_proc=12):  62%|█████████████████████████████████████████████████████████▍                                   | 3996/6470 [00:01<00:00, 4088.22 examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00008_of_00012.arrow
+11/17/2024 16:37:54 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00008_of_00012.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00009_of_00012.arrow
+11/17/2024 16:37:55 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00009_of_00012.arrow
+Running tokenizer on prediction dataset (num_proc=12):  70%|█████████████████████████████████████████████████████████████████▍                           | 4551/6470 [00:01<00:00, 3893.36 examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00010_of_00012.arrow
+11/17/2024 16:37:55 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00010_of_00012.arrow
+Running tokenizer on prediction dataset (num_proc=12):  85%|██████████████████████████████████████████████████████████████████████████████▋              | 5470/6470 [00:02<00:00, 4051.57 examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00011_of_00012.arrow
+11/17/2024 16:37:55 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/0b99e6e3a59ef6dcb9af89de1cd95359e538dad5813fd3c6b8ef999024427d89/cache-64ded7400330af58_00011_of_00012.arrow
+Running tokenizer on prediction dataset (num_proc=12): 100%|█████████████████████████████████████████████████████████████████████████████████████████████| 6470/6470 [00:02<00:00, 2443.25 examples/s]
+Concatenating 12 shards
+11/17/2024 16:37:55 - INFO - datasets.arrow_dataset - Concatenating 12 shards
+[INFO|trainer.py:699] 2024-11-17 16:37:55,859 >> Using auto half precision backend
+[2024-11-17 16:37:56,078] [INFO] [logging.py:96:log_dist] [Rank 0] DeepSpeed info: version=0.13.1, git-hash=unknown, git-branch=unknown
+[2024-11-17 16:37:56,086] [INFO] [logging.py:96:log_dist] [Rank 0] DeepSpeed Flops Profiler Enabled: False
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+Detected CUDA files, patching ldflags
+Emitting ninja build file /raid/chrisjihee/.cache/torch_extensions/py311_cu118/fused_adam/build.ninja...
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/cpp_extension.py:1967: UserWarning: TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation.
+If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'].
+  warnings.warn(
+Building extension module fused_adam...
+Allowing ninja to set a default number of workers... (overridable by setting the environment variable MAX_JOBS=N)
+ninja: no work to do.
+Loading extension module fused_adam...
+Time to load fused_adam op: 0.07197237014770508 seconds
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+[2024-11-17 16:37:56,488] [INFO] [logging.py:96:log_dist] [Rank 0] Using DeepSpeed Optimizer param name adamw as basic optimizer
+[2024-11-17 16:37:56,488] [INFO] [logging.py:96:log_dist] [Rank 0] Removing param_group that has no 'params' in the basic Optimizer
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+[2024-11-17 16:37:56,496] [INFO] [logging.py:96:log_dist] [Rank 0] DeepSpeed Basic Optimizer = FusedAdam
+[2024-11-17 16:37:56,496] [INFO] [utils.py:56:is_zero_supported_optimizer] Checking ZeRO support for optimizer=FusedAdam type=<class 'deepspeed.ops.adam.fused_adam.FusedAdam'>
+[2024-11-17 16:37:56,496] [INFO] [logging.py:96:log_dist] [Rank 0] Creating fp16 ZeRO stage 3 optimizer, MiCS is enabled False, Hierarchical params gather False
+[2024-11-17 16:37:56,496] [INFO] [logging.py:96:log_dist] [Rank 0] Creating torch.bfloat16 ZeRO stage 3 optimizer
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+Detected CUDA files, patching ldflags
+Emitting ninja build file /raid/chrisjihee/.cache/torch_extensions/py311_cu118/fused_adam/build.ninja...
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/cpp_extension.py:1967: UserWarning: TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation.
+If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'].
+  warnings.warn(
+Building extension module fused_adam...
+Allowing ninja to set a default number of workers... (overridable by setting the environment variable MAX_JOBS=N)
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+ninja: no work to do.
+Loading extension module fused_adam...
+Time to load fused_adam op: 0.07033252716064453 seconds
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+Loading extension module fused_adam...
+Time to load fused_adam op: 0.10140371322631836 seconds
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+Loading extension module fused_adam...
+Time to load fused_adam op: 0.10118961334228516 seconds
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+Loading extension module fused_adam...
+Time to load fused_adam op: 0.10130047798156738 seconds
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+Loading extension module fused_adam...
+Time to load fused_adam op: 0.10125350952148438 seconds
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+Loading extension module fused_adam...
+Time to load fused_adam op: 0.1011810302734375 seconds
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+[2024-11-17 16:37:56,633] [INFO] [utils.py:791:see_memory_usage] Stage 3 initialize beginning
+[2024-11-17 16:37:56,634] [INFO] [utils.py:792:see_memory_usage] MA 1.87 GB         Max_MA 4.68 GB         CA 3.0 GB         Max_CA 5 GB
+[2024-11-17 16:37:56,634] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 57.5 GB, percent = 5.7%
+[2024-11-17 16:37:56,635] [INFO] [stage3.py:128:__init__] Reduce bucket size 200000000
+[2024-11-17 16:37:56,636] [INFO] [stage3.py:129:__init__] Prefetch bucket size 50,000,000
+Loading extension module fused_adam...
+Time to load fused_adam op: 0.10147261619567871 seconds
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+[2024-11-17 16:37:56,755] [INFO] [utils.py:791:see_memory_usage] DeepSpeedZeRoOffload initialize [begin]
+[2024-11-17 16:37:56,755] [INFO] [utils.py:792:see_memory_usage] MA 1.87 GB         Max_MA 1.87 GB         CA 3.0 GB         Max_CA 3 GB
+[2024-11-17 16:37:56,756] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 57.5 GB, percent = 5.7%
+Parameter Offload: Total persistent parameters: 266240 in 65 params
+[2024-11-17 16:37:56,894] [INFO] [utils.py:791:see_memory_usage] DeepSpeedZeRoOffload initialize [end]
+[2024-11-17 16:37:56,895] [INFO] [utils.py:792:see_memory_usage] MA 1.87 GB         Max_MA 1.87 GB         CA 3.0 GB         Max_CA 3 GB
+[2024-11-17 16:37:56,895] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 57.53 GB, percent = 5.7%
+[2024-11-17 16:37:57,017] [INFO] [utils.py:791:see_memory_usage] Before creating fp16 partitions
+[2024-11-17 16:37:57,017] [INFO] [utils.py:792:see_memory_usage] MA 1.87 GB         Max_MA 1.87 GB         CA 3.0 GB         Max_CA 3 GB
+[2024-11-17 16:37:57,018] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 57.5 GB, percent = 5.7%
+[2024-11-17 16:37:58,648] [INFO] [utils.py:791:see_memory_usage] After creating fp16 partitions: 1
+[2024-11-17 16:37:58,649] [INFO] [utils.py:792:see_memory_usage] MA 1.87 GB         Max_MA 1.87 GB         CA 1.87 GB         Max_CA 3 GB
+[2024-11-17 16:37:58,649] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 61.69 GB, percent = 6.1%
+[2024-11-17 16:37:58,771] [INFO] [utils.py:791:see_memory_usage] Before creating fp32 partitions
+[2024-11-17 16:37:58,772] [INFO] [utils.py:792:see_memory_usage] MA 1.87 GB         Max_MA 1.87 GB         CA 1.87 GB         Max_CA 2 GB
+[2024-11-17 16:37:58,772] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 57.75 GB, percent = 5.7%
+[2024-11-17 16:37:58,927] [INFO] [utils.py:791:see_memory_usage] After creating fp32 partitions
+[2024-11-17 16:37:58,928] [INFO] [utils.py:792:see_memory_usage] MA 5.61 GB         Max_MA 7.48 GB         CA 7.48 GB         Max_CA 7 GB
+[2024-11-17 16:37:58,928] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 57.51 GB, percent = 5.7%
+[2024-11-17 16:37:59,055] [INFO] [utils.py:791:see_memory_usage] Before initializing optimizer states
+[2024-11-17 16:37:59,056] [INFO] [utils.py:792:see_memory_usage] MA 5.61 GB         Max_MA 5.61 GB         CA 7.48 GB         Max_CA 7 GB
+[2024-11-17 16:37:59,056] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 57.51 GB, percent = 5.7%
+[2024-11-17 16:37:59,193] [INFO] [utils.py:791:see_memory_usage] After initializing optimizer states
+[2024-11-17 16:37:59,194] [INFO] [utils.py:792:see_memory_usage] MA 13.09 GB         Max_MA 16.83 GB         CA 18.71 GB         Max_CA 19 GB
+[2024-11-17 16:37:59,194] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 57.51 GB, percent = 5.7%
+[2024-11-17 16:37:59,194] [INFO] [stage3.py:482:_setup_for_real_optimizer] optimizer state initialized
+[2024-11-17 16:37:59,435] [INFO] [utils.py:791:see_memory_usage] After initializing ZeRO optimizer
+[2024-11-17 16:37:59,436] [INFO] [utils.py:792:see_memory_usage] MA 15.33 GB         Max_MA 17.29 GB         CA 18.71 GB         Max_CA 19 GB
+[2024-11-17 16:37:59,437] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 57.53 GB, percent = 5.7%
+[2024-11-17 16:37:59,437] [INFO] [logging.py:96:log_dist] [Rank 0] DeepSpeed Final Optimizer = adamw
+[2024-11-17 16:37:59,437] [INFO] [logging.py:96:log_dist] [Rank 0] DeepSpeed using configured LR scheduler = WarmupDecayLR
+[2024-11-17 16:37:59,437] [INFO] [logging.py:96:log_dist] [Rank 0] DeepSpeed LR Scheduler = <deepspeed.runtime.lr_schedules.WarmupDecayLR object at 0x7f1539577110>
+[2024-11-17 16:37:59,437] [INFO] [logging.py:96:log_dist] [Rank 0] step=0, skipped=0, lr=[2e-05], mom=[[0.9, 0.999]]
+[2024-11-17 16:37:59,438] [INFO] [config.py:984:print] DeepSpeedEngine configuration:
+[2024-11-17 16:37:59,438] [INFO] [config.py:988:print]   activation_checkpointing_config  {
+    "partition_activations": false,
+    "contiguous_memory_optimization": false,
+    "cpu_checkpointing": false,
+    "number_checkpoints": null,
+    "synchronize_checkpoint_boundary": false,
+    "profile": false
+}
+[2024-11-17 16:37:59,438] [INFO] [config.py:988:print]   aio_config ................... {'block_size': 1048576, 'queue_depth': 8, 'thread_count': 1, 'single_submit': False, 'overlap_events': True}
+[2024-11-17 16:37:59,438] [INFO] [config.py:988:print]   amp_enabled .................. False
+[2024-11-17 16:37:59,438] [INFO] [config.py:988:print]   amp_params ................... False
+[2024-11-17 16:37:59,438] [INFO] [config.py:988:print]   autotuning_config ............ {
+    "enabled": false,
+    "start_step": null,
+    "end_step": null,
+    "metric_path": null,
+    "arg_mappings": null,
+    "metric": "throughput",
+    "model_info": null,
+    "results_dir": "autotuning_results",
+    "exps_dir": "autotuning_exps",
+    "overwrite": true,
+    "fast": true,
+    "start_profile_step": 3,
+    "end_profile_step": 5,
+    "tuner_type": "gridsearch",
+    "tuner_early_stopping": 5,
+    "tuner_num_trials": 50,
+    "model_info_path": null,
+    "mp_size": 1,
+    "max_train_batch_size": null,
+    "min_train_batch_size": 1,
+    "max_train_micro_batch_size_per_gpu": 1.024000e+03,
+    "min_train_micro_batch_size_per_gpu": 1,
+    "num_tuning_micro_batch_sizes": 3
+}
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   bfloat16_enabled ............. True
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   checkpoint_parallel_write_pipeline  False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   checkpoint_tag_validation_enabled  True
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   checkpoint_tag_validation_fail  False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   comms_config ................. <deepspeed.comm.config.DeepSpeedCommsConfig object at 0x7f13bc197d50>
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   communication_data_type ...... None
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   compression_config ........... {'weight_quantization': {'shared_parameters': {'enabled': False, 'quantizer_kernel': False, 'schedule_offset': 0, 'quantize_groups': 1, 'quantize_verbose': False, 'quantization_type': 'symmetric', 'quantize_weight_in_forward': False, 'rounding': 'nearest', 'fp16_mixed_quantize': False, 'quantize_change_ratio': 0.001}, 'different_groups': {}}, 'activation_quantization': {'shared_parameters': {'enabled': False, 'quantization_type': 'symmetric', 'range_calibration': 'dynamic', 'schedule_offset': 1000}, 'different_groups': {}}, 'sparse_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'row_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'head_pruning': {'shared_parameters': {'enabled': False, 'method': 'topk', 'schedule_offset': 1000}, 'different_groups': {}}, 'channel_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'layer_reduction': {'enabled': False}}
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   curriculum_enabled_legacy .... False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   curriculum_params_legacy ..... False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   data_efficiency_config ....... {'enabled': False, 'seed': 1234, 'data_sampling': {'enabled': False, 'num_epochs': 1000, 'num_workers': 0, 'curriculum_learning': {'enabled': False}}, 'data_routing': {'enabled': False, 'random_ltd': {'enabled': False, 'layer_token_lr_schedule': {'enabled': False}}}}
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   data_efficiency_enabled ...... False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   dataloader_drop_last ......... False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   disable_allgather ............ False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   dump_state ................... False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   dynamic_loss_scale_args ...... None
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   eigenvalue_enabled ........... False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   eigenvalue_gas_boundary_resolution  1
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   eigenvalue_layer_name ........ bert.encoder.layer
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   eigenvalue_layer_num ......... 0
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   eigenvalue_max_iter .......... 100
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   eigenvalue_stability ......... 1e-06
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   eigenvalue_tol ............... 0.01
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   eigenvalue_verbose ........... False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   elasticity_enabled ........... False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   flops_profiler_config ........ {
+    "enabled": false,
+    "recompute_fwd_factor": 0.0,
+    "profile_step": 1,
+    "module_depth": -1,
+    "top_modules": 1,
+    "detailed": true,
+    "output_file": null
+}
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   fp16_auto_cast ............... None
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   fp16_enabled ................. False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   fp16_master_weights_and_gradients  False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   global_rank .................. 0
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   grad_accum_dtype ............. None
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   gradient_accumulation_steps .. 32
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   gradient_clipping ............ 1.0
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   gradient_predivide_factor .... 1.0
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   graph_harvesting ............. False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   hybrid_engine ................ enabled=False max_out_tokens=512 inference_tp_size=1 release_inference_cache=False pin_parameters=True tp_gather_partition_size=8
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   initial_dynamic_scale ........ 1
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   load_universal_checkpoint .... False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   loss_scale ................... 1.0
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   memory_breakdown ............. False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   mics_hierarchial_params_gather  False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   mics_shard_size .............. -1
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   monitor_config ............... tensorboard=TensorBoardConfig(enabled=False, output_path='', job_name='DeepSpeedJobName') wandb=WandbConfig(enabled=False, group=None, team=None, project='deepspeed') csv_monitor=CSVConfig(enabled=False, output_path='', job_name='DeepSpeedJobName') enabled=False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   nebula_config ................ {
+    "enabled": false,
+    "persistent_storage_path": null,
+    "persistent_time_interval": 100,
+    "num_of_version_in_retention": 2,
+    "enable_nebula_load": true,
+    "load_path": null
+}
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   optimizer_legacy_fusion ...... False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   optimizer_name ............... adamw
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   optimizer_params ............. {'lr': 2e-05, 'betas': [0.9, 0.999], 'eps': 1e-08, 'weight_decay': 0.0}
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   pipeline ..................... {'stages': 'auto', 'partition': 'best', 'seed_layers': False, 'activation_checkpoint_interval': 0, 'pipe_partitioned': True, 'grad_partitioned': True}
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   pld_enabled .................. False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   pld_params ................... False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   prescale_gradients ........... False
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   scheduler_name ............... WarmupDecayLR
+[2024-11-17 16:37:59,439] [INFO] [config.py:988:print]   scheduler_params ............. {'warmup_min_lr': 0, 'warmup_max_lr': 2e-05, 'warmup_num_steps': 50, 'total_num_steps': 1236}
+[2024-11-17 16:37:59,440] [INFO] [config.py:988:print]   seq_parallel_communication_data_type  torch.float32
+[2024-11-17 16:37:59,440] [INFO] [config.py:988:print]   sparse_attention ............. None
+[2024-11-17 16:37:59,440] [INFO] [config.py:988:print]   sparse_gradients_enabled ..... False
+[2024-11-17 16:37:59,440] [INFO] [config.py:988:print]   steps_per_print .............. inf
+[2024-11-17 16:37:59,440] [INFO] [config.py:988:print]   train_batch_size ............. 256
+[2024-11-17 16:37:59,440] [INFO] [config.py:988:print]   train_micro_batch_size_per_gpu  1
+[2024-11-17 16:37:59,440] [INFO] [config.py:988:print]   use_data_before_expert_parallel_  False
+[2024-11-17 16:37:59,440] [INFO] [config.py:988:print]   use_node_local_storage ....... False
+[2024-11-17 16:37:59,440] [INFO] [config.py:988:print]   wall_clock_breakdown ......... False
+[2024-11-17 16:37:59,440] [INFO] [config.py:988:print]   weight_quantization_config ... None
+[2024-11-17 16:37:59,440] [INFO] [config.py:988:print]   world_size ................... 8
+[2024-11-17 16:37:59,440] [INFO] [config.py:988:print]   zero_allow_untested_optimizer  False
+[2024-11-17 16:37:59,440] [INFO] [config.py:988:print]   zero_config .................. stage=3 contiguous_gradients=True reduce_scatter=True reduce_bucket_size=200000000 use_multi_rank_bucket_allreduce=True allgather_partitions=True allgather_bucket_size=200000000 overlap_comm=True load_from_fp32_weights=True elastic_checkpoint=False offload_param=None offload_optimizer=None sub_group_size=1,000,000,000 cpu_offload_param=None cpu_offload_use_pin_memory=None cpu_offload=None prefetch_bucket_size=50,000,000 param_persistence_threshold=100,000 model_persistence_threshold=sys.maxsize max_live_parameters=1,000,000,000 max_reuse_distance=1,000,000,000 gather_16bit_weights_on_model_save=False stage3_gather_fp16_weights_on_model_save=False ignore_unused_parameters=True legacy_stage1=False round_robin_gradients=False zero_hpz_partition_size=1 zero_quantized_weights=False zero_quantized_nontrainable_weights=False zero_quantized_gradients=False mics_shard_size=-1 mics_hierarchical_params_gather=False memory_efficient_linear=True pipeline_loading_checkpoint=False override_module_apply=True
+[2024-11-17 16:37:59,440] [INFO] [config.py:988:print]   zero_enabled ................. True
+[2024-11-17 16:37:59,440] [INFO] [config.py:988:print]   zero_force_ds_cpu_optimizer .. True
+[2024-11-17 16:37:59,440] [INFO] [config.py:988:print]   zero_optimization_stage ...... 3
+[2024-11-17 16:37:59,440] [INFO] [config.py:974:print_user_config]   json = {
+    "bf16": {
+        "enabled": true
+    },
+    "optimizer": {
+        "type": "AdamW",
+        "params": {
+            "lr": 2e-05,
+            "betas": [0.9, 0.999],
+            "eps": 1e-08,
+            "weight_decay": 0.0
+        }
+    },
+    "scheduler": {
+        "type": "WarmupDecayLR",
+        "params": {
+            "warmup_min_lr": 0,
+            "warmup_max_lr": 2e-05,
+            "warmup_num_steps": 50,
+            "total_num_steps": 1.236000e+03
+        }
+    },
+    "zero_optimization": {
+        "stage": 3,
+        "allgather_partitions": true,
+        "allgather_bucket_size": 2.000000e+08,
+        "overlap_comm": true,
+        "reduce_scatter": true,
+        "reduce_bucket_size": 2.000000e+08,
+        "contiguous_gradients": true
+    },
+    "gradient_accumulation_steps": 32,
+    "gradient_clipping": 1.0,
+    "train_batch_size": 256,
+    "train_micro_batch_size_per_gpu": 1,
+    "steps_per_print": inf,
+    "fp16": {
+        "enabled": false
+    }
+}
+[INFO|trainer.py:2314] 2024-11-17 16:37:59,440 >> ***** Running training *****
+[INFO|trainer.py:2315] 2024-11-17 16:37:59,440 >>   Num examples = 105,659
+[INFO|trainer.py:2316] 2024-11-17 16:37:59,440 >>   Num Epochs = 3
+[INFO|trainer.py:2317] 2024-11-17 16:37:59,440 >>   Instantaneous batch size per device = 1
+[INFO|trainer.py:2320] 2024-11-17 16:37:59,440 >>   Total train batch size (w. parallel, distributed & accumulation) = 256
+[INFO|trainer.py:2321] 2024-11-17 16:37:59,440 >>   Gradient Accumulation steps = 32
+[INFO|trainer.py:2322] 2024-11-17 16:37:59,440 >>   Total optimization steps = 1,236
+[INFO|trainer.py:2323] 2024-11-17 16:37:59,441 >>   Number of trainable parameters = 8,030,261,248
+  0%|                                                                                                                                                                        | 0/1236 [00:00<?, ?it/s][2024-11-17 16:37:59,692] [WARNING] [parameter_offload.py:87:_apply_to_tensors_only] A module has unknown inputs or outputs type (<class 'transformers.cache_utils.DynamicCache'>) and the tensors embedded in it cannot be detected. The ZeRO-3 hooks designed to trigger before or after backward pass of the module relies on knowing the input and output tensors and therefore may not get triggered properly.
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+  0%|▌                                                                                                                                                             | 4/1236 [01:01<5:10:33, 15.12s/it][2024-11-17 16:39:16,053] [WARNING] [stage3.py:2008:step] 1 pytorch allocator cache flushes since last step. this happens when there is high memory pressure and is detrimental to performance. if this is happening frequently consider adjusting settings to reduce memory consumption. If you are unable to make the cache flushes go away consider adding get_accelerator().empty_cache() calls in your training loop to ensure that all ranks flush their caches at the same time
+{'loss': 0.3374, 'grad_norm': 0.1730355219354528, 'learning_rate': 1.1771838201355582e-05, 'epoch': 0.02}
+{'loss': 0.0837, 'grad_norm': 0.041613084903584834, 'learning_rate': 1.5315514604066738e-05, 'epoch': 0.05}
+{'loss': 0.0557, 'grad_norm': 0.01761981281061547, 'learning_rate': 1.738843241434321e-05, 'epoch': 0.07}
+{'loss': 0.0448, 'grad_norm': 0.008560338660271952, 'learning_rate': 1.8859191006777896e-05, 'epoch': 0.1}
+{'loss': 0.0412, 'grad_norm': 0.012398994267448131, 'learning_rate': 2e-05, 'epoch': 0.12}
+{'loss': 0.0381, 'grad_norm': 0.007545594216439629, 'learning_rate': 1.9848229342327153e-05, 'epoch': 0.15}
+{'loss': 0.0369, 'grad_norm': 0.009129166835151602, 'learning_rate': 1.9679595278246207e-05, 'epoch': 0.17}
+{'loss': 0.0354, 'grad_norm': 0.011699127420727094, 'learning_rate': 1.9510961214165264e-05, 'epoch': 0.19}
+{'loss': 0.036, 'grad_norm': 0.017791333406707834, 'learning_rate': 1.9342327150084318e-05, 'epoch': 0.22}
+{'loss': 0.034, 'grad_norm': 0.029161788207890015, 'learning_rate': 1.917369308600337e-05, 'epoch': 0.24}
+{'loss': 0.0339, 'grad_norm': 0.010122337423048557, 'learning_rate': 1.900505902192243e-05, 'epoch': 0.27}
+{'loss': 0.0331, 'grad_norm': 0.022500778510361235, 'learning_rate': 1.8836424957841486e-05, 'epoch': 0.29}
+{'loss': 0.0321, 'grad_norm': 0.016821120777124266, 'learning_rate': 1.866779089376054e-05, 'epoch': 0.31}
+{'loss': 0.0318, 'grad_norm': 0.018216471757260294, 'learning_rate': 1.8499156829679597e-05, 'epoch': 0.34}
+{'loss': 0.0312, 'grad_norm': 0.00965335805712052, 'learning_rate': 1.8330522765598654e-05, 'epoch': 0.36}
+ 12%|███████████████████▏                                                                                                                                        | 12%|██████████████▊                {'loss': 0.0299, 'grad_norm': 0.011362933575037289, 'learning_rate': 1.816188870151771e-05, 'epoch': 0.39}
+{'loss': 0.0304, 'grad_norm': 0.012760803684920533, 'learning_rate': 1.7993254637436762e-05, 'epoch': 0.41}
+ 14%|█████████████████████▍                                                                                                                                      | 14%|████████████████▌                                                                                                       | 171/1236 [41:41<4:20:16, 14.66s/it]{'loss': 0.0302, 'grad_norm': 0.01963217849047099, 'learning_rate': 1.782462057335582e-05, 'epoch': 0.44}
+{'loss': 0.0298, 'grad_norm': 0.00946747137991271, 'learning_rate': 1.7655986509274873e-05, 'epoch': 0.46}
+{'loss': 0.0303, 'grad_norm': 0.011568462272175317, 'learning_rate': 1.748735244519393e-05, 'epoch': 0.48}
+{'loss': 0.0304, 'grad_norm': 0.00576207648724773, 'learning_rate': 1.7318718381112988e-05, 'epoch': 0.51}
+{'loss': 0.0294, 'grad_norm': 0.01858092482158633, 'learning_rate': 1.715008431703204e-05, 'epoch': 0.53}
+{'loss': 0.0296, 'grad_norm': 0.019194083392251995, 'learning_rate': 1.6981450252951096e-05, 'epoch': 0.56}
+{'loss': 0.0299, 'grad_norm': 0.01490938172074772, 'learning_rate': 1.6812816188870153e-05, 'epoch': 0.58}
+{'loss': 0.0283, 'grad_norm': 0.009427275107319054, 'learning_rate': 1.6644182124789207e-05, 'epoch': 0.61}
+{'loss': 0.0291, 'grad_norm': 0.009220228580662498, 'learning_rate': 1.6475548060708264e-05, 'epoch': 0.63}
+{'loss': 0.029, 'grad_norm': 0.010012022334658508, 'learning_rate': 1.630691399662732e-05, 'epoch': 0.65}
+{'loss': 0.0272, 'grad_norm': 0.00586048495088968, 'learning_rate': 1.6138279932546375e-05, 'epoch': 0.68}
+{'loss': 0.0282, 'grad_norm': 0.009612358442621984, 'learning_rate': 1.5969645868465432e-05, 'epoch': 0.7}
+{'loss': 0.0287, 'grad_norm': 0.01805160139104488, 'learning_rate': 1.5801011804384486e-05, 'epoch': 0.73}
+{'loss': 0.0279, 'grad_norm': 0.012438146783553105, 'learning_rate': 1.563237774030354e-05, 'epoch': 0.75}
+{'loss': 0.0282, 'grad_norm': 0.016940546877818766, 'learning_rate': 1.5463743676222597e-05, 'epoch': 0.78}
+{'loss': 0.0277, 'grad_norm': 0.006607356177563248, 'learning_rate': 1.5295109612141654e-05, 'epoch': 0.8}
+{'loss': 0.0273, 'grad_norm': 0.013006826546517684, 'learning_rate': 1.5126475548060708e-05, 'epoch': 0.82}
+{'loss': 0.0275, 'grad_norm': 0.010914567006826451, 'learning_rate': 1.4957841483979766e-05, 'epoch': 0.85}
+{'loss': 0.0275, 'grad_norm': 0.014185705356899662, 'learning_rate': 1.4789207419898821e-05, 'epoch': 0.87}
+{'loss': 0.0277, 'grad_norm': 0.011790965296982217, 'learning_rate': 1.4620573355817878e-05, 'epoch': 0.9}
+{'loss': 0.0274, 'grad_norm': 0.006323309647334312, 'learning_rate': 1.4451939291736932e-05, 'epoch': 0.92}
+{'loss': 0.0273, 'grad_norm': 0.008409775847585827, 'learning_rate': 1.4283305227655988e-05, 'epoch': 0.94}
+{'loss': 0.0272, 'grad_norm': 0.0070632517126835905, 'learning_rate': 1.4114671163575045e-05, 'epoch': 0.97}
+{'loss': 0.0271, 'grad_norm': 0.009796007365594495, 'learning_rate': 1.3946037099494099e-05, 'epoch': 0.99}
+ 33%|███████████████████████████████████████▎                                                                              | 412/1236 [1:40:20<3:20:34, 14.60s/it][WARNING|trainer.py:3719] 2024-11-17 18:18:31,367 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 18:18:31,367 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 18:18:31,367 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 18:18:31,367 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 18:18:31,367 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 18:18:31,367 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 18:18:31,367 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 18:18:31,367 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[INFO|trainer.py:3812] 2024-11-17 18:18:31,367 >> Saving model checkpoint to output/llama31-8b-inst-task-adaptation/checkpoint-412
+[INFO|configuration_utils.py:414] 2024-11-17 18:18:31,370 >> Configuration saved in output/llama31-8b-inst-task-adaptation/checkpoint-412/config.json
+[INFO|configuration_utils.py:865] 2024-11-17 18:18:31,370 >> Configuration saved in output/llama31-8b-inst-task-adaptation/checkpoint-412/generation_config.json
+[INFO|modeling_utils.py:3035] 2024-11-17 18:18:31,372 >> Model weights saved in output/llama31-8b-inst-task-adaptation/checkpoint-412/model.safetensors
+[INFO|tokenization_utils_base.py:2646] 2024-11-17 18:18:31,375 >> tokenizer config file saved in output/llama31-8b-inst-task-adaptation/checkpoint-412/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2655] 2024-11-17 18:18:31,375 >> Special tokens file saved in output/llama31-8b-inst-task-adaptation/checkpoint-412/special_tokens_map.json
+[2024-11-17 18:18:31,549] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step412 is about to be saved!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+[2024-11-17 18:18:31,556] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/llama31-8b-inst-task-adaptation/checkpoint-412/global_step412/zero_pp_rank_0_mp_rank_00_model_states.pt
+[2024-11-17 18:18:31,556] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama31-8b-inst-task-adaptation/checkpoint-412/global_step412/zero_pp_rank_0_mp_rank_00_model_states.pt...
+[2024-11-17 18:18:31,566] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama31-8b-inst-task-adaptation/checkpoint-412/global_step412/zero_pp_rank_0_mp_rank_00_model_states.pt.
+[2024-11-17 18:18:31,567] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama31-8b-inst-task-adaptation/checkpoint-412/global_step412/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-17 18:18:52,209] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama31-8b-inst-task-adaptation/checkpoint-412/global_step412/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-17 18:18:52,209] [INFO] [engine.py:3477:_save_zero_checkpoint] zero checkpoint saved output/llama31-8b-inst-task-adaptation/checkpoint-412/global_step412/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-17 18:18:53,833] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step412 is ready now!
+[2024-11-17 18:18:53,843] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step412 is about to be saved!
+[2024-11-17 18:18:53,849] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/llama31-8b-inst-task-adaptation/checkpoint-412/global_step412/zero_pp_rank_0_mp_rank_00_model_states.pt
+[2024-11-17 18:18:53,849] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama31-8b-inst-task-adaptation/checkpoint-412/global_step412/zero_pp_rank_0_mp_rank_00_model_states.pt...
+[2024-11-17 18:18:53,859] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama31-8b-inst-task-adaptation/checkpoint-412/global_step412/zero_pp_rank_0_mp_rank_00_model_states.pt.
+[2024-11-17 18:18:53,860] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama31-8b-inst-task-adaptation/checkpoint-412/global_step412/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-17 18:19:23,694] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama31-8b-inst-task-adaptation/checkpoint-412/global_step412/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-17 18:19:23,695] [INFO] [engine.py:3477:_save_zero_checkpoint] zero checkpoint saved output/llama31-8b-inst-task-adaptation/checkpoint-412/global_step412/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-17 18:19:29,043] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step412 is ready now!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+{'loss': 0.0239, 'grad_norm': 0.008636574250871476, 'learning_rate': 1.3777403035413154e-05, 'epoch': 1.02}
+{'loss': 0.0219, 'grad_norm': 0.0071052374901724264, 'learning_rate': 1.3608768971332212e-05, 'epoch': 1.04}
+{'loss': 0.0225, 'grad_norm': 0.005234123116410493, 'learning_rate': 1.3440134907251266e-05, 'epoch': 1.07}
+{'loss': 0.0226, 'grad_norm': 0.010560574815934426, 'learning_rate': 1.3271500843170321e-05, 'epoch': 1.09}
+{'loss': 0.0216, 'grad_norm': 0.008075898121347508, 'learning_rate': 1.3102866779089378e-05, 'epoch': 1.11}
+{'loss': 0.022, 'grad_norm': 0.006528211302355932, 'learning_rate': 1.2934232715008432e-05, 'epoch': 1.14}
+{'loss': 0.0218, 'grad_norm': 0.005982309405668466, 'learning_rate': 1.276559865092749e-05, 'epoch': 1.16}
+{'loss': 0.0216, 'grad_norm': 0.007564819897178439, 'learning_rate': 1.2596964586846545e-05, 'epoch': 1.19}
+{'loss': 0.0212, 'grad_norm': 0.005779145500536631, 'learning_rate': 1.2428330522765599e-05, 'epoch': 1.21}
+{'loss': 0.0208, 'grad_norm': 0.010363407252001548, 'learning_rate': 1.2259696458684656e-05, 'epoch': 1.24}
+{'loss': 0.0215, 'grad_norm': 0.006470815665458822, 'learning_rate': 1.2091062394603712e-05, 'epoch': 1.26}
+{'loss': 0.0215, 'grad_norm': 0.0076697374786179094, 'learning_rate': 1.1922428330522765e-05, 'epoch': 1.28}
+{'loss': 0.0224, 'grad_norm': 0.00812979583426794, 'learning_rate': 1.1753794266441823e-05, 'epoch': 1.31}
+{'loss': 0.0212, 'grad_norm': 0.00986611832192597, 'learning_rate': 1.1585160202360878e-05, 'epoch': 1.33}
+{'loss': 0.0209, 'grad_norm': 0.0061811277496997405, 'learning_rate': 1.1416526138279934e-05, 'epoch': 1.36}
+{'loss': 0.0215, 'grad_norm': 0.006122544723464302, 'learning_rate': 1.124789207419899e-05, 'epoch': 1.38}
+{'loss': 0.0212, 'grad_norm': 0.007449252476472625, 'learning_rate': 1.1079258010118047e-05, 'epoch': 1.41}
+{'loss': 0.0218, 'grad_norm': 0.00769008752366329, 'learning_rate': 1.09106239460371e-05, 'epoch': 1.43}
+{'loss': 0.0207, 'grad_norm': 0.005298118665133341, 'learning_rate': 1.0741989881956156e-05, 'epoch': 1.45}
+{'loss': 0.0213, 'grad_norm': 0.008005083311905843, 'learning_rate': 1.0573355817875213e-05, 'epoch': 1.48}
+{'loss': 0.0211, 'grad_norm': 0.0077278360126552285, 'learning_rate': 1.0404721753794267e-05, 'epoch': 1.5}
+{'loss': 0.0212, 'grad_norm': 0.00736089178208527, 'learning_rate': 1.0236087689713323e-05, 'epoch': 1.53}
+{'loss': 0.0211, 'grad_norm': 0.009601702403613728, 'learning_rate': 1.006745362563238e-05, 'epoch': 1.55}
+{'loss': 0.0213, 'grad_norm': 0.007677845988474692, 'learning_rate': 9.898819561551434e-06, 'epoch': 1.57}
+{'loss': 0.0217, 'grad_norm': 0.007173738785648356, 'learning_rate': 9.73018549747049e-06, 'epoch': 1.6}
+{'loss': 0.0207, 'grad_norm': 0.006190784933269634, 'learning_rate': 9.561551433389545e-06, 'epoch': 1.62}
+{'loss': 0.0218, 'grad_norm': 0.014453647790069824, 'learning_rate': 9.3929173693086e-06, 'epoch': 1.65}
+{'loss': 0.0207, 'grad_norm': 0.006066329307362293, 'learning_rate': 9.224283305227658e-06, 'epoch': 1.67}
+{'loss': 0.0211, 'grad_norm': 0.006117923201851277, 'learning_rate': 9.055649241146712e-06, 'epoch': 1.7}
+{'loss': 0.0212, 'grad_norm': 0.006196892522207147, 'learning_rate': 8.887015177065767e-06, 'epoch': 1.72}
+{'loss': 0.0211, 'grad_norm': 0.0073314693564658345, 'learning_rate': 8.718381112984824e-06, 'epoch': 1.74}
+{'loss': 0.0214, 'grad_norm': 0.006450528086264392, 'learning_rate': 8.54974704890388e-06, 'epoch': 1.77}
+{'loss': 0.021, 'grad_norm': 0.0076418433828969595, 'learning_rate': 8.381112984822934e-06, 'epoch': 1.79}
+{'loss': 0.0213, 'grad_norm': 0.005934952806900494, 'learning_rate': 8.212478920741991e-06, 'epoch': 1.82}
+{'loss': 0.021, 'grad_norm': 0.007657515321159215, 'learning_rate': 8.043844856661047e-06, 'epoch': 1.84}
+{'loss': 0.0208, 'grad_norm': 0.010135993953683017, 'learning_rate': 7.875210792580102e-06, 'epoch': 1.87}
+{'loss': 0.021, 'grad_norm': 0.007673609313135428, 'learning_rate': 7.706576728499158e-06, 'epoch': 1.89}
+{'loss': 0.0216, 'grad_norm': 0.006563839176720532, 'learning_rate': 7.537942664418213e-06, 'epoch': 1.91}
+{'loss': 0.021, 'grad_norm': 0.005779957500510442, 'learning_rate': 7.369308600337268e-06, 'epoch': 1.94}
+{'loss': 0.0209, 'grad_norm': 0.007268223017222806, 'learning_rate': 7.200674536256324e-06, 'epoch': 1.96}
+{'loss': 0.0215, 'grad_norm': 0.0065685502429970065, 'learning_rate': 7.03204047217538e-06, 'epoch': 1.99}
+ 67%|██████████████████████████████████████████████████████████████████████████████▊                                       | 825/1236 [3:21:44<1:39:58, 14.60s/it][WARNING|trainer.py:3719] 2024-11-17 19:59:51,437 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 19:59:51,437 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 19:59:51,437 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 19:59:51,437 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 19:59:51,437 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 19:59:51,437 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 19:59:51,437 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 19:59:51,437 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[INFO|trainer.py:3812] 2024-11-17 19:59:51,437 >> Saving model checkpoint to output/llama31-8b-inst-task-adaptation/checkpoint-825
+[INFO|configuration_utils.py:414] 2024-11-17 19:59:51,439 >> Configuration saved in output/llama31-8b-inst-task-adaptation/checkpoint-825/config.json
+[INFO|configuration_utils.py:865] 2024-11-17 19:59:51,439 >> Configuration saved in output/llama31-8b-inst-task-adaptation/checkpoint-825/generation_config.json
+[INFO|modeling_utils.py:3035] 2024-11-17 19:59:51,441 >> Model weights saved in output/llama31-8b-inst-task-adaptation/checkpoint-825/model.safetensors
+[INFO|tokenization_utils_base.py:2646] 2024-11-17 19:59:51,443 >> tokenizer config file saved in output/llama31-8b-inst-task-adaptation/checkpoint-825/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2655] 2024-11-17 19:59:51,443 >> Special tokens file saved in output/llama31-8b-inst-task-adaptation/checkpoint-825/special_tokens_map.json
+[2024-11-17 19:59:51,625] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step825 is about to be saved!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+[2024-11-17 19:59:51,631] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/llama31-8b-inst-task-adaptation/checkpoint-825/global_step825/zero_pp_rank_0_mp_rank_00_model_states.pt
+[2024-11-17 19:59:51,632] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama31-8b-inst-task-adaptation/checkpoint-825/global_step825/zero_pp_rank_0_mp_rank_00_model_states.pt...
+[2024-11-17 19:59:51,642] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama31-8b-inst-task-adaptation/checkpoint-825/global_step825/zero_pp_rank_0_mp_rank_00_model_states.pt.
+[2024-11-17 19:59:51,643] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama31-8b-inst-task-adaptation/checkpoint-825/global_step825/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-17 20:00:10,911] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama31-8b-inst-task-adaptation/checkpoint-825/global_step825/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-17 20:00:10,911] [INFO] [engine.py:3477:_save_zero_checkpoint] zero checkpoint saved output/llama31-8b-inst-task-adaptation/checkpoint-825/global_step825/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-17 20:00:12,808] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step825 is ready now!
+[2024-11-17 20:00:12,816] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step825 is about to be saved!
+[2024-11-17 20:00:12,822] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/llama31-8b-inst-task-adaptation/checkpoint-825/global_step825/zero_pp_rank_0_mp_rank_00_model_states.pt
+[2024-11-17 20:00:12,822] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama31-8b-inst-task-adaptation/checkpoint-825/global_step825/zero_pp_rank_0_mp_rank_00_model_states.pt...
+[2024-11-17 20:00:12,832] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama31-8b-inst-task-adaptation/checkpoint-825/global_step825/zero_pp_rank_0_mp_rank_00_model_states.pt.
+[2024-11-17 20:00:12,833] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama31-8b-inst-task-adaptation/checkpoint-825/global_step825/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-17 20:00:34,584] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama31-8b-inst-task-adaptation/checkpoint-825/global_step825/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-17 20:00:34,584] [INFO] [engine.py:3477:_save_zero_checkpoint] zero checkpoint saved output/llama31-8b-inst-task-adaptation/checkpoint-825/global_step825/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-17 20:00:40,976] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step825 is ready now!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+{'loss': 0.0188, 'grad_norm': 0.00620207377246477, 'learning_rate': 6.8634064080944355e-06, 'epoch': 2.01}
+{'loss': 0.0129, 'grad_norm': 0.007416253529838399, 'learning_rate': 6.694772344013492e-06, 'epoch': 2.04}
+{'loss': 0.0121, 'grad_norm': 0.008686137646937361, 'learning_rate': 6.5261382799325466e-06, 'epoch': 2.06}
+{'loss': 0.0124, 'grad_norm': 0.01039926820490556, 'learning_rate': 6.357504215851602e-06, 'epoch': 2.08}
+{'loss': 0.012, 'grad_norm': 0.007580329474397437, 'learning_rate': 6.1888701517706585e-06, 'epoch': 2.11}
+{'loss': 0.012, 'grad_norm': 0.007760571858975177, 'learning_rate': 6.020236087689714e-06, 'epoch': 2.13}
+{'loss': 0.0123, 'grad_norm': 0.009472562522635309, 'learning_rate': 5.851602023608769e-06, 'epoch': 2.16}
+{'loss': 0.0123, 'grad_norm': 0.009611587703272658, 'learning_rate': 5.682967959527825e-06, 'epoch': 2.18}
+{'loss': 0.0126, 'grad_norm': 0.010741008623063684, 'learning_rate': 5.514333895446881e-06, 'epoch': 2.2}
+{'loss': 0.0121, 'grad_norm': 0.0090559198673294, 'learning_rate': 5.3456998313659354e-06, 'epoch': 2.23}
+{'loss': 0.0123, 'grad_norm': 0.013669357735440788, 'learning_rate': 5.177065767284992e-06, 'epoch': 2.25}
+{'loss': 0.0123, 'grad_norm': 0.013259169510685554, 'learning_rate': 5.008431703204047e-06, 'epoch': 2.28}
+{'loss': 0.012, 'grad_norm': 0.009227549637903558, 'learning_rate': 4.839797639123103e-06, 'epoch': 2.3}
+{'loss': 0.012, 'grad_norm': 0.010575564761835781, 'learning_rate': 4.671163575042159e-06, 'epoch': 2.33}
+{'loss': 0.0125, 'grad_norm': 0.008218507772191203, 'learning_rate': 4.502529510961214e-06, 'epoch': 2.35}
+{'loss': 0.012, 'grad_norm': 0.008244169775721795, 'learning_rate': 4.3338954468802704e-06, 'epoch': 2.37}
+{'loss': 0.0117, 'grad_norm': 0.008707164627144187, 'learning_rate': 4.165261382799326e-06, 'epoch': 2.4}
+{'loss': 0.0121, 'grad_norm': 0.008252577099403783, 'learning_rate': 3.9966273187183815e-06, 'epoch': 2.42}
+{'loss': 0.0117, 'grad_norm': 0.010072871220167994, 'learning_rate': 3.827993254637437e-06, 'epoch': 2.45}
+{'loss': 0.0122, 'grad_norm': 0.010045016105466275, 'learning_rate': 3.659359190556493e-06, 'epoch': 2.47}
+{'loss': 0.012, 'grad_norm': 0.00984117232231038, 'learning_rate': 3.490725126475548e-06, 'epoch': 2.5}
+{'loss': 0.0121, 'grad_norm': 0.013122628325332841, 'learning_rate': 3.322091062394604e-06, 'epoch': 2.52}
+{'loss': 0.0117, 'grad_norm': 0.007963384012579296, 'learning_rate': 3.1534569983136597e-06, 'epoch': 2.54}
+{'loss': 0.012, 'grad_norm': 0.00840508189099671, 'learning_rate': 2.9848229342327153e-06, 'epoch': 2.57}
+{'loss': 0.0115, 'grad_norm': 0.009849854924231646, 'learning_rate': 2.816188870151771e-06, 'epoch': 2.59}
+{'loss': 0.0119, 'grad_norm': 0.008455563181543859, 'learning_rate': 2.647554806070827e-06, 'epoch': 2.62}
+{'loss': 0.0116, 'grad_norm': 0.010220153973582504, 'learning_rate': 2.4789207419898824e-06, 'epoch': 2.64}
+{'loss': 0.012, 'grad_norm': 0.0118175700307105, 'learning_rate': 2.310286677908938e-06, 'epoch': 2.67}
+{'loss': 0.0114, 'grad_norm': 0.012593121423629896, 'learning_rate': 2.1416526138279935e-06, 'epoch': 2.69}
+{'loss': 0.0117, 'grad_norm': 0.010375418581978725, 'learning_rate': 1.973018549747049e-06, 'epoch': 2.71}
+{'loss': 0.0112, 'grad_norm': 0.008387364996258247, 'learning_rate': 1.8043844856661048e-06, 'epoch': 2.74}
+{'loss': 0.0113, 'grad_norm': 0.0091218537350384, 'learning_rate': 1.6357504215851603e-06, 'epoch': 2.76}
+{'loss': 0.0119, 'grad_norm': 0.015132586087074934, 'learning_rate': 1.467116357504216e-06, 'epoch': 2.79}
+{'loss': 0.0115, 'grad_norm': 0.009525631234842995, 'learning_rate': 1.2984822934232717e-06, 'epoch': 2.81}
+{'loss': 0.0116, 'grad_norm': 0.008429523935303595, 'learning_rate': 1.1298482293423272e-06, 'epoch': 2.83}
+{'loss': 0.011, 'grad_norm': 0.00949468310815361, 'learning_rate': 9.612141652613828e-07, 'epoch': 2.86}
+{'loss': 0.0114, 'grad_norm': 0.008861352175921672, 'learning_rate': 7.925801011804385e-07, 'epoch': 2.88}
+{'loss': 0.0114, 'grad_norm': 0.009369407616220873, 'learning_rate': 6.239460370994942e-07, 'epoch': 2.91}
+{'loss': 0.0107, 'grad_norm': 0.012202553658525453, 'learning_rate': 4.553119730185498e-07, 'epoch': 2.93}
+{'loss': 0.0113, 'grad_norm': 0.008693630225064607, 'learning_rate': 2.8667790893760544e-07, 'epoch': 2.96}
+{'loss': 0.0112, 'grad_norm': 0.007959962705659112, 'learning_rate': 1.1804384485666105e-07, 'epoch': 2.98}
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1236/1236 [5:02:37<00:00, 14.67s/it][WARNING|trainer.py:3719] 2024-11-17 21:40:37,353 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 21:40:37,353 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 21:40:37,353 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 21:40:37,353 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 21:40:37,353 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 21:40:37,353 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 21:40:37,353 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 21:40:37,353 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[INFO|trainer.py:3812] 2024-11-17 21:40:37,353 >> Saving model checkpoint to output/llama31-8b-inst-task-adaptation/checkpoint-1236
+[INFO|configuration_utils.py:414] 2024-11-17 21:40:37,355 >> Configuration saved in output/llama31-8b-inst-task-adaptation/checkpoint-1236/config.json
+[INFO|configuration_utils.py:865] 2024-11-17 21:40:37,356 >> Configuration saved in output/llama31-8b-inst-task-adaptation/checkpoint-1236/generation_config.json
+[INFO|modeling_utils.py:3035] 2024-11-17 21:40:37,357 >> Model weights saved in output/llama31-8b-inst-task-adaptation/checkpoint-1236/model.safetensors
+[INFO|tokenization_utils_base.py:2646] 2024-11-17 21:40:37,359 >> tokenizer config file saved in output/llama31-8b-inst-task-adaptation/checkpoint-1236/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2655] 2024-11-17 21:40:37,359 >> Special tokens file saved in output/llama31-8b-inst-task-adaptation/checkpoint-1236/special_tokens_map.json
+[2024-11-17 21:40:37,535] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step1236 is about to be saved!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+[2024-11-17 21:40:37,541] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/zero_pp_rank_0_mp_rank_00_model_states.pt
+[2024-11-17 21:40:37,541] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/zero_pp_rank_0_mp_rank_00_model_states.pt...
+[2024-11-17 21:40:37,551] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/zero_pp_rank_0_mp_rank_00_model_states.pt.
+[2024-11-17 21:40:37,552] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-17 21:40:58,983] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-17 21:40:58,984] [INFO] [engine.py:3477:_save_zero_checkpoint] zero checkpoint saved output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-17 21:41:00,634] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step1236 is ready now!
+[2024-11-17 21:41:00,650] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step1236 is about to be saved!
+[2024-11-17 21:41:00,657] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/zero_pp_rank_0_mp_rank_00_model_states.pt
+[2024-11-17 21:41:00,657] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/zero_pp_rank_0_mp_rank_00_model_states.pt...
+[2024-11-17 21:41:00,667] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/zero_pp_rank_0_mp_rank_00_model_states.pt.
+[2024-11-17 21:41:00,671] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-17 21:41:33,776] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-17 21:41:33,777] [INFO] [engine.py:3477:_save_zero_checkpoint] zero checkpoint saved output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-17 21:41:36,255] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step1236 is ready now!
+[WARNING|trainer.py:3719] 2024-11-17 21:41:36,261 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 21:41:36,261 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 21:41:36,261 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 21:41:36,261 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 21:41:36,261 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 21:41:36,261 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 21:41:36,261 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 21:41:36,262 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[INFO|trainer.py:3812] 2024-11-17 21:41:36,262 >> Saving model checkpoint to output/llama31-8b-inst-task-adaptation/checkpoint-1236
+[INFO|configuration_utils.py:414] 2024-11-17 21:41:36,264 >> Configuration saved in output/llama31-8b-inst-task-adaptation/checkpoint-1236/config.json
+[INFO|configuration_utils.py:865] 2024-11-17 21:41:36,264 >> Configuration saved in output/llama31-8b-inst-task-adaptation/checkpoint-1236/generation_config.json
+[INFO|modeling_utils.py:3035] 2024-11-17 21:41:36,267 >> Model weights saved in output/llama31-8b-inst-task-adaptation/checkpoint-1236/model.safetensors
+[INFO|tokenization_utils_base.py:2646] 2024-11-17 21:41:36,269 >> tokenizer config file saved in output/llama31-8b-inst-task-adaptation/checkpoint-1236/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2655] 2024-11-17 21:41:36,269 >> Special tokens file saved in output/llama31-8b-inst-task-adaptation/checkpoint-1236/special_tokens_map.json
+[2024-11-17 21:41:36,449] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step1236 is about to be saved!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+[2024-11-17 21:41:36,455] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/zero_pp_rank_0_mp_rank_00_model_states.pt
+[2024-11-17 21:41:36,456] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/zero_pp_rank_0_mp_rank_00_model_states.pt...
+[2024-11-17 21:41:36,466] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/zero_pp_rank_0_mp_rank_00_model_states.pt.
+[2024-11-17 21:41:36,468] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-17 21:42:00,412] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-17 21:42:00,413] [INFO] [engine.py:3477:_save_zero_checkpoint] zero checkpoint saved output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-17 21:42:03,281] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step1236 is ready now!
+[2024-11-17 21:42:03,293] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step1236 is about to be saved!
+[2024-11-17 21:42:03,299] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/zero_pp_rank_0_mp_rank_00_model_states.pt
+[2024-11-17 21:42:03,299] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/zero_pp_rank_0_mp_rank_00_model_states.pt...
+[2024-11-17 21:42:03,310] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/zero_pp_rank_0_mp_rank_00_model_states.pt.
+[2024-11-17 21:42:03,313] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-17 21:42:34,365] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-17 21:42:34,366] [INFO] [engine.py:3477:_save_zero_checkpoint] zero checkpoint saved output/llama31-8b-inst-task-adaptation/checkpoint-1236/global_step1236/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-17 21:42:37,885] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step1236 is ready now!
+[INFO|trainer.py:2591] 2024-11-17 21:42:37,890 >>
+
+Training completed. Do not forget to share your model on huggingface.co/models =)
+
+
+{'train_runtime': 18278.4487, 'train_samples_per_second': 17.342, 'train_steps_per_second': 0.068, 'train_loss': 0.024489851680533015, 'epoch': 2.99}
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1236/1236 [5:04:38<00:00, 14.79s/it]
+[WARNING|trainer.py:3719] 2024-11-17 21:42:37,893 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 21:42:37,893 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 21:42:37,893 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 21:42:37,893 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 21:42:37,893 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 21:42:37,893 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[INFO|trainer.py:3812] 2024-11-17 21:42:37,893 >> Saving model checkpoint to output/llama31-8b-inst-task-adaptation
+[INFO|configuration_utils.py:414] 2024-11-17 21:42:37,896 >> Configuration saved in output/llama31-8b-inst-task-adaptation/config.json
+[INFO|configuration_utils.py:865] 2024-11-17 21:42:37,896 >> Configuration saved in output/llama31-8b-inst-task-adaptation/generation_config.json
+[WARNING|trainer.py:3719] 2024-11-17 21:42:37,896 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[WARNING|trainer.py:3719] 2024-11-17 21:42:37,897 >>  stage3_gather_16bit_weights_on_model_save=false. Saving the full checkpoint instead, use zero_to_fp32.py to recover weights
+[INFO|modeling_utils.py:3035] 2024-11-17 21:42:37,898 >> Model weights saved in output/llama31-8b-inst-task-adaptation/model.safetensors
+[INFO|tokenization_utils_base.py:2646] 2024-11-17 21:42:37,900 >> tokenizer config file saved in output/llama31-8b-inst-task-adaptation/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2655] 2024-11-17 21:42:37,901 >> Special tokens file saved in output/llama31-8b-inst-task-adaptation/special_tokens_map.json
+[2024-11-17 21:42:38,089] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step1236 is about to be saved!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+[2024-11-17 21:42:38,095] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/llama31-8b-inst-task-adaptation/global_step1236/zero_pp_rank_0_mp_rank_00_model_states.pt
+[2024-11-17 21:42:38,095] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama31-8b-inst-task-adaptation/global_step1236/zero_pp_rank_0_mp_rank_00_model_states.pt...
+[2024-11-17 21:42:38,106] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama31-8b-inst-task-adaptation/global_step1236/zero_pp_rank_0_mp_rank_00_model_states.pt.
+[2024-11-17 21:42:38,108] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama31-8b-inst-task-adaptation/global_step1236/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-17 21:42:59,789] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama31-8b-inst-task-adaptation/global_step1236/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-17 21:42:59,790] [INFO] [engine.py:3477:_save_zero_checkpoint] zero checkpoint saved output/llama31-8b-inst-task-adaptation/global_step1236/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-17 21:43:03,417] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step1236 is ready now!
+***** train metrics *****
+  epoch                    =     2.9945
+  total_flos               =   237051GF
+  train_loss               =     0.0245
+  train_runtime            = 5:04:38.44
+  train_samples            =     105659
+  train_samples_per_second =     17.342
+  train_steps_per_second   =      0.068
+11/17/2024 21:43:03 - INFO - __main__ - Metrics {'train_runtime': 18278.4487, 'train_samples_per_second': 17.342, 'train_steps_per_second': 0.068, 'total_flos': 254531990519808.0, 'train_loss': 0.024489851680533015, 'epoch': 2.994548758328286, 'train_samples': 105659}
+11/17/2024 21:43:03 - INFO - __main__ - *** Predict ***
+[INFO|gner_trainer.py:60] 2024-11-17 21:43:03,423 >> ***** Running Prediction *****
+[INFO|gner_trainer.py:62] 2024-11-17 21:43:03,423 >>   Num examples = 6470
+[INFO|gner_trainer.py:65] 2024-11-17 21:43:03,423 >>   Batch size = 40
+[WARNING|utils.py:2005] 2024-11-17 21:43:03,445 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:03,445 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:03,445 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:03,445 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:03,446 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:03,446 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:03,448 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:03,449 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+  0%|                                                                                                                                      | 0/21 [00:00<?, ?it/s][WARNING|utils.py:2005] 2024-11-17 21:43:12,888 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:12,888 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:12,888 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:12,888 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:12,889 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:12,889 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:12,889 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:12,889 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+ 10%|████████████                                                                                                                  | 2/21 [00:10<01:35,  5.03s/it][WARNING|utils.py:2005] 2024-11-17 21:43:22,946 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:22,946 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:22,946 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:22,946 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:22,946 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:22,947 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:22,948 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:22,948 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+ 14%|██████████████████                                                                                                            | 3/21 [00:21<02:19,  7.76s/it][WARNING|utils.py:2005] 2024-11-17 21:43:34,534 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:34,534 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:34,534 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:34,535 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:34,535 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:34,535 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:34,535 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:34,535 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+ 19%|████████████████████████                                                                                                      | 4/21 [00:43<03:38, 12.87s/it][WARNING|utils.py:2005] 2024-11-17 21:43:55,978 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:55,978 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:55,978 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:55,978 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:55,978 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:55,978 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:55,978 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:43:55,979 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+ 24%|██████████████████████████████                                                                                                | 5/21 [01:00<03:49, 14.36s/it][WARNING|utils.py:2005] 2024-11-17 21:44:13,142 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:13,142 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:13,143 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:13,143 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:13,143 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:13,143 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:13,143 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:13,143 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+ 29%|████████████████████████████████████                                                                                          | 6/21 [01:14<03:37, 14.47s/it][WARNING|utils.py:2005] 2024-11-17 21:44:27,823 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:27,823 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:27,824 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:27,824 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:27,824 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:27,824 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:27,824 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:27,825 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+ 33%|██████████████████████████████████████████████████████                                                                                                            | 7/21 [01:31<03:33, 15.22s/it][WARNING|utils.py:2005] 2024-11-17 21:44:44,623 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:44,623 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:44,623 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:44,623 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:44,623 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:44,623 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:44,623 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:44,624 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+ 38%|█████████████████████████████████████████████████████████████▋                                                                                                    | 8/21 [01:43<03:05, 14.28s/it][WARNING|utils.py:2005] 2024-11-17 21:44:56,859 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:56,859 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:56,859 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:56,859 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:56,859 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:56,859 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:56,860 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:44:56,860 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+ 43%|█████████████████████████████████████████████████████████████████████▍                                                                                            | 9/21 [01:57<02:47, 13.97s/it][WARNING|utils.py:2005] 2024-11-17 21:45:10,156 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:10,156 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:10,156 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:10,156 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:10,156 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:10,156 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:10,156 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:10,157 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+ 48%|████████████████████████████████████████████████████████████████████████████▋                                                                                    | 10/21 [02:10<02:32, 13.87s/it][WARNING|utils.py:2005] 2024-11-17 21:45:23,797 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:23,797 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:23,797 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:23,798 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:23,798 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:23,798 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:23,798 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:23,798 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+ 52%|████████████████████████████████████████████████████████████████████████████████████▎                                                                            | 11/21 [02:25<02:19, 13.94s/it][WARNING|utils.py:2005] 2024-11-17 21:45:37,897 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:37,898 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:37,898 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:37,901 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:37,901 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:37,901 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:37,902 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:37,902 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+ 57%|████████████████████████████████████████████████████████████████████████████████████████████                                                                     | 12/21 [02:36<01:58, 13.18s/it][WARNING|utils.py:2005] 2024-11-17 21:45:49,342 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:49,343 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:49,343 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:49,343 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:49,344 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:49,344 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:49,344 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:45:49,344 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+ 62%|█████████████████████████████████████████████████████████████████████████████▍                                               | 13/21 [03:18<02:55, 21.98s/it]                                    [WARNING|utils.py:2005] 2024-11-17 21:46:31,606 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:46:31,606 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:46:31,607 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:46:31,607 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:46:31,607 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:46:31,607 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:46:31,608 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:46:31,608 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+ 67%|███████████████████████████████████████████████████████████████████████████████████▎                                         | 14/21 [04:06<03:28, 29.79s/it][WARNING|utils.py:2005] 2024-11-17 21:47:19,486 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:47:19,487 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:47:19,487 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:47:19,487 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:47:19,487 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:47:19,487 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:47:19,487 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:47:19,488 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+ 71%|█████████████████████████████████████████████████████████████████████████████████████████▎                                   | 15/21 [04:53<03:30, 35.04s/it][WARNING|utils.py:2005] 2024-11-17 21:48:06,720 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:48:06,720 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:48:06,720 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:48:06,720 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:48:06,720 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:48:06,720 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:48:06,720 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:48:06,721 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+ 76%|███████████████████████████████████████████████████████████████████████████████████████████████▏                             | 16/21 [05:45<03:20, 40.06s/it][WARNING|utils.py:2005] 2024-11-17 21:48:58,442 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:48:58,442 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:48:58,443 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:48:58,443 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:48:58,443 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:48:58,443 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:48:58,443 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:48:58,444 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+ 81%|█████████████████████████████████████████████████████████████████████████████████████████████████████▏                       | 17/21 [06:32<02:48, 42.07s/it][WARNING|utils.py:2005] 2024-11-17 21:49:45,196 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:49:45,197 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:49:45,197 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:49:45,197 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:49:45,198 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:49:45,198 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:49:45,198 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:49:45,198 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+ 86%|███████████████████████████████████████████████████████████████████████████████████████████████████████████▏                 | 18/21 [07:24<02:15, 45.10s/it][WARNING|utils.py:2005] 2024-11-17 21:50:37,345 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:50:37,346 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:50:37,346 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:50:37,347 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:50:37,347 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:50:37,347 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:50:37,347 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:50:37,347 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+ 90%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████            | 19/21 [08:20<01:36, 48.27s/it][WARNING|utils.py:2005] 2024-11-17 21:51:32,984 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:51:32,984 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:51:32,984 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:51:32,984 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:51:32,984 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:51:32,984 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:51:32,987 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:51:32,989 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+ 95%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████      | 20/21 [09:19<00:51, 51.65s/it][WARNING|utils.py:2005] 2024-11-17 21:52:32,506 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:52:32,506 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:52:32,506 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:52:32,506 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:52:32,506 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:52:32,506 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:52:32,506 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+[WARNING|utils.py:2005] 2024-11-17 21:52:32,506 >> A decoder-only architecture is being used, but right-padding was detected! For correct generation results, please set `padding_side='left'` when initializing the tokenizer.
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3622.70it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3625.98it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3599.50it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3621.28it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3592.53it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3556.21it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3618.99it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3494.88it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4047.45it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4015.98it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3983.88it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4005.52it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3982.76it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3948.54it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4020.48it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3919.62it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1399.03it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1405.87it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1380.46it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1402.32it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1393.98it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1399.14it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1375.77it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1366.53it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1106.67it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1109.78it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1084.29it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1104.28it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1100.44it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1100.16it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1084.20it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1083.60it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 1010.62it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 1009.07it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 989.47it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 996.33it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 1005.50it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 1005.29it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 988.89it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 985.50it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 998.05it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 999.48it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 990.22it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 982.59it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 993.66it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 994.33it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 977.90it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 974.66it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1156.11it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1158.31it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1150.94it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1133.61it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1149.88it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1151.85it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1129.38it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1130.79it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 21/21 [10:19<00:00, 29.49s/it]
+***** predict metrics *****
+  predict_average_f1                    =     0.6086
+  predict_crossner_ai_f1                =     0.6221
+  predict_crossner_ai_precision         =     0.6129
+  predict_crossner_ai_recall            =     0.6316
+  predict_crossner_literature_f1        =     0.5872
+  predict_crossner_literature_precision =     0.6227
+  predict_crossner_literature_recall    =     0.5555
+  predict_crossner_music_f1             =     0.7349
+  predict_crossner_music_precision      =     0.7547
+  predict_crossner_music_recall         =     0.7161
+  predict_crossner_politics_f1          =     0.6776
+  predict_crossner_politics_precision   =     0.6861
+  predict_crossner_politics_recall      =     0.6692
+  predict_crossner_science_f1           =      0.707
+  predict_crossner_science_precision    =     0.6948
+  predict_crossner_science_recall       =     0.7198
+  predict_mit-movie_f1                  =     0.5462
+  predict_mit-movie_precision           =     0.6326
+  predict_mit-movie_recall              =     0.4806
+  predict_mit-restaurant_f1             =     0.3854
+  predict_mit-restaurant_precision      =     0.5825
+  predict_mit-restaurant_recall         =     0.2879
+  predict_runtime                       = 0:10:28.82
+  predict_samples                       =       6470
+  predict_samples_per_second            =     10.289
+  predict_steps_per_second              =      0.033
+[2024-11-17 21:53:33,766] [INFO] [launch.py:347:main] Process 640356 exits successfully.
+[2024-11-17 21:53:34,766] [INFO] [launch.py:347:main] Process 640361 exits successfully.
+[2024-11-17 21:53:34,767] [INFO] [launch.py:347:main] Process 640357 exits successfully.
+[2024-11-17 21:53:34,767] [INFO] [launch.py:347:main] Process 640355 exits successfully.
+[2024-11-17 21:53:34,767] [INFO] [launch.py:347:main] Process 640362 exits successfully.
+[2024-11-17 21:53:34,767] [INFO] [launch.py:347:main] Process 640359 exits successfully.
+[2024-11-17 21:53:34,767] [INFO] [launch.py:347:main] Process 640360 exits successfully.
+[2024-11-17 21:53:35,767] [INFO] [launch.py:347:main] Process 640358 exits successfully.
