@@ -9,7 +9,7 @@ DATA_CONFIG_DIR=configs/dataset_configs/task_adaptation_configs
 INSTRUCTION_FILE=configs/instruction_configs/instruction.json
 OUTPUT_DIR=output/llama31-8b-base-task-adaptation
 DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero3_llama.json
-RUN_NAME=llama3-8B-base-experiment
+RUN_NAME=llama31-8B-base-experiment
 
 deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --bf16 True --tf32 True \
