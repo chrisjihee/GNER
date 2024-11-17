@@ -23,6 +23,7 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --per_device_eval_batch_size 40 \
     --per_device_train_batch_size 1 \
     --gradient_accumulation_steps 32 \
+    --gradient_checkpointing False \
     --lr_scheduler_type cosine \
     --learning_rate 2e-05 \
     --warmup_ratio 0.04 \
