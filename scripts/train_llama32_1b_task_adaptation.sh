@@ -2,14 +2,14 @@ set -x
 
 port=$(shuf -i25000-30000 -n1)
 
-MODEL_NAME_OR_PATH=meta-llama/Llama-3.1-8B
+MODEL_NAME_OR_PATH=meta-llama/Llama-3.2-1B
 DATA_DIR=data
 TRAIN_JSON_DIR=data/pile-ner.json
 DATA_CONFIG_DIR=configs/dataset_configs/task_adaptation_configs
 INSTRUCTION_FILE=configs/instruction_configs/instruction.json
-OUTPUT_DIR=output/llama3-8b-base-task-adaptation
-DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero3_llama.json
-RUN_NAME=llama3-8B-base-experiment
+OUTPUT_DIR=output/llama32-1b-task-adaptation
+DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero0_llama.json
+RUN_NAME=llama3-1B-experiment
 
 deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --bf16 True --tf32 True \
@@ -24,8 +24,8 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --instruction_file $INSTRUCTION_FILE \
     --output_dir $OUTPUT_DIR \
     --per_device_eval_batch_size 40 \
-    --per_device_train_batch_size 1 \
-    --gradient_accumulation_steps 32 \
+    --per_device_train_batch_size 8 \
+    --gradient_accumulation_steps 4 \
     --gradient_checkpointing True \
     --lr_scheduler_type cosine \
     --learning_rate 2e-05 \
