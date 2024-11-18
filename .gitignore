@@ -167,4 +167,4 @@ output/
 gradio_cached_examples/
 
 # custom
-.cache_hf_hub
+.cache_*
