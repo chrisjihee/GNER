@@ -1,0 +1,409 @@
+(GNER) chrisjihee@dgx-a100:~/proj/GNER$ bash scripts/eval_t5_task_adaptation.sh
+++ shuf -i25000-30000 -n1
++ port=28690
++ BEAM_SIZE=1
++ DATA_DIR=data
++ DATA_CONFIG_DIR=configs/dataset_configs/task_adaptation_configs
++ INSTRUCTION_FILE=configs/instruction_configs/instruction.json
++ MODEL_NAME_OR_PATH=output/flan-t5-base-task-adaptation/checkpoint-480
++ OUTPUT_DIR=output/flan-t5-xxl-task-adaptation-beam1
++ RUN_NAME=flan-t5-xxl-experiment
++ deepspeed --include=localhost:0,1,2,3,4,5,6,7 --master_port 28690 src/run.py --do_predict --predict_with_generate --generation_num_beams 1 --model_name_or_path output/flan-t5-base-task-adaptation/checkpoint-480 --data_dir data --preprocessing_num_workers 4 --data_config_dir configs/dataset_configs/task_adaptation_configs --instruction_file configs/instruction_configs/instruction.json --output_dir output/flan-t5-xxl-task-adaptation-beam1 --run_name flan-t5-xxl-experiment --per_device_eval_batch_size 4 --bf16 True --tf32 True --max_source_length 640 --max_target_length 640 --generation_max_length 640 --overwrite_output_dir --overwrite_cache --seed 1234
+[2024-11-18 20:17:16,818] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-18 20:17:18,128] [WARNING] [runner.py:202:fetch_hostfile] Unable to find hostfile, will proceed with training with local resources only.
+[2024-11-18 20:17:20,919] [INFO] [runner.py:568:main] cmd = /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11 -u -m deepspeed.launcher.launch --world_info=eyJsb2NhbGhvc3QiOiBbMCwgMSwgMiwgMywgNCwgNSwgNiwgN119 --master_addr=127.0.0.1 --master_port=28690 --enable_each_rank_log=None src/run.py --do_predict --predict_with_generate --generation_num_beams 1 --model_name_or_path output/flan-t5-base-task-adaptation/checkpoint-480 --data_dir data --preprocessing_num_workers 4 --data_config_dir configs/dataset_configs/task_adaptation_configs --instruction_file configs/instruction_configs/instruction.json --output_dir output/flan-t5-xxl-task-adaptation-beam1 --run_name flan-t5-xxl-experiment --per_device_eval_batch_size 4 --bf16 True --tf32 True --max_source_length 640 --max_target_length 640 --generation_max_length 640 --overwrite_output_dir --overwrite_cache --seed 1234
+[2024-11-18 20:17:24,849] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-18 20:17:26,165] [INFO] [launch.py:145:main] WORLD INFO DICT: {'localhost': [0, 1, 2, 3, 4, 5, 6, 7]}
+[2024-11-18 20:17:26,165] [INFO] [launch.py:151:main] nnodes=1, num_local_procs=8, node_rank=0
+[2024-11-18 20:17:26,165] [INFO] [launch.py:162:main] global_rank_mapping=defaultdict(<class 'list'>, {'localhost': [0, 1, 2, 3, 4, 5, 6, 7]})
+[2024-11-18 20:17:26,165] [INFO] [launch.py:163:main] dist_world_size=8
+[2024-11-18 20:17:26,165] [INFO] [launch.py:165:main] Setting CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/18/2024 20:17:34 - WARNING - __main__ - Process rank: 1, device: cuda:1, n_gpu: 1, distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/18/2024 20:17:34 - WARNING - __main__ - Process rank: 4, device: cuda:4, n_gpu: 1, distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/18/2024 20:17:34 - WARNING - __main__ - Process rank: 3, device: cuda:3, n_gpu: 1, distributed training: True, 16-bits training: True
+11/18/2024 20:17:34 - WARNING - __main__ - Process rank: 5, device: cuda:5, n_gpu: 1, distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/18/2024 20:17:34 - WARNING - __main__ - Process rank: 6, device: cuda:6, n_gpu: 1, distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/18/2024 20:17:34 - WARNING - __main__ - Process rank: 7, device: cuda:7, n_gpu: 1, distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/18/2024 20:17:34 - WARNING - __main__ - Process rank: 0, device: cuda:0, n_gpu: 1, distributed training: True, 16-bits training: True
+11/18/2024 20:17:34 - INFO - __main__ - Training/evaluation parameters Seq2SeqTrainingArguments(
+_n_gpu=1,
+accelerator_config={'split_batches': False, 'dispatch_batches': None, 'even_batches': True, 'use_seedable_sampler': True, 'non_blocking': False, 'gradient_accumulation_kwargs': None, 'use_configured_state': False},
+adafactor=False,
+adam_beta1=0.9,
+adam_beta2=0.999,
+adam_epsilon=1e-08,
+auto_find_batch_size=False,
+average_tokens_across_devices=False,
+batch_eval_metrics=False,
+bf16=True,
+bf16_full_eval=False,
+data_seed=None,
+dataloader_drop_last=False,
+dataloader_num_workers=0,
+dataloader_persistent_workers=False,
+dataloader_pin_memory=True,
+dataloader_prefetch_factor=None,
+ddp_backend=None,
+ddp_broadcast_buffers=None,
+ddp_bucket_cap_mb=None,
+ddp_find_unused_parameters=None,
+ddp_timeout=1800,
+debug=[],
+deepspeed=None,
+disable_tqdm=False,
+dispatch_batches=None,
+do_eval=False,
+do_predict=True,
+do_train=False,
+eval_accumulation_steps=None,
+eval_delay=0,
+eval_do_concat_batches=True,
+eval_on_start=False,
+eval_steps=None,
+eval_strategy=IntervalStrategy.NO,
+eval_use_gather_object=False,
+evaluation_strategy=None,
+fp16=False,
+fp16_backend=auto,
+fp16_full_eval=False,
+fp16_opt_level=O1,
+fsdp=[],
+fsdp_config={'min_num_params': 0, 'xla': False, 'xla_fsdp_v2': False, 'xla_fsdp_grad_ckpt': False},
+fsdp_min_num_params=0,
+fsdp_transformer_layer_cls_to_wrap=None,
+full_determinism=False,
+generation_config=None,
+generation_max_length=640,
+generation_num_beams=1,
+gradient_accumulation_steps=1,
+gradient_checkpointing=False,
+gradient_checkpointing_kwargs=None,
+greater_is_better=None,
+group_by_length=False,
+half_precision_backend=auto,
+hub_always_push=False,
+hub_model_id=None,
+hub_private_repo=False,
+hub_strategy=HubStrategy.EVERY_SAVE,
+hub_token=<HUB_TOKEN>,
+ignore_data_skip=False,
+include_for_metrics=[],
+include_inputs_for_metrics=False,
+include_num_input_tokens_seen=False,
+include_tokens_per_second=False,
+jit_mode_eval=False,
+label_names=None,
+label_smoothing_factor=0.0,
+learning_rate=5e-05,
+length_column_name=length,
+load_best_model_at_end=False,
+local_rank=0,
+log_level=passive,
+log_level_replica=warning,
+log_on_each_node=True,
+logging_dir=output/flan-t5-xxl-task-adaptation-beam1/runs/Nov18_20-17-29_dgx-a100,
+logging_first_step=False,
+logging_nan_inf_filter=True,
+logging_steps=500,
+logging_strategy=IntervalStrategy.STEPS,
+lr_scheduler_kwargs={},
+lr_scheduler_type=SchedulerType.LINEAR,
+max_grad_norm=1.0,
+max_steps=-1,
+metric_for_best_model=None,
+mp_parameters=,
+neftune_noise_alpha=None,
+no_cuda=False,
+num_train_epochs=3.0,
+optim=OptimizerNames.ADAMW_TORCH,
+optim_args=None,
+optim_target_modules=None,
+output_dir=output/flan-t5-xxl-task-adaptation-beam1,
+overwrite_output_dir=True,
+past_index=-1,
+per_device_eval_batch_size=4,
+per_device_train_batch_size=8,
+predict_with_generate=True,
+prediction_loss_only=False,
+push_to_hub=False,
+push_to_hub_model_id=None,
+push_to_hub_organization=None,
+push_to_hub_token=<PUSH_TO_HUB_TOKEN>,
+ray_scope=last,
+remove_unused_columns=True,
+report_to=[],
+restore_callback_states_from_checkpoint=False,
+resume_from_checkpoint=None,
+run_name=flan-t5-xxl-experiment,
+save_on_each_node=False,
+save_only_model=False,
+save_safetensors=True,
+save_steps=500,
+save_strategy=IntervalStrategy.STEPS,
+save_total_limit=None,
+seed=1234,
+skip_memory_metrics=True,
+sortish_sampler=False,
+split_batches=None,
+tf32=True,
+torch_compile=False,
+torch_compile_backend=None,
+torch_compile_mode=None,
+torch_empty_cache_steps=None,
+torchdynamo=None,
+tpu_metrics_debug=False,
+tpu_num_cores=None,
+use_cpu=False,
+use_ipex=False,
+use_legacy_prediction_loop=False,
+use_liger_kernel=False,
+use_mps_device=False,
+warmup_ratio=0.0,
+warmup_steps=0,
+weight_decay=0.0,
+)
+Using custom data configuration default-e60fd0a2766fdda3
+11/18/2024 20:17:34 - INFO - datasets.builder - Using custom data configuration default-e60fd0a2766fdda3
+Loading Dataset Infos from /raid/chrisjihee/.cache/huggingface/modules/datasets_modules/datasets/gner_dataset/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410
+11/18/2024 20:17:34 - INFO - datasets.info - Loading Dataset Infos from /raid/chrisjihee/.cache/huggingface/modules/datasets_modules/datasets/gner_dataset/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410
+Overwrite dataset info from restored data version if exists.
+11/18/2024 20:17:34 - INFO - datasets.builder - Overwrite dataset info from restored data version if exists.
+Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410
+11/18/2024 20:17:34 - INFO - datasets.info - Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+Found cached dataset gner_dataset (/raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410)
+11/18/2024 20:17:34 - INFO - datasets.builder - Found cached dataset gner_dataset (/raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410)
+Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410
+11/18/2024 20:17:34 - INFO - datasets.info - Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410
+11/18/2024 20:17:34 - WARNING - __main__ - Process rank: 2, device: cuda:2, n_gpu: 1, distributed training: True, 16-bits training: True
+Listing files in /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410
+11/18/2024 20:17:34 - INFO - datasets.arrow_dataset - Listing files in /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410
+Listing files in /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410
+11/18/2024 20:17:34 - INFO - datasets.arrow_dataset - Listing files in /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410
+[INFO|configuration_utils.py:677] 2024-11-18 20:17:34,866 >> loading configuration file output/flan-t5-base-task-adaptation/checkpoint-480/config.json
+[INFO|configuration_utils.py:746] 2024-11-18 20:17:34,869 >> Model config T5Config {
+  "_name_or_path": "output/flan-t5-base-task-adaptation/checkpoint-480",
+  "architectures": [
+    "T5ForConditionalGeneration"
+  ],
+  "classifier_dropout": 0.0,
+  "d_ff": 2048,
+  "d_kv": 64,
+  "d_model": 768,
+  "decoder_start_token_id": 0,
+  "dense_act_fn": "gelu_new",
+  "dropout_rate": 0.1,
+  "eos_token_id": 1,
+  "feed_forward_proj": "gated-gelu",
+  "initializer_factor": 1.0,
+  "is_encoder_decoder": true,
+  "is_gated_act": true,
+  "layer_norm_epsilon": 1e-06,
+  "model_type": "t5",
+  "n_positions": 512,
+  "num_decoder_layers": 12,
+  "num_heads": 12,
+  "num_layers": 12,
+  "output_past": true,
+  "pad_token_id": 0,
+  "relative_attention_max_distance": 128,
+  "relative_attention_num_buckets": 32,
+  "task_specific_params": {
+    "summarization": {
+      "early_stopping": true,
+      "length_penalty": 2.0,
+      "max_length": 200,
+      "min_length": 30,
+      "no_repeat_ngram_size": 3,
+      "num_beams": 4,
+      "prefix": "summarize: "
+    },
+    "translation_en_to_de": {
+      "early_stopping": true,
+      "max_length": 300,
+      "num_beams": 4,
+      "prefix": "translate English to German: "
+    },
+    "translation_en_to_fr": {
+      "early_stopping": true,
+      "max_length": 300,
+      "num_beams": 4,
+      "prefix": "translate English to French: "
+    },
+    "translation_en_to_ro": {
+      "early_stopping": true,
+      "max_length": 300,
+      "num_beams": 4,
+      "prefix": "translate English to Romanian: "
+    }
+  },
+  "tie_word_embeddings": false,
+  "torch_dtype": "bfloat16",
+  "transformers_version": "4.46.2",
+  "use_cache": true,
+  "vocab_size": 32128
+}
+
+[INFO|tokenization_utils_base.py:2209] 2024-11-18 20:17:34,870 >> loading file spiece.model
+[INFO|tokenization_utils_base.py:2209] 2024-11-18 20:17:34,870 >> loading file tokenizer.json
+[INFO|tokenization_utils_base.py:2209] 2024-11-18 20:17:34,870 >> loading file added_tokens.json
+[INFO|tokenization_utils_base.py:2209] 2024-11-18 20:17:34,870 >> loading file special_tokens_map.json
+[INFO|tokenization_utils_base.py:2209] 2024-11-18 20:17:34,870 >> loading file tokenizer_config.json
+[INFO|modeling_utils.py:3934] 2024-11-18 20:17:34,924 >> loading weights file output/flan-t5-base-task-adaptation/checkpoint-480/model.safetensors
+[INFO|configuration_utils.py:1096] 2024-11-18 20:17:34,934 >> Generate config GenerationConfig {
+  "decoder_start_token_id": 0,
+  "eos_token_id": 1,
+  "pad_token_id": 0
+}
+
+[INFO|modeling_utils.py:4800] 2024-11-18 20:17:42,529 >> All model checkpoint weights were used when initializing T5ForConditionalGeneration.
+
+[INFO|modeling_utils.py:4808] 2024-11-18 20:17:42,529 >> All the weights of T5ForConditionalGeneration were initialized from the model checkpoint at output/flan-t5-base-task-adaptation/checkpoint-480.
+If your task is similar to the task the model of the checkpoint was trained on, you can already use T5ForConditionalGeneration for predictions without further training.
+[INFO|configuration_utils.py:1049] 2024-11-18 20:17:42,533 >> loading configuration file output/flan-t5-base-task-adaptation/checkpoint-480/generation_config.json
+[INFO|configuration_utils.py:1096] 2024-11-18 20:17:42,534 >> Generate config GenerationConfig {
+  "decoder_start_token_id": 0,
+  "eos_token_id": 1,
+  "pad_token_id": 0
+}
+
+Process #0 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410/cache-f7e549aab6c2ad8c_00000_of_00004.arrow
+11/18/2024 20:17:42 - INFO - datasets.arrow_dataset - Process #0 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410/cache-f7e549aab6c2ad8c_00000_of_00004.arrow
+Process #1 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410/cache-f7e549aab6c2ad8c_00001_of_00004.arrow
+11/18/2024 20:17:42 - INFO - datasets.arrow_dataset - Process #1 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410/cache-f7e549aab6c2ad8c_00001_of_00004.arrow
+Process #2 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410/cache-f7e549aab6c2ad8c_00002_of_00004.arrow
+11/18/2024 20:17:42 - INFO - datasets.arrow_dataset - Process #2 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410/cache-f7e549aab6c2ad8c_00002_of_00004.arrow
+Process #3 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410/cache-f7e549aab6c2ad8c_00003_of_00004.arrow
+11/18/2024 20:17:42 - INFO - datasets.arrow_dataset - Process #3 will write at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410/cache-f7e549aab6c2ad8c_00003_of_00004.arrow
+Spawning 4 processes
+11/18/2024 20:17:42 - INFO - datasets.arrow_dataset - Spawning 4 processes
+Running tokenizer on prediction dataset (num_proc=4):   0%|                                                                                                                                                                                  | 0/6470 [00:00<?, ? examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410/cache-f7e549aab6c2ad8c_00000_of_00004.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410/cache-f7e549aab6c2ad8c_00001_of_00004.arrow
+11/18/2024 20:17:42 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410/cache-f7e549aab6c2ad8c_00000_of_00004.arrow
+11/18/2024 20:17:42 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410/cache-f7e549aab6c2ad8c_00001_of_00004.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410/cache-f7e549aab6c2ad8c_00002_of_00004.arrow
+11/18/2024 20:17:42 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410/cache-f7e549aab6c2ad8c_00002_of_00004.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410/cache-f7e549aab6c2ad8c_00003_of_00004.arrow
+11/18/2024 20:17:42 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/gner_dataset/default-e60fd0a2766fdda3/0.0.0/1a385064d91da523d6ebc056370f48dda9560f716c15b7c15d602e18e9b48410/cache-f7e549aab6c2ad8c_00003_of_00004.arrow
+Running tokenizer on prediction dataset (num_proc=4): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 6470/6470 [00:01<00:00, 5524.98 examples/s]
+Concatenating 4 shards
+11/18/2024 20:17:43 - INFO - datasets.arrow_dataset - Concatenating 4 shards
+Running tokenizer on prediction dataset (num_proc=4): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 6470/6470 [00:01<00:00, 5486.67 examples/s]
+Running tokenizer on prediction dataset (num_proc=4): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 6470/6470 [00:01<00:00, 5553.22 examples/s]
+Running tokenizer on prediction dataset (num_proc=4): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 6470/6470 [00:01<00:00, 5395.44 examples/s]
+Running tokenizer on prediction dataset (num_proc=4): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 6470/6470 [00:01<00:00, 5355.46 examples/s]
+Running tokenizer on prediction dataset (num_proc=4): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 6470/6470 [00:01<00:00, 5369.83 examples/s]
+Running tokenizer on prediction dataset (num_proc=4): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 6470/6470 [00:01<00:00, 5315.44 examples/s]
+Running tokenizer on prediction dataset (num_proc=4): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 6470/6470 [00:01<00:00, 5363.21 examples/s]
+[2024-11-18 20:17:53,354] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[INFO|trainer.py:699] 2024-11-18 20:17:53,544 >> Using auto half precision backend
+11/18/2024 20:17:53 - INFO - __main__ - *** Predict ***
+[INFO|gner_trainer.py:60] 2024-11-18 20:17:53,554 >> ***** Running Prediction *****
+[INFO|gner_trainer.py:62] 2024-11-18 20:17:53,554 >>   Num examples = 6470
+[INFO|gner_trainer.py:65] 2024-11-18 20:17:53,554 >>   Batch size = 4
+[2024-11-18 20:17:53,677] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-18 20:17:53,739] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-18 20:17:53,770] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-18 20:17:53,788] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-18 20:17:53,801] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-18 20:17:53,896] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-18 20:17:53,949] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3490.88it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3532.04it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3503.14it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3441.92it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3492.98it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3481.84it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3435.36it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3475.67it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3930.89it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3970.28it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3972.92it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3968.87it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3940.70it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3958.39it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3902.64it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3944.73it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1358.91it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1353.67it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1360.41it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1354.95it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1346.28it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1356.60it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1357.13it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1348.84it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1082.80it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1079.73it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1082.09it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1078.07it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1066.69it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1075.09it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1079.60it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1069.84it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 994.10it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 992.18it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 991.62it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 988.57it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 987.93it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 976.25it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 988.39it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 981.42it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 971.57it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 970.68it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 969.52it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 965.04it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 965.86it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 958.76it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 967.99it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 962.86it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1110.28it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1114.57it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1112.44it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1105.50it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1107.34it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1098.76it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1104.65it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1104.36it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 203/203 [12:26<00:00,  3.68s/it]
+***** predict metrics *****
+  predict_average_f1                    =     0.4083
+  predict_crossner_ai_f1                =     0.4002
+  predict_crossner_ai_precision         =     0.3608
+  predict_crossner_ai_recall            =     0.4493
+  predict_crossner_literature_f1        =     0.4978
+  predict_crossner_literature_precision =     0.4883
+  predict_crossner_literature_recall    =     0.5076
+  predict_crossner_music_f1             =       0.51
+  predict_crossner_music_precision      =     0.5076
+  predict_crossner_music_recall         =     0.5125
+  predict_crossner_politics_f1          =     0.5395
+  predict_crossner_politics_precision   =     0.5062
+  predict_crossner_politics_recall      =     0.5774
+  predict_crossner_science_f1           =     0.5624
+  predict_crossner_science_precision    =     0.5068
+  predict_crossner_science_recall       =     0.6316
+  predict_mit-movie_f1                  =     0.2204
+  predict_mit-movie_precision           =     0.2792
+  predict_mit-movie_recall              =     0.1821
+  predict_mit-restaurant_f1             =     0.1275
+  predict_mit-restaurant_precision      =      0.241
+  predict_mit-restaurant_recall         =     0.0867
+  predict_runtime                       = 0:12:30.31
+  predict_samples                       =       6470
+  predict_samples_per_second            =      8.623
+  predict_steps_per_second              =      0.271
+[2024-11-18 20:30:26,242] [INFO] [launch.py:347:main] Process 2105813 exits successfully.
+[2024-11-18 20:30:26,242] [INFO] [launch.py:347:main] Process 2105808 exits successfully.
+[2024-11-18 20:30:27,242] [INFO] [launch.py:347:main] Process 2105809 exits successfully.
+[2024-11-18 20:30:27,243] [INFO] [launch.py:347:main] Process 2105812 exits successfully.
+[2024-11-18 20:30:27,243] [INFO] [launch.py:347:main] Process 2105807 exits successfully.
+[2024-11-18 20:30:27,243] [INFO] [launch.py:347:main] Process 2105810 exits successfully.
+[2024-11-18 20:30:27,243] [INFO] [launch.py:347:main] Process 2105811 exits successfully.
+[2024-11-18 20:30:27,243] [INFO] [launch.py:347:main] Process 2105806 exits successfully.
