@@ -236,3 +236,17 @@ class GNERDataset(datasets.GeneratorBasedBuilder):
                         "prompt_labels": label_text,
                     }
                 }
+"""
+{
+    "dataset": "mit-movie",
+    "split": "test",
+    "label_list": ["actor", "review", "director", "title", "year", "average ratings", "trailer", "character", "song", "plot", "rating", "genre"],
+    "instance": {
+        "id": "0",
+        "words": ["are", "there", "any", "good", "romantic", "comedies", "out", "right", "now"],
+        "labels": ["O", "O", "O", "O", "B-genre", "I-genre", "O", "B-year", "I-year"],
+        "instruction_inputs": "Please analyze the sentence provided, identifying the type of entity for each word on a token-by-token basis.\nOutput format is: word_1(label_1), word_2(label_2), ...\nWe'll use the BIO-format to label the entities, where:\n1. B- (Begin) indicates the start of a named entity.\n2. I- (Inside) is used for words within a named entity but are not the first word.\n3. O (Outside) denotes words that are not part of a named entity.\n\nUse the specific entity tags: actor, review, director, title, year, average ratings, trailer, character, song, plot, rating, genre and O.\nSentence: are there any good romantic comedies out right now",
+        "prompt_labels": "are(O) there(O) any(O) good(O) romantic(B-genre) comedies(I-genre) out(O) right(B-year) now(I-year)"
+    }
+}
+"""
