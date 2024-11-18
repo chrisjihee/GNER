@@ -4,9 +4,9 @@ DATA_DIR=data
 DATA_CONFIG_DIR=configs/dataset_configs/task_adaptation_configs
 INSTRUCTION_FILE=configs/instruction_configs/instruction.json
 BEAM_SIZE=1
-MODEL_NAME_OR_PATH=output/llama31-8b-base-task-adaptation/checkpoint-1236
-OUTPUT_DIR=output/llama31-8b-task-adaptation-beam${BEAM_SIZE}
-RUN_NAME=llama31-8b-experiment
+MODEL_NAME_OR_PATH=output/llama30-8b-sta-task-adaptation/checkpoint-1236
+OUTPUT_DIR=output/llama30-8b-task-adaptation-beam${BEAM_SIZE}
+RUN_NAME=llama30-8b-experiment
 deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --do_predict --predict_with_generate \
     --model_name_or_path $MODEL_NAME_OR_PATH \
