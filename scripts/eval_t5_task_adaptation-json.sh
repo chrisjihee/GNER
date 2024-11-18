@@ -14,7 +14,7 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --run_name $RUN_NAME \
     --generation_num_beams ${BEAM_SIZE} \
     --preprocessing_num_workers 4 \
-    --per_device_eval_batch_size 32 \
+    --per_device_eval_batch_size 64 \
     --bf16 True --tf32 True \
     --max_source_length 640 \
     --max_target_length 640 \
