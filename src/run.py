@@ -346,8 +346,8 @@ def main():
         if data_args.train_json_dir is not None:
             train_dataset = load_dataset("json", data_files=data_args.train_json_dir, split="train")
             logger.info(f"Use {data_args.train_json_dir} as train dataset, len(dataset) = {len(train_dataset)}")
-        elif "train" in raw_datasets:
-            train_dataset = raw_datasets["train"]
+        elif datasets.Split.TRAIN in raw_datasets:
+            train_dataset = raw_datasets[datasets.Split.TRAIN]
         else:
             raise ValueError("--do_train requires a train dataset")
 
@@ -369,8 +369,8 @@ def main():
         if data_args.valid_json_dir is not None:
             eval_dataset = load_dataset("json", data_files=data_args.valid_json_dir, split="train")
             logger.info(f"Use {data_args.valid_json_dir} as valid dataset, len(dataset) = {len(eval_dataset)}")
-        elif "validation" in raw_datasets:
-            eval_dataset = raw_datasets["validation"]
+        elif datasets.Split.VALIDATION in raw_datasets:
+            eval_dataset = raw_datasets[datasets.Split.VALIDATION]
         else:
             raise ValueError("--do_eval requires a validation dataset")
 
@@ -391,8 +391,8 @@ def main():
         if data_args.test_json_dir is not None:
             predict_dataset = load_dataset("json", data_files=data_args.test_json_dir, split="train")
             logger.info(f"Use {data_args.test_json_dir} as predict dataset, len(dataset) = {len(predict_dataset)}")
-        elif "test" in raw_datasets:
-            predict_dataset = raw_datasets["test"]
+        elif datasets.Split.TEST in raw_datasets:
+            predict_dataset = raw_datasets[datasets.Split.TEST]
         else:
             raise ValueError("--do_predict requires a test dataset")
 
