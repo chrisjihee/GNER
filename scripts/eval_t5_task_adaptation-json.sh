@@ -1,10 +1,10 @@
 set -x
 port=$(shuf -i25000-30000 -n1)
 TEST_JSON_DIR=data/zero-shot-test.jsonl
-MODEL_NAME_OR_PATH=output/flan-t5-base-task-adaptation-1/checkpoint-4956
 BEAM_SIZE=1
-OUTPUT_DIR=output/flan-t5-xxl-task-adaptation-beam${BEAM_SIZE}
-RUN_NAME=flan-t5-xxl-experiment
+MODEL_NAME_OR_PATH=output/flan-t5-base-task-adaptation-1/checkpoint-4956
+OUTPUT_DIR=output/flan-t5-base-task-adaptation-beam${BEAM_SIZE}
+RUN_NAME=flan-t5-base-experiment
 deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --do_predict --predict_with_generate \
     --model_name_or_path $MODEL_NAME_OR_PATH \
