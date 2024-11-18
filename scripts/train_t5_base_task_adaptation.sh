@@ -18,7 +18,7 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --instruction_file $INSTRUCTION_FILE \
     --output_dir $OUTPUT_DIR \
     --per_device_eval_batch_size 32 \
-    --per_device_train_batch_size 128 \
+    --per_device_train_batch_size 64 \
     --gradient_accumulation_steps 1 \
     --gradient_checkpointing True --bf16 True --tf32 True \
     --lr_scheduler_type constant --learning_rate 5e-05 --warmup_steps 0 \
