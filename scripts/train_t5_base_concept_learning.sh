@@ -11,8 +11,9 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --do_train --do_predict --predict_with_generate \
     --model_name_or_path $MODEL_NAME_OR_PATH \
     --train_json_dir $TRAIN_JSON_DIR \
-    --valid_json_dir VALID_JSON_DIR \
+    --valid_json_dir $VALID_JSON_DIR \
     --test_json_dir $TEST_JSON_DIR \
+    --no_load_gner_customized_datasets \
     --output_dir $OUTPUT_DIR \
     --run_name $RUN_NAME \
     --preprocessing_num_workers 4 \
