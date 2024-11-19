@@ -1,6 +1,6 @@
 set -x
 port=$(shuf -i25000-30000 -n1)
-TRAIN_JSON_DIR=data/pile-ner.json
+TRAIN_JSON_DIR=data/pile-ner.jsonl
 DATA_DIR=data
 DATA_CONFIG_DIR=configs/dataset_configs/task_adaptation_configs
 INSTRUCTION_FILE=configs/instruction_configs/instruction.json
@@ -26,7 +26,7 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --lr_scheduler_type constant \
     --learning_rate 5e-05 \
     --warmup_steps 0 \
-    --num_train_epochs 12 \
+    --num_train_epochs 3 \
     --max_source_length 640 \
     --max_target_length 640 \
     --generation_max_length 640 \
