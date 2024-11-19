@@ -851,5 +851,140 @@ Time to load fused_adam op: 0.20159196853637695 seconds
 /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
   return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
 {'loss': 0.0263, 'grad_norm': 0.22545226789625247, 'learning_rate': 6.274509803921569e-06, 'epoch': 2.11}
- 74%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉                                         | 158/213 [12:15<01:32,  1.69s/it]
+{'loss': 0.0241, 'grad_norm': 0.21116202379083904, 'learning_rate': 5.294117647058824e-06, 'epoch': 2.25}
+{'loss': 0.0249, 'grad_norm': 0.4136217758777028, 'learning_rate': 4.313725490196079e-06, 'epoch': 2.39}
+{'loss': 0.0247, 'grad_norm': 0.3079673832476445, 'learning_rate': 3.3333333333333333e-06, 'epoch': 2.54}
+{'loss': 0.0244, 'grad_norm': 0.26339642300628147, 'learning_rate': 2.3529411764705885e-06, 'epoch': 2.68}
+{'loss': 0.0257, 'grad_norm': 0.2750859976814444, 'learning_rate': 1.3725490196078434e-06, 'epoch': 2.82}
+{'loss': 0.0238, 'grad_norm': 0.2929481753436206, 'learning_rate': 3.921568627450981e-07, 'epoch': 2.96}
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 213/213 [13:15<00:00,  1.05s/it][INFO|trainer.py:3812] 2024-11-20 07:05:19,153 >> Saving model checkpoint to output/llama3-1b-supervised/checkpoint-213
+[INFO|configuration_utils.py:414] 2024-11-20 07:05:19,155 >> Configuration saved in output/llama3-1b-supervised/checkpoint-213/config.json
+[INFO|configuration_utils.py:865] 2024-11-20 07:05:19,156 >> Configuration saved in output/llama3-1b-supervised/checkpoint-213/generation_config.json
+[INFO|modeling_utils.py:3035] 2024-11-20 07:05:22,544 >> Model weights saved in output/llama3-1b-supervised/checkpoint-213/model.safetensors
+[INFO|tokenization_utils_base.py:2646] 2024-11-20 07:05:22,547 >> tokenizer config file saved in output/llama3-1b-supervised/checkpoint-213/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2655] 2024-11-20 07:05:22,547 >> Special tokens file saved in output/llama3-1b-supervised/checkpoint-213/special_tokens_map.json
+[2024-11-20 07:05:22,829] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step213 is about to be saved!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+[2024-11-20 07:05:22,833] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/llama3-1b-supervised/checkpoint-213/global_step213/mp_rank_00_model_states.pt
+[2024-11-20 07:05:22,833] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama3-1b-supervised/checkpoint-213/global_step213/mp_rank_00_model_states.pt...
+[2024-11-20 07:05:26,353] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama3-1b-supervised/checkpoint-213/global_step213/mp_rank_00_model_states.pt.
+[2024-11-20 07:05:26,355] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama3-1b-supervised/checkpoint-213/global_step213/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-20 07:05:29,867] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama3-1b-supervised/checkpoint-213/global_step213/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-20 07:05:29,867] [INFO] [engine.py:3477:_save_zero_checkpoint] bf16_zero checkpoint saved output/llama3-1b-supervised/checkpoint-213/global_step213/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-20 07:05:29,867] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step213 is ready now!
+[INFO|gner_trainer.py:60] 2024-11-20 07:05:29,957 >> ***** Running Evaluation *****
+[INFO|gner_trainer.py:62] 2024-11-20 07:05:29,957 >>   Num examples = 6470
+[INFO|gner_trainer.py:65] 2024-11-20 07:05:29,957 >>   Batch size = 32
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1407.48it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1402.57it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1383.58it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1400.56it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1397.15it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1395.06it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1399.68it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1116.78it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1109.68it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1099.21it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1109.31it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1112.14it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1398.58it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1102.90it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1108.69it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1112.36it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 1013.63it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 1010.57it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 1007.61it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 998.48it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 1009.03it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 1000.71it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 996.40it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 1004.50it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 1007.80it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 1005.88it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 1006.56it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 996.85it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 997.88it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 1003.58it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 998.91it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 1004.28it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1160.08it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1158.11it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1156.62it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1150.54it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1148.00it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1151.69it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1135.83it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1147.66it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3671.46it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3663.82it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3692.37it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3675.82it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3635.61it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3670.38it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3638.45it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3939.82it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3924.94it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3975.33it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3951.63it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3914.69it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3637.66it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3942.70it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3911.72it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3886.71it/s]
+{'eval_crossner_ai_precision': 0.6575603557814067, 'eval_crossner_ai_recall': 0.6440572495332517, 'eval_crossner_ai_f1': 0.6507387613457519, 'eval_crossner_literature_precision': 0.7387480600103083, 'eval_crossner_literature_recall': 0.7204843592330615, 'eval_crossner_literature_f1': 0.7295019156587829, 'eval_crossner_music_precision': 0.7813908564069291, 'eval_crossner_music_recall': 0.7768886043533683, 'eval_crossner_music_f1': 0.779133226274213, 'eval_crossner_politics_precision': 0.7993362267040899, 'eval_crossner_politics_recall': 0.8028205128204923, 'eval_crossner_politics_f1': 0.8010745809913, 'eval_crossner_science_precision': 0.7260165811290673, 'eval_crossner_science_recall': 0.7268774703557025, 'eval_crossner_science_f1': 0.726446770639286, 'eval_mit-movie_precision': 0.8803196431889819, 'eval_mit-movie_recall': 0.8872448023974361, 'eval_mit-movie_f1': 0.883768656666402, 'eval_mit-restaurant_precision': 0.8035544271659535, 'eval_mit-restaurant_recall': 0.8038095238094983, 'eval_mit-restaurant_f1': 0.8036819551951736, 'eval_average_f1': 0.767763695252987, 'eval_runtime': 244.8987, 'eval_samples_per_second': 26.419, 'eval_steps_per_second': 0.106, 'epoch': 3.0}
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 213/213 [17:32<00:00,  1.05s/it]
+[INFO|trainer.py:3812] 2024-11-20 07:09:36,945 >> Saving model checkpoint to output/llama3-1b-supervised/checkpoint-213
+[INFO|configuration_utils.py:414] 2024-11-20 07:09:36,947 >> Configuration saved in output/llama3-1b-supervised/checkpoint-213/config.json
+[INFO|configuration_utils.py:865] 2024-11-20 07:09:36,947 >> Configuration saved in output/llama3-1b-supervised/checkpoint-213/generation_config.json
+[INFO|modeling_utils.py:3035] 2024-11-20 07:09:41,275 >> Model weights saved in output/llama3-1b-supervised/checkpoint-213/model.safetensors
+[INFO|tokenization_utils_base.py:2646] 2024-11-20 07:09:41,278 >> tokenizer config file saved in output/llama3-1b-supervised/checkpoint-213/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2655] 2024-11-20 07:09:41,278 >> Special tokens file saved in output/llama3-1b-supervised/checkpoint-213/special_tokens_map.json
+[2024-11-20 07:09:41,602] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step213 is about to be saved!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+[2024-11-20 07:09:41,607] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/llama3-1b-supervised/checkpoint-213/global_step213/mp_rank_00_model_states.pt
+[2024-11-20 07:09:41,607] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama3-1b-supervised/checkpoint-213/global_step213/mp_rank_00_model_states.pt...
+[2024-11-20 07:09:45,558] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama3-1b-supervised/checkpoint-213/global_step213/mp_rank_00_model_states.pt.
+[2024-11-20 07:09:45,561] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/llama3-1b-supervised/checkpoint-213/global_step213/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-20 07:09:49,880] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/llama3-1b-supervised/checkpoint-213/global_step213/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-20 07:09:49,880] [INFO] [engine.py:3477:_save_zero_checkpoint] bf16_zero checkpoint saved output/llama3-1b-supervised/checkpoint-213/global_step213/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-20 07:09:49,880] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step213 is ready now!
+[INFO|trainer.py:2591] 2024-11-20 07:09:49,998 >>
+
+Training completed. Do not forget to share your model on huggingface.co/models =)
+
+
+[INFO|trainer.py:2829] 2024-11-20 07:09:49,999 >> Loading best model from output/llama3-1b-supervised/checkpoint-213 (score: 0.767763695252987).
+[INFO|deepspeed.py:436] 2024-11-20 07:09:49,999 >> Attempting to resume from output/llama3-1b-supervised/checkpoint-213
+[2024-11-20 07:09:49,999] [INFO] [torch_checkpoint_engine.py:27:load] [Torch] Loading checkpoint from output/llama3-1b-supervised/checkpoint-213/global_step213/mp_rank_00_model_states.pt...
+[2024-11-20 07:09:51,107] [INFO] [torch_checkpoint_engine.py:29:load] [Torch] Loaded checkpoint from output/llama3-1b-supervised/checkpoint-213/global_step213/mp_rank_00_model_states.pt.
+[2024-11-20 07:09:51,238] [INFO] [torch_checkpoint_engine.py:27:load] [Torch] Loading checkpoint from output/llama3-1b-supervised/checkpoint-213/global_step213/mp_rank_00_model_states.pt...
+[2024-11-20 07:09:52,377] [INFO] [torch_checkpoint_engine.py:29:load] [Torch] Loaded checkpoint from output/llama3-1b-supervised/checkpoint-213/global_step213/mp_rank_00_model_states.pt.
+[2024-11-20 07:09:52,955] [INFO] [torch_checkpoint_engine.py:27:load] [Torch] Loading checkpoint from output/llama3-1b-supervised/checkpoint-213/global_step213/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-20 07:09:53,980] [INFO] [torch_checkpoint_engine.py:29:load] [Torch] Loaded checkpoint from output/llama3-1b-supervised/checkpoint-213/global_step213/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-20 07:09:53,981] [INFO] [engine.py:3019:_get_all_zero_checkpoint_state_dicts] successfully read 8 ZeRO state_dicts for rank 0
+[2024-11-20 07:09:54,193] [INFO] [engine.py:2951:_load_zero_checkpoint] loading 8 zero partition checkpoints for rank 0
+{'train_runtime': 1071.764, 'train_samples_per_second': 50.762, 'train_steps_per_second': 0.199, 'train_loss': 0.06505338238998198, 'epoch': 3.0}
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 213/213 [17:52<00:00,  5.04s/it]
+[INFO|trainer.py:3812] 2024-11-20 07:09:56,944 >> Saving model checkpoint to output/llama3-1b-supervised
+[INFO|configuration_utils.py:414] 2024-11-20 07:09:56,946 >> Configuration saved in output/llama3-1b-supervised/config.json
+[INFO|configuration_utils.py:865] 2024-11-20 07:09:56,946 >> Configuration saved in output/llama3-1b-supervised/generation_config.json
+[INFO|modeling_utils.py:3035] 2024-11-20 07:10:00,996 >> Model weights saved in output/llama3-1b-supervised/model.safetensors
+[INFO|tokenization_utils_base.py:2646] 2024-11-20 07:10:00,998 >> tokenizer config file saved in output/llama3-1b-supervised/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2655] 2024-11-20 07:10:00,999 >> Special tokens file saved in output/llama3-1b-supervised/special_tokens_map.json
+***** train metrics *****
+  epoch                    =        3.0
+  total_flos               = 78052511GF
+  train_loss               =     0.0651
+  train_runtime            = 0:17:51.76
+  train_samples            =      18135
+  train_samples_per_second =     50.762
+  train_steps_per_second   =      0.199
+11/20/2024 07:10:01 - INFO - __main__ - Metrics {'train_runtime': 1071.764, 'train_samples_per_second': 50.762, 'train_steps_per_second': 0.199, 'total_flos': 8.380824593157325e+16, 'train_loss': 0.06505338238998198, 'epoch': 3.0, 'train_samples': 18135}
+11/20/2024 07:10:01 - INFO - __main__ - *** Evaluate ***
+[INFO|gner_trainer.py:60] 2024-11-20 07:10:01,290 >> ***** Running Evaluation *****
+[INFO|gner_trainer.py:62] 2024-11-20 07:10:01,290 >>   Num examples = 6470
+[INFO|gner_trainer.py:65] 2024-11-20 07:10:01,290 >>   Batch size = 32
+
 
