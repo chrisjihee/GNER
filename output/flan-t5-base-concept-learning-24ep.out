@@ -1,0 +1,1185 @@
+(GNER) chrisjihee@dgx-a100:~/proj/GNER$ bash scripts/train_t5_base_concept_learning.sh
+++ shuf -i25000-30000 -n1
++ port=29438
++ TRAIN_JSON_DIR=data/pile-ner-with-wiki.jsonl
++ VALID_JSON_DIR=data/zero-shot-with-wiki.jsonl
++ TEST_JSON_DIR=data/zero-shot-with-wiki.jsonl
++ DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero0_t5.json
++ MODEL_NAME_OR_PATH=google/flan-t5-base
++ OUTPUT_DIR=output/flan-t5-base-concept-learning
++ RUN_NAME=flan-t5-base-experiment
++ deepspeed --include=localhost:0,1,2,3,4,5,6,7 --master_port 29438 src/run.py --do_train --do_predict --predict_with_generate --model_name_or_path google/flan-t5-base --train_json_dir data/pile-ner-with-wiki.jsonl --valid_json_dir data/zero-shot-with-wiki.jsonl --test_json_dir data/zero-shot-with-wiki.jsonl --no_load_gner_customized_datasets --output_dir output/flan-t5-base-concept-learning --run_name flan-t5-base-experiment --preprocessing_num_workers 4 --per_device_eval_batch_size 32 --per_device_train_batch_size 32 --gradient_accumulation_steps 1 --gradient_checkpointing True --bf16 True --tf32 True --lr_scheduler_type constant --learning_rate 5e-05 --warmup_steps 0 --num_train_epochs 24 --max_source_length 640 --max_target_length 640 --generation_max_length 1280 --logging_strategy steps --logging_steps 10 --save_strategy epoch --eval_strategy epoch --overwrite_output_dir --overwrite_cache --load_best_model_at_end True --metric_for_best_model eval_average_f1 --greater_is_better True --seed 1234 --deepspeed configs/deepspeed_configs/deepspeed_zero0_t5.json
+[2024-11-19 19:18:11,599] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-19 19:18:15,760] [WARNING] [runner.py:202:fetch_hostfile] Unable to find hostfile, will proceed with training with local resources only.
+[2024-11-19 19:18:18,136] [INFO] [runner.py:568:main] cmd = /raid/chrisjihee/miniforge3/envs/GNER/bin/python3.11 -u -m deepspeed.launcher.launch --world_info=eyJsb2NhbGhvc3QiOiBbMCwgMSwgMiwgMywgNCwgNSwgNiwgN119 --master_addr=127.0.0.1 --master_port=29438 --enable_each_rank_log=None src/run.py --do_train --do_predict --predict_with_generate --model_name_or_path google/flan-t5-base --train_json_dir data/pile-ner-with-wiki.jsonl --valid_json_dir data/zero-shot-with-wiki.jsonl --test_json_dir data/zero-shot-with-wiki.jsonl --no_load_gner_customized_datasets --output_dir output/flan-t5-base-concept-learning --run_name flan-t5-base-experiment --preprocessing_num_workers 4 --per_device_eval_batch_size 32 --per_device_train_batch_size 32 --gradient_accumulation_steps 1 --gradient_checkpointing True --bf16 True --tf32 True --lr_scheduler_type constant --learning_rate 5e-05 --warmup_steps 0 --num_train_epochs 24 --max_source_length 640 --max_target_length 640 --generation_max_length 1280 --logging_strategy steps --logging_steps 10 --save_strategy epoch --eval_strategy epoch --overwrite_output_dir --overwrite_cache --load_best_model_at_end True --metric_for_best_model eval_average_f1 --greater_is_better True --seed 1234 --deepspeed configs/deepspeed_configs/deepspeed_zero0_t5.json
+[2024-11-19 19:18:21,270] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-19 19:18:25,414] [INFO] [launch.py:145:main] WORLD INFO DICT: {'localhost': [0, 1, 2, 3, 4, 5, 6, 7]}
+[2024-11-19 19:18:25,414] [INFO] [launch.py:151:main] nnodes=1, num_local_procs=8, node_rank=0
+[2024-11-19 19:18:25,414] [INFO] [launch.py:162:main] global_rank_mapping=defaultdict(<class 'list'>, {'localhost': [0, 1, 2, 3, 4, 5, 6, 7]})
+[2024-11-19 19:18:25,414] [INFO] [launch.py:163:main] dist_world_size=8
+[2024-11-19 19:18:25,414] [INFO] [launch.py:165:main] Setting CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+[2024-11-19 19:18:38,727] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-19 19:18:38,770] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-19 19:18:38,772] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-19 19:18:38,773] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-19 19:18:38,784] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-19 19:18:38,787] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-19 19:18:38,789] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-19 19:18:38,802] [INFO] [real_accelerator.py:191:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-11-19 19:18:38,899] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-19 19:18:38,939] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-19 19:18:38,946] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-19 19:18:38,952] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-19 19:18:38,963] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-19 19:18:38,963] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-19 19:18:38,963] [INFO] [comm.py:668:init_distributed] Initializing TorchBackend in DeepSpeed with backend nccl
+[2024-11-19 19:18:38,964] [INFO] [comm.py:637:init_distributed] cdb=None
+[2024-11-19 19:18:38,966] [INFO] [comm.py:637:init_distributed] cdb=None
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/19/2024 19:18:42 - WARNING - __main__ - Process rank: 3, device: cuda:3, n_gpu: 1, distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/19/2024 19:18:42 - WARNING - __main__ - Process rank: 4, device: cuda:4, n_gpu: 1, distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/19/2024 19:18:42 - WARNING - __main__ - Process rank: 2, device: cuda:2, n_gpu: 1, distributed training: True, 16-bits training: True
+11/19/2024 19:18:42 - WARNING - __main__ - Process rank: 7, device: cuda:7, n_gpu: 1, distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/19/2024 19:18:42 - WARNING - __main__ - Process rank: 5, device: cuda:5, n_gpu: 1, distributed training: True, 16-bits training: True
+11/19/2024 19:18:42 - WARNING - __main__ - Process rank: 1, device: cuda:1, n_gpu: 1, distributed training: True, 16-bits training: True
+11/19/2024 19:18:42 - WARNING - __main__ - Process rank: 6, device: cuda:6, n_gpu: 1, distributed training: True, 16-bits training: True
+Using the `WANDB_DISABLED` environment variable is deprecated and will be removed in v5. Use the --report_to flag to control the integrations used for logging result (for instance --report_to none).
+11/19/2024 19:18:42 - WARNING - __main__ - Process rank: 0, device: cuda:0, n_gpu: 1, distributed training: True, 16-bits training: True
+11/19/2024 19:18:42 - INFO - __main__ - Training/evaluation parameters Seq2SeqTrainingArguments(
+_n_gpu=1,
+accelerator_config={'split_batches': False, 'dispatch_batches': None, 'even_batches': True, 'use_seedable_sampler': True, 'non_blocking': False, 'gradient_accumulation_kwargs': None, 'use_configured_state': False},
+adafactor=False,
+adam_beta1=0.9,
+adam_beta2=0.999,
+adam_epsilon=1e-08,
+auto_find_batch_size=False,
+average_tokens_across_devices=False,
+batch_eval_metrics=False,
+bf16=True,
+bf16_full_eval=False,
+data_seed=None,
+dataloader_drop_last=False,
+dataloader_num_workers=0,
+dataloader_persistent_workers=False,
+dataloader_pin_memory=True,
+dataloader_prefetch_factor=None,
+ddp_backend=None,
+ddp_broadcast_buffers=None,
+ddp_bucket_cap_mb=None,
+ddp_find_unused_parameters=None,
+ddp_timeout=1800,
+debug=[],
+deepspeed=configs/deepspeed_configs/deepspeed_zero0_t5.json,
+disable_tqdm=False,
+dispatch_batches=None,
+do_eval=True,
+do_predict=True,
+do_train=True,
+eval_accumulation_steps=None,
+eval_delay=0,
+eval_do_concat_batches=True,
+eval_on_start=False,
+eval_steps=None,
+eval_strategy=IntervalStrategy.EPOCH,
+eval_use_gather_object=False,
+evaluation_strategy=None,
+fp16=False,
+fp16_backend=auto,
+fp16_full_eval=False,
+fp16_opt_level=O1,
+fsdp=[],
+fsdp_config={'min_num_params': 0, 'xla': False, 'xla_fsdp_v2': False, 'xla_fsdp_grad_ckpt': False},
+fsdp_min_num_params=0,
+fsdp_transformer_layer_cls_to_wrap=None,
+full_determinism=False,
+generation_config=None,
+generation_max_length=1280,
+generation_num_beams=None,
+gradient_accumulation_steps=1,
+gradient_checkpointing=True,
+gradient_checkpointing_kwargs=None,
+greater_is_better=True,
+group_by_length=False,
+half_precision_backend=auto,
+hub_always_push=False,
+hub_model_id=None,
+hub_private_repo=False,
+hub_strategy=HubStrategy.EVERY_SAVE,
+hub_token=<HUB_TOKEN>,
+ignore_data_skip=False,
+include_for_metrics=[],
+include_inputs_for_metrics=False,
+include_num_input_tokens_seen=False,
+include_tokens_per_second=False,
+jit_mode_eval=False,
+label_names=None,
+label_smoothing_factor=0.0,
+learning_rate=5e-05,
+length_column_name=length,
+load_best_model_at_end=True,
+local_rank=0,
+log_level=passive,
+log_level_replica=warning,
+log_on_each_node=True,
+logging_dir=output/flan-t5-base-concept-learning/runs/Nov19_19-18-28_dgx-a100,
+logging_first_step=False,
+logging_nan_inf_filter=True,
+logging_steps=10,
+logging_strategy=IntervalStrategy.STEPS,
+lr_scheduler_kwargs={},
+lr_scheduler_type=SchedulerType.CONSTANT,
+max_grad_norm=1.0,
+max_steps=-1,
+metric_for_best_model=eval_average_f1,
+mp_parameters=,
+neftune_noise_alpha=None,
+no_cuda=False,
+num_train_epochs=24.0,
+optim=OptimizerNames.ADAMW_TORCH,
+optim_args=None,
+optim_target_modules=None,
+output_dir=output/flan-t5-base-concept-learning,
+overwrite_output_dir=True,
+past_index=-1,
+per_device_eval_batch_size=32,
+per_device_train_batch_size=32,
+predict_with_generate=True,
+prediction_loss_only=False,
+push_to_hub=False,
+push_to_hub_model_id=None,
+push_to_hub_organization=None,
+push_to_hub_token=<PUSH_TO_HUB_TOKEN>,
+ray_scope=last,
+remove_unused_columns=True,
+report_to=[],
+restore_callback_states_from_checkpoint=False,
+resume_from_checkpoint=None,
+run_name=flan-t5-base-experiment,
+save_on_each_node=False,
+save_only_model=False,
+save_safetensors=True,
+save_steps=500,
+save_strategy=IntervalStrategy.EPOCH,
+save_total_limit=None,
+seed=1234,
+skip_memory_metrics=True,
+sortish_sampler=False,
+split_batches=None,
+tf32=True,
+torch_compile=False,
+torch_compile_backend=None,
+torch_compile_mode=None,
+torch_empty_cache_steps=None,
+torchdynamo=None,
+tpu_metrics_debug=False,
+tpu_num_cores=None,
+use_cpu=False,
+use_ipex=False,
+use_legacy_prediction_loop=False,
+use_liger_kernel=False,
+use_mps_device=False,
+warmup_ratio=0.0,
+warmup_steps=0,
+weight_decay=0.0,
+)
+[INFO|configuration_utils.py:679] 2024-11-19 19:18:42,466 >> loading configuration file config.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--google--flan-t5-base/snapshots/7bcac572ce56db69c1ea7c8af255c5d7c9672fc2/config.json
+[INFO|configuration_utils.py:746] 2024-11-19 19:18:42,468 >> Model config T5Config {
+  "_name_or_path": "google/flan-t5-base",
+  "architectures": [
+    "T5ForConditionalGeneration"
+  ],
+  "classifier_dropout": 0.0,
+  "d_ff": 2048,
+  "d_kv": 64,
+  "d_model": 768,
+  "decoder_start_token_id": 0,
+  "dense_act_fn": "gelu_new",
+  "dropout_rate": 0.1,
+  "eos_token_id": 1,
+  "feed_forward_proj": "gated-gelu",
+  "initializer_factor": 1.0,
+  "is_encoder_decoder": true,
+  "is_gated_act": true,
+  "layer_norm_epsilon": 1e-06,
+  "model_type": "t5",
+  "n_positions": 512,
+  "num_decoder_layers": 12,
+  "num_heads": 12,
+  "num_layers": 12,
+  "output_past": true,
+  "pad_token_id": 0,
+  "relative_attention_max_distance": 128,
+  "relative_attention_num_buckets": 32,
+  "task_specific_params": {
+    "summarization": {
+      "early_stopping": true,
+      "length_penalty": 2.0,
+      "max_length": 200,
+      "min_length": 30,
+      "no_repeat_ngram_size": 3,
+      "num_beams": 4,
+      "prefix": "summarize: "
+    },
+    "translation_en_to_de": {
+      "early_stopping": true,
+      "max_length": 300,
+      "num_beams": 4,
+      "prefix": "translate English to German: "
+    },
+    "translation_en_to_fr": {
+      "early_stopping": true,
+      "max_length": 300,
+      "num_beams": 4,
+      "prefix": "translate English to French: "
+    },
+    "translation_en_to_ro": {
+      "early_stopping": true,
+      "max_length": 300,
+      "num_beams": 4,
+      "prefix": "translate English to Romanian: "
+    }
+  },
+  "tie_word_embeddings": false,
+  "transformers_version": "4.46.2",
+  "use_cache": true,
+  "vocab_size": 32128
+}
+
+[INFO|tokenization_utils_base.py:2211] 2024-11-19 19:18:42,676 >> loading file spiece.model from cache at /raid/chrisjihee/.cache/huggingface/hub/models--google--flan-t5-base/snapshots/7bcac572ce56db69c1ea7c8af255c5d7c9672fc2/spiece.model
+[INFO|tokenization_utils_base.py:2211] 2024-11-19 19:18:42,676 >> loading file tokenizer.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--google--flan-t5-base/snapshots/7bcac572ce56db69c1ea7c8af255c5d7c9672fc2/tokenizer.json
+[INFO|tokenization_utils_base.py:2211] 2024-11-19 19:18:42,676 >> loading file added_tokens.json from cache at None
+[INFO|tokenization_utils_base.py:2211] 2024-11-19 19:18:42,676 >> loading file special_tokens_map.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--google--flan-t5-base/snapshots/7bcac572ce56db69c1ea7c8af255c5d7c9672fc2/special_tokens_map.json
+[INFO|tokenization_utils_base.py:2211] 2024-11-19 19:18:42,676 >> loading file tokenizer_config.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--google--flan-t5-base/snapshots/7bcac572ce56db69c1ea7c8af255c5d7c9672fc2/tokenizer_config.json
+[INFO|modeling_utils.py:3937] 2024-11-19 19:18:42,926 >> loading weights file model.safetensors from cache at /raid/chrisjihee/.cache/huggingface/hub/models--google--flan-t5-base/snapshots/7bcac572ce56db69c1ea7c8af255c5d7c9672fc2/model.safetensors
+[INFO|configuration_utils.py:1096] 2024-11-19 19:18:42,935 >> Generate config GenerationConfig {
+  "decoder_start_token_id": 0,
+  "eos_token_id": 1,
+  "pad_token_id": 0
+}
+
+[INFO|modeling_utils.py:4800] 2024-11-19 19:18:43,319 >> All model checkpoint weights were used when initializing T5ForConditionalGeneration.
+
+[INFO|modeling_utils.py:4808] 2024-11-19 19:18:43,319 >> All the weights of T5ForConditionalGeneration were initialized from the model checkpoint at google/flan-t5-base.
+If your task is similar to the task the model of the checkpoint was trained on, you can already use T5ForConditionalGeneration for predictions without further training.
+[INFO|configuration_utils.py:1051] 2024-11-19 19:18:43,536 >> loading configuration file generation_config.json from cache at /raid/chrisjihee/.cache/huggingface/hub/models--google--flan-t5-base/snapshots/7bcac572ce56db69c1ea7c8af255c5d7c9672fc2/generation_config.json
+[INFO|configuration_utils.py:1096] 2024-11-19 19:18:43,536 >> Generate config GenerationConfig {
+  "decoder_start_token_id": 0,
+  "eos_token_id": 1,
+  "pad_token_id": 0
+}
+
+Generating train split: 0 examples [00:00, ? examples/s]Using custom data configuration default-1f327c9ba826c9a3
+11/19/2024 19:18:44 - INFO - datasets.builder - Using custom data configuration default-1f327c9ba826c9a3
+Loading Dataset Infos from /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/datasets/packaged_modules/json
+11/19/2024 19:18:44 - INFO - datasets.info - Loading Dataset Infos from /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/datasets/packaged_modules/json
+Generating train split: 191188 examples [00:02, 92149.17 examples/s]
+Found cached dataset json (/raid/chrisjihee/.cache/huggingface/datasets/json/default-1f327c9ba826c9a3/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092)
+11/19/2024 19:18:46 - INFO - datasets.builder - Found cached dataset json (/raid/chrisjihee/.cache/huggingface/datasets/json/default-1f327c9ba826c9a3/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092)
+Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/json/default-1f327c9ba826c9a3/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092
+11/19/2024 19:18:46 - INFO - datasets.info - Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/json/default-1f327c9ba826c9a3/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092
+11/19/2024 19:18:46 - INFO - __main__ - Use data/pile-ner-with-wiki.jsonl as train dataset, len(dataset) = 191188
+11/19/2024 19:18:46 - INFO - __main__ - len(dataset) = 191188
+Process #0 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-1f327c9ba826c9a3/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-cc905ebd38b2887a_00000_of_00004.arrow
+11/19/2024 19:18:46 - INFO - datasets.arrow_dataset - Process #0 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-1f327c9ba826c9a3/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-cc905ebd38b2887a_00000_of_00004.arrow
+Process #1 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-1f327c9ba826c9a3/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-cc905ebd38b2887a_00001_of_00004.arrow
+11/19/2024 19:18:46 - INFO - datasets.arrow_dataset - Process #1 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-1f327c9ba826c9a3/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-cc905ebd38b2887a_00001_of_00004.arrow
+Process #2 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-1f327c9ba826c9a3/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-cc905ebd38b2887a_00002_of_00004.arrow
+11/19/2024 19:18:46 - INFO - datasets.arrow_dataset - Process #2 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-1f327c9ba826c9a3/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-cc905ebd38b2887a_00002_of_00004.arrow
+Process #3 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-1f327c9ba826c9a3/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-cc905ebd38b2887a_00003_of_00004.arrow
+11/19/2024 19:18:46 - INFO - datasets.arrow_dataset - Process #3 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-1f327c9ba826c9a3/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-cc905ebd38b2887a_00003_of_00004.arrow
+Spawning 4 processes
+11/19/2024 19:18:46 - INFO - datasets.arrow_dataset - Spawning 4 processes
+Running tokenizer on train dataset (num_proc=4):   0%|                                                                                                                                                                                     | 0/191188 [00:00<?, ? examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-1f327c9ba826c9a3/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-cc905ebd38b2887a_00000_of_00004.arrow
+11/19/2024 19:18:46 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-1f327c9ba826c9a3/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-cc905ebd38b2887a_00000_of_00004.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-1f327c9ba826c9a3/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-cc905ebd38b2887a_00001_of_00004.arrow
+11/19/2024 19:18:46 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-1f327c9ba826c9a3/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-cc905ebd38b2887a_00001_of_00004.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-1f327c9ba826c9a3/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-cc905ebd38b2887a_00002_of_00004.arrow
+11/19/2024 19:18:46 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-1f327c9ba826c9a3/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-cc905ebd38b2887a_00002_of_00004.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-1f327c9ba826c9a3/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-cc905ebd38b2887a_00003_of_00004.arrow
+11/19/2024 19:18:46 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-1f327c9ba826c9a3/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-cc905ebd38b2887a_00003_of_00004.arrow
+Running tokenizer on train dataset (num_proc=4): 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 191188/191188 [01:05<00:00, 2936.67 examples/s]
+Concatenating 4 shards
+11/19/2024 19:19:51 - INFO - datasets.arrow_dataset - Concatenating 4 shards
+Running tokenizer on train dataset (num_proc=4):   1%|▉                                                                                                                                                                       | 1074/191188 [00:00<01:07, 2808.90 examples/s]Using custom data configuration default-f3354aaed434fb00
+11/19/2024 19:20:06 - INFO - datasets.builder - Using custom data configuration default-f3354aaed434fb00
+Loading Dataset Infos from /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/datasets/packaged_modules/json
+11/19/2024 19:20:06 - INFO - datasets.info - Loading Dataset Infos from /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/datasets/packaged_modules/json
+Generating dataset json (/raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092)
+11/19/2024 19:20:06 - INFO - datasets.builder - Generating dataset json (/raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092)
+Downloading and preparing dataset json/default to /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092...
+11/19/2024 19:20:06 - INFO - datasets.builder - Downloading and preparing dataset json/default to /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092...
+Downloading took 0.0 min
+11/19/2024 19:20:06 - INFO - datasets.download.download_manager - Downloading took 0.0 min
+Checksum Computation took 0.0 min
+11/19/2024 19:20:06 - INFO - datasets.download.download_manager - Checksum Computation took 0.0 min
+Generating train split
+11/19/2024 19:20:06 - INFO - datasets.builder - Generating train split
+Generating train split: 13681 examples [00:00, 97439.10 examples/s]                                                                                                                                                           | 1798/191188 [00:00<01:00, 3111.64 examples/s]
+Unable to verify splits sizes.
+11/19/2024 19:20:06 - INFO - datasets.utils.info_utils - Unable to verify splits sizes.
+Running tokenizer on train dataset (num_proc=4):   1%|█▌                                                                                                                                                                      | 1793/191188 [00:00<00:59, 3210.04 examples/s]Dataset json downloaded and prepared to /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092. Subsequent calls will reuse this data.
+11/19/2024 19:20:06 - INFO - datasets.builder - Dataset json downloaded and prepared to /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092. Subsequent calls will reuse this data.
+11/19/2024 19:20:06 - INFO - __main__ - Use data/zero-shot-with-wiki.jsonl as valid dataset, len(dataset) = 13681
+Running tokenizer on train dataset (num_proc=4):   1%|█▌                                                                                                                                                                      | 1758/191188 [00:00<01:00, 3125.29 examples/s]Process #0 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00000_of_00004.arrow
+11/19/2024 19:20:06 - INFO - datasets.arrow_dataset - Process #0 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00000_of_00004.arrow
+Process #1 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00001_of_00004.arrow
+11/19/2024 19:20:06 - INFO - datasets.arrow_dataset - Process #1 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00001_of_00004.arrow
+Process #2 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00002_of_00004.arrow
+11/19/2024 19:20:06 - INFO - datasets.arrow_dataset - Process #2 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00002_of_00004.arrow
+Process #3 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00003_of_00004.arrow
+11/19/2024 19:20:06 - INFO - datasets.arrow_dataset - Process #3 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00003_of_00004.arrow
+Spawning 4 processes
+11/19/2024 19:20:06 - INFO - datasets.arrow_dataset - Spawning 4 processes
+Running tokenizer on train dataset (num_proc=4):   1%|█▊                                                                                                                                                                      | 2090/191188 [00:00<00:59, 3164.99 examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00000_of_00004.arrow
+11/19/2024 19:20:06 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00000_of_00004.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00001_of_00004.arrow
+11/19/2024 19:20:06 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00001_of_00004.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00002_of_00004.arrow
+11/19/2024 19:20:06 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00002_of_00004.arrow
+Running tokenizer on train dataset (num_proc=4):   1%|██▏                                                                                                                                                                     | 2442/191188 [00:00<00:57, 3261.71 examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00003_of_00004.arrow
+11/19/2024 19:20:06 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00003_of_00004.arrow
+Running tokenizer on validation dataset (num_proc=4): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 13681/13681 [00:03<00:00, 4543.77 examples/s]
+Running tokenizer on train dataset (num_proc=4):   6%|█████████▌                                                                                                                                                             | 10906/191188 [00:03<00:57, 3143.01 examples/s]Concatenating 4 shards
+11/19/2024 19:20:09 - INFO - datasets.arrow_dataset - Concatenating 4 shards
+Running tokenizer on train dataset (num_proc=4): 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 191188/191188 [01:05<00:00, 2927.73 examples/s]
+Running tokenizer on train dataset (num_proc=4): 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 191188/191188 [01:05<00:00, 2918.14 examples/s]
+Running tokenizer on train dataset (num_proc=4): 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 191188/191188 [01:05<00:00, 2897.72 examples/s]
+Running tokenizer on train dataset (num_proc=4): 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 191188/191188 [01:06<00:00, 2880.67 examples/s]
+Running tokenizer on train dataset (num_proc=4): 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 191188/191188 [01:06<00:00, 2863.86 examples/s]
+Running tokenizer on train dataset (num_proc=4): 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 191188/191188 [01:10<00:00, 2698.40 examples/s]
+Running tokenizer on train dataset (num_proc=4): 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 191188/191188 [01:12<00:00, 2648.91 examples/s]
+Running tokenizer on validation dataset (num_proc=4):  19%|███████████████████████████████▋                                                                                                                                    | 2645/13681 [00:00<00:01, 6668.10 examples/s]Using custom data configuration default-f3354aaed434fb00
+11/19/2024 19:21:18 - INFO - datasets.builder - Using custom data configuration default-f3354aaed434fb00
+Loading Dataset Infos from /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/datasets/packaged_modules/json
+11/19/2024 19:21:18 - INFO - datasets.info - Loading Dataset Infos from /raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/datasets/packaged_modules/json
+Overwrite dataset info from restored data version if exists.
+11/19/2024 19:21:18 - INFO - datasets.builder - Overwrite dataset info from restored data version if exists.
+Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092
+11/19/2024 19:21:18 - INFO - datasets.info - Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092
+Found cached dataset json (/raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092)
+11/19/2024 19:21:18 - INFO - datasets.builder - Found cached dataset json (/raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092)
+Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092
+11/19/2024 19:21:18 - INFO - datasets.info - Loading Dataset info from /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092
+11/19/2024 19:21:18 - INFO - __main__ - Use data/zero-shot-with-wiki.jsonl as predict dataset, len(dataset) = 13681
+Process #0 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00000_of_00004.arrow
+11/19/2024 19:21:18 - INFO - datasets.arrow_dataset - Process #0 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00000_of_00004.arrow
+Process #1 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00001_of_00004.arrow
+11/19/2024 19:21:18 - INFO - datasets.arrow_dataset - Process #1 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00001_of_00004.arrow
+Process #2 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00002_of_00004.arrow
+11/19/2024 19:21:18 - INFO - datasets.arrow_dataset - Process #2 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00002_of_00004.arrow
+Process #3 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00003_of_00004.arrow
+11/19/2024 19:21:18 - INFO - datasets.arrow_dataset - Process #3 will write at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00003_of_00004.arrow
+Running tokenizer on validation dataset (num_proc=4):  25%|████████████████████████████████████████▎                                                                                                                           | 3359/13681 [00:00<00:01, 6162.38 examples/s]Spawning 4 processes
+11/19/2024 19:21:19 - INFO - datasets.arrow_dataset - Spawning 4 processes
+Running tokenizer on validation dataset (num_proc=4):  30%|████████████████████████████████████████████████▊                                                                                                                   | 4069/13681 [00:00<00:01, 6626.61 examples/s]Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00000_of_00004.arrow
+11/19/2024 19:21:19 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00000_of_00004.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00001_of_00004.arrow
+11/19/2024 19:21:19 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00001_of_00004.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00002_of_00004.arrow
+11/19/2024 19:21:19 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00002_of_00004.arrow
+Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00003_of_00004.arrow
+11/19/2024 19:21:19 - INFO - datasets.arrow_dataset - Caching processed dataset at /raid/chrisjihee/.cache/huggingface/datasets/json/default-f3354aaed434fb00/0.0.0/f4e89e8750d5d5ffbef2c078bf0ddfedef29dc2faff52a6255cf513c05eb1092/cache-7bdf693a2e1d2f5e_00003_of_00004.arrow
+Running tokenizer on validation dataset (num_proc=4): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 13681/13681 [00:02<00:00, 4813.19 examples/s]
+Running tokenizer on validation dataset (num_proc=4): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 13681/13681 [00:02<00:00, 4693.29 examples/s]
+Running tokenizer on validation dataset (num_proc=4): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 13681/13681 [00:02<00:00, 4677.30 examples/s]
+Running tokenizer on validation dataset (num_proc=4): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 13681/13681 [00:02<00:00, 4635.73 examples/s]
+Running tokenizer on validation dataset (num_proc=4): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 13681/13681 [00:02<00:00, 4644.12 examples/s]
+Running tokenizer on validation dataset (num_proc=4): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 13681/13681 [00:02<00:00, 4610.68 examples/s]
+Running tokenizer on validation dataset (num_proc=4): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 13681/13681 [00:03<00:00, 4533.66 examples/s]
+Running tokenizer on prediction dataset (num_proc=4): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 13681/13681 [00:03<00:00, 4554.95 examples/s]
+Concatenating 4 shards
+11/19/2024 19:21:22 - INFO - datasets.arrow_dataset - Concatenating 4 shards
+[INFO|trainer.py:699] 2024-11-19 19:21:22,132 >> Using auto half precision backend
+Running tokenizer on prediction dataset (num_proc=4):   1%|█▌                                                                                                                                                                    | 127/13681 [00:00<00:14, 911.11 examples/s][2024-11-19 19:21:22,355] [INFO] [logging.py:96:log_dist] [Rank 0] DeepSpeed info: version=0.13.1, git-hash=unknown, git-branch=unknown
+Running tokenizer on prediction dataset (num_proc=4): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 13681/13681 [00:02<00:00, 4722.86 examples/s]
+Running tokenizer on prediction dataset (num_proc=4): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 13681/13681 [00:02<00:00, 4632.32 examples/s]
+Running tokenizer on prediction dataset (num_proc=4): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 13681/13681 [00:03<00:00, 4511.42 examples/s]
+Running tokenizer on prediction dataset (num_proc=4): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 13681/13681 [00:03<00:00, 4470.75 examples/s]
+Running tokenizer on prediction dataset (num_proc=4): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 13681/13681 [00:03<00:00, 4447.99 examples/s]
+Running tokenizer on prediction dataset (num_proc=4): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 13681/13681 [00:03<00:00, 4470.59 examples/s]
+Running tokenizer on prediction dataset (num_proc=4): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 13681/13681 [00:03<00:00, 4229.96 examples/s]
+[2024-11-19 19:21:43,616] [INFO] [logging.py:96:log_dist] [Rank 0] DeepSpeed Flops Profiler Enabled: False
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+Detected CUDA files, patching ldflags
+Emitting ninja build file /raid/chrisjihee/.cache/torch_extensions/py311_cu118/fused_adam/build.ninja...
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/cpp_extension.py:1967: UserWarning: TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation.
+If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'].
+  warnings.warn(
+Building extension module fused_adam...
+Allowing ninja to set a default number of workers... (overridable by setting the environment variable MAX_JOBS=N)
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+ninja: no work to do.
+Loading extension module fused_adam...
+Time to load fused_adam op: 0.06754517555236816 seconds
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+Using /raid/chrisjihee/.cache/torch_extensions/py311_cu118 as PyTorch extensions root...
+Detected CUDA files, patching ldflags
+Emitting ninja build file /raid/chrisjihee/.cache/torch_extensions/py311_cu118/fused_adam/build.ninja...
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/utils/cpp_extension.py:1967: UserWarning: TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation.
+If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'].
+  warnings.warn(
+Building extension module fused_adam...
+Allowing ninja to set a default number of workers... (overridable by setting the environment variable MAX_JOBS=N)
+ninja: no work to do.
+Loading extension module fused_adam...
+Loading extension module fused_adam...
+Time to load fused_adam op: 0.06940865516662598 seconds
+Time to load fused_adam op: 0.1014249324798584 seconds
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+Loading extension module fused_adam...
+Loading extension module fused_adam...
+Loading extension module fused_adam...
+Loading extension module fused_adam...
+Time to load fused_adam op: 0.10109853744506836 seconds
+Time to load fused_adam op: 0.1013188362121582 seconds
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+Time to load fused_adam op: 0.10132050514221191 seconds
+Time to load fused_adam op: 0.10140132904052734 seconds
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+Loading extension module fused_adam...
+Time to load fused_adam op: 0.2017202377319336 seconds
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/deepspeed/ops/adam/fused_adam.py:96: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:78.)
+  self._dummy_overflow_buf = get_accelerator().IntTensor([0])
+[2024-11-19 19:21:44,154] [INFO] [logging.py:96:log_dist] [Rank 0] Using DeepSpeed Optimizer param name adamw as basic optimizer
+[2024-11-19 19:21:44,154] [INFO] [logging.py:96:log_dist] [Rank 0] Removing param_group that has no 'params' in the basic Optimizer
+[2024-11-19 19:21:44,162] [INFO] [logging.py:96:log_dist] [Rank 0] DeepSpeed Basic Optimizer = FusedAdam
+[2024-11-19 19:21:44,162] [INFO] [logging.py:96:log_dist] [Rank 0] Creating BF16 optimizer
+[2024-11-19 19:21:44,279] [INFO] [utils.py:791:see_memory_usage] begin bf16_optimizer
+[2024-11-19 19:21:44,280] [INFO] [utils.py:792:see_memory_usage] MA 0.47 GB         Max_MA 0.47 GB         CA 0.49 GB         Max_CA 0 GB
+[2024-11-19 19:21:44,280] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 51.67 GB, percent = 5.1%
+[2024-11-19 19:21:44,397] [INFO] [utils.py:791:see_memory_usage] before initializing group 0
+[2024-11-19 19:21:44,397] [INFO] [utils.py:792:see_memory_usage] MA 0.47 GB         Max_MA 0.47 GB         CA 0.49 GB         Max_CA 0 GB
+[2024-11-19 19:21:44,398] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 51.66 GB, percent = 5.1%
+[2024-11-19 19:21:46,100] [INFO] [utils.py:791:see_memory_usage] after initializing group 0
+[2024-11-19 19:21:46,101] [INFO] [utils.py:792:see_memory_usage] MA 1.5 GB         Max_MA 1.5 GB         CA 2.05 GB         Max_CA 2 GB
+[2024-11-19 19:21:46,101] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 52.26 GB, percent = 5.2%
+[2024-11-19 19:21:46,348] [INFO] [utils.py:791:see_memory_usage] before initialize_optimizer
+[2024-11-19 19:21:46,349] [INFO] [utils.py:792:see_memory_usage] MA 1.5 GB         Max_MA 1.5 GB         CA 2.05 GB         Max_CA 2 GB
+[2024-11-19 19:21:46,349] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 52.82 GB, percent = 5.2%
+[WARNING|logging.py:328] 2024-11-19 19:21:46,468 >> `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+[2024-11-19 19:21:47,476] [INFO] [utils.py:791:see_memory_usage] end initialize_optimizer
+[2024-11-19 19:21:47,477] [INFO] [utils.py:792:see_memory_usage] MA 1.73 GB         Max_MA 1.73 GB         CA 2.28 GB         Max_CA 2 GB
+[2024-11-19 19:21:47,477] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 52.88 GB, percent = 5.2%
+[WARNING|logging.py:328] 2024-11-19 19:21:47,540 >> `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+[2024-11-19 19:21:47,691] [INFO] [utils.py:791:see_memory_usage] end bf16_optimizer
+[2024-11-19 19:21:47,692] [INFO] [utils.py:792:see_memory_usage] MA 1.73 GB         Max_MA 1.73 GB         CA 2.28 GB         Max_CA 2 GB
+[2024-11-19 19:21:47,692] [INFO] [utils.py:799:see_memory_usage] CPU Virtual Memory:  used = 52.9 GB, percent = 5.2%
+[2024-11-19 19:21:47,692] [INFO] [logging.py:96:log_dist] [Rank 0] DeepSpeed Final Optimizer = adamw
+[2024-11-19 19:21:47,693] [INFO] [logging.py:96:log_dist] [Rank 0] DeepSpeed using configured LR scheduler = WarmupLR
+[2024-11-19 19:21:47,693] [INFO] [logging.py:96:log_dist] [Rank 0] DeepSpeed LR Scheduler = <deepspeed.runtime.lr_schedules.WarmupLR object at 0x7ff740952d50>
+[2024-11-19 19:21:47,693] [INFO] [logging.py:96:log_dist] [Rank 0] step=0, skipped=0, lr=[5e-05], mom=[[0.9, 0.999]]
+[2024-11-19 19:21:47,694] [INFO] [config.py:984:print] DeepSpeedEngine configuration:
+[2024-11-19 19:21:47,694] [INFO] [config.py:988:print]   activation_checkpointing_config  {
+    "partition_activations": false,
+    "contiguous_memory_optimization": false,
+    "cpu_checkpointing": false,
+    "number_checkpoints": null,
+    "synchronize_checkpoint_boundary": false,
+    "profile": false
+}
+[2024-11-19 19:21:47,694] [INFO] [config.py:988:print]   aio_config ................... {'block_size': 1048576, 'queue_depth': 8, 'thread_count': 1, 'single_submit': False, 'overlap_events': True}
+[2024-11-19 19:21:47,694] [INFO] [config.py:988:print]   amp_enabled .................. False
+[2024-11-19 19:21:47,694] [INFO] [config.py:988:print]   amp_params ................... False
+[2024-11-19 19:21:47,694] [INFO] [config.py:988:print]   autotuning_config ............ {
+    "enabled": false,
+    "start_step": null,
+    "end_step": null,
+    "metric_path": null,
+    "arg_mappings": null,
+    "metric": "throughput",
+    "model_info": null,
+    "results_dir": "autotuning_results",
+    "exps_dir": "autotuning_exps",
+    "overwrite": true,
+    "fast": true,
+    "start_profile_step": 3,
+    "end_profile_step": 5,
+    "tuner_type": "gridsearch",
+    "tuner_early_stopping": 5,
+    "tuner_num_trials": 50,
+    "model_info_path": null,
+    "mp_size": 1,
+    "max_train_batch_size": null,
+    "min_train_batch_size": 1,
+    "max_train_micro_batch_size_per_gpu": 1.024000e+03,
+    "min_train_micro_batch_size_per_gpu": 1,
+    "num_tuning_micro_batch_sizes": 3
+}
+[2024-11-19 19:21:47,694] [INFO] [config.py:988:print]   bfloat16_enabled ............. True
+[2024-11-19 19:21:47,694] [INFO] [config.py:988:print]   checkpoint_parallel_write_pipeline  False
+[2024-11-19 19:21:47,694] [INFO] [config.py:988:print]   checkpoint_tag_validation_enabled  True
+[2024-11-19 19:21:47,694] [INFO] [config.py:988:print]   checkpoint_tag_validation_fail  False
+[2024-11-19 19:21:47,694] [INFO] [config.py:988:print]   comms_config ................. <deepspeed.comm.config.DeepSpeedCommsConfig object at 0x7ff7409079d0>
+[2024-11-19 19:21:47,694] [INFO] [config.py:988:print]   communication_data_type ...... None
+[2024-11-19 19:21:47,694] [INFO] [config.py:988:print]   compression_config ........... {'weight_quantization': {'shared_parameters': {'enabled': False, 'quantizer_kernel': False, 'schedule_offset': 0, 'quantize_groups': 1, 'quantize_verbose': False, 'quantization_type': 'symmetric', 'quantize_weight_in_forward': False, 'rounding': 'nearest', 'fp16_mixed_quantize': False, 'quantize_change_ratio': 0.001}, 'different_groups': {}}, 'activation_quantization': {'shared_parameters': {'enabled': False, 'quantization_type': 'symmetric', 'range_calibration': 'dynamic', 'schedule_offset': 1000}, 'different_groups': {}}, 'sparse_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'row_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'head_pruning': {'shared_parameters': {'enabled': False, 'method': 'topk', 'schedule_offset': 1000}, 'different_groups': {}}, 'channel_pruning': {'shared_parameters': {'enabled': False, 'method': 'l1', 'schedule_offset': 1000}, 'different_groups': {}}, 'layer_reduction': {'enabled': False}}
+[2024-11-19 19:21:47,694] [INFO] [config.py:988:print]   curriculum_enabled_legacy .... False
+[2024-11-19 19:21:47,694] [INFO] [config.py:988:print]   curriculum_params_legacy ..... False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   data_efficiency_config ....... {'enabled': False, 'seed': 1234, 'data_sampling': {'enabled': False, 'num_epochs': 1000, 'num_workers': 0, 'curriculum_learning': {'enabled': False}}, 'data_routing': {'enabled': False, 'random_ltd': {'enabled': False, 'layer_token_lr_schedule': {'enabled': False}}}}
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   data_efficiency_enabled ...... False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   dataloader_drop_last ......... False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   disable_allgather ............ False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   dump_state ................... False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   dynamic_loss_scale_args ...... None
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   eigenvalue_enabled ........... False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   eigenvalue_gas_boundary_resolution  1
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   eigenvalue_layer_name ........ bert.encoder.layer
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   eigenvalue_layer_num ......... 0
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   eigenvalue_max_iter .......... 100
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   eigenvalue_stability ......... 1e-06
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   eigenvalue_tol ............... 0.01
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   eigenvalue_verbose ........... False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   elasticity_enabled ........... False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   flops_profiler_config ........ {
+    "enabled": false,
+    "recompute_fwd_factor": 0.0,
+    "profile_step": 1,
+    "module_depth": -1,
+    "top_modules": 1,
+    "detailed": true,
+    "output_file": null
+}
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   fp16_auto_cast ............... None
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   fp16_enabled ................. False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   fp16_master_weights_and_gradients  False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   global_rank .................. 0
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   grad_accum_dtype ............. None
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   gradient_accumulation_steps .. 1
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   gradient_clipping ............ 1.0
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   gradient_predivide_factor .... 1.0
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   graph_harvesting ............. False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   hybrid_engine ................ enabled=False max_out_tokens=512 inference_tp_size=1 release_inference_cache=False pin_parameters=True tp_gather_partition_size=8
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   initial_dynamic_scale ........ 1
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   load_universal_checkpoint .... False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   loss_scale ................... 1.0
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   memory_breakdown ............. False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   mics_hierarchial_params_gather  False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   mics_shard_size .............. -1
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   monitor_config ............... tensorboard=TensorBoardConfig(enabled=False, output_path='', job_name='DeepSpeedJobName') wandb=WandbConfig(enabled=False, group=None, team=None, project='deepspeed') csv_monitor=CSVConfig(enabled=False, output_path='', job_name='DeepSpeedJobName') enabled=False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   nebula_config ................ {
+    "enabled": false,
+    "persistent_storage_path": null,
+    "persistent_time_interval": 100,
+    "num_of_version_in_retention": 2,
+    "enable_nebula_load": true,
+    "load_path": null
+}
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   optimizer_legacy_fusion ...... False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   optimizer_name ............... adamw
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   optimizer_params ............. {'lr': 5e-05, 'betas': [0.9, 0.999], 'eps': 1e-08, 'weight_decay': 0.0}
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   pipeline ..................... {'stages': 'auto', 'partition': 'best', 'seed_layers': False, 'activation_checkpoint_interval': 0, 'pipe_partitioned': True, 'grad_partitioned': True}
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   pld_enabled .................. False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   pld_params ................... False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   prescale_gradients ........... False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   scheduler_name ............... WarmupLR
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   scheduler_params ............. {'warmup_min_lr': 0, 'warmup_max_lr': 5e-05, 'warmup_num_steps': 0}
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   seq_parallel_communication_data_type  torch.float32
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   sparse_attention ............. None
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   sparse_gradients_enabled ..... False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   steps_per_print .............. inf
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   train_batch_size ............. 256
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   train_micro_batch_size_per_gpu  32
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   use_data_before_expert_parallel_  False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   use_node_local_storage ....... False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   wall_clock_breakdown ......... False
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   weight_quantization_config ... None
+[2024-11-19 19:21:47,695] [INFO] [config.py:988:print]   world_size ................... 8
+[2024-11-19 19:21:47,696] [INFO] [config.py:988:print]   zero_allow_untested_optimizer  False
+[2024-11-19 19:21:47,696] [INFO] [config.py:988:print]   zero_config .................. stage=0 contiguous_gradients=True reduce_scatter=True reduce_bucket_size=500,000,000 use_multi_rank_bucket_allreduce=True allgather_partitions=True allgather_bucket_size=500,000,000 overlap_comm=False load_from_fp32_weights=True elastic_checkpoint=False offload_param=None offload_optimizer=None sub_group_size=1,000,000,000 cpu_offload_param=None cpu_offload_use_pin_memory=None cpu_offload=None prefetch_bucket_size=50,000,000 param_persistence_threshold=100,000 model_persistence_threshold=sys.maxsize max_live_parameters=1,000,000,000 max_reuse_distance=1,000,000,000 gather_16bit_weights_on_model_save=False stage3_gather_fp16_weights_on_model_save=False ignore_unused_parameters=True legacy_stage1=False round_robin_gradients=False zero_hpz_partition_size=1 zero_quantized_weights=False zero_quantized_nontrainable_weights=False zero_quantized_gradients=False mics_shard_size=-1 mics_hierarchical_params_gather=False memory_efficient_linear=True pipeline_loading_checkpoint=False override_module_apply=True
+[2024-11-19 19:21:47,696] [INFO] [config.py:988:print]   zero_enabled ................. False
+[2024-11-19 19:21:47,696] [INFO] [config.py:988:print]   zero_force_ds_cpu_optimizer .. True
+[2024-11-19 19:21:47,696] [INFO] [config.py:988:print]   zero_optimization_stage ...... 0
+[2024-11-19 19:21:47,696] [INFO] [config.py:974:print_user_config]   json = {
+    "bf16": {
+        "enabled": true
+    },
+    "optimizer": {
+        "type": "AdamW",
+        "params": {
+            "lr": 5e-05,
+            "betas": [0.9, 0.999],
+            "eps": 1e-08,
+            "weight_decay": 0.0
+        }
+    },
+    "scheduler": {
+        "type": "WarmupLR",
+        "params": {
+            "warmup_min_lr": 0,
+            "warmup_max_lr": 5e-05,
+            "warmup_num_steps": 0
+        }
+    },
+    "zero_optimization": {
+        "stage": 0
+    },
+    "gradient_accumulation_steps": 1,
+    "gradient_clipping": 1.0,
+    "train_batch_size": 256,
+    "train_micro_batch_size_per_gpu": 32,
+    "steps_per_print": inf,
+    "fp16": {
+        "enabled": false
+    }
+}
+[INFO|trainer.py:2314] 2024-11-19 19:21:47,696 >> ***** Running training *****
+[INFO|trainer.py:2315] 2024-11-19 19:21:47,696 >>   Num examples = 191,188
+[INFO|trainer.py:2316] 2024-11-19 19:21:47,696 >>   Num Epochs = 24
+[INFO|trainer.py:2317] 2024-11-19 19:21:47,696 >>   Instantaneous batch size per device = 32
+[INFO|trainer.py:2320] 2024-11-19 19:21:47,696 >>   Total train batch size (w. parallel, distributed & accumulation) = 256
+[INFO|trainer.py:2321] 2024-11-19 19:21:47,696 >>   Gradient Accumulation steps = 1
+[INFO|trainer.py:2322] 2024-11-19 19:21:47,696 >>   Total optimization steps = 17,928
+[INFO|trainer.py:2323] 2024-11-19 19:21:47,697 >>   Number of trainable parameters = 247,577,856
+  0%|                                                                                                                                                                                                                                              | 0/17928 [00:00<?, ?it/s][WARNING|logging.py:328] 2024-11-19 19:21:47,791 >> `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+[WARNING|logging.py:328] 2024-11-19 19:21:47,792 >> `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+[WARNING|logging.py:328] 2024-11-19 19:21:47,792 >> `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+[WARNING|logging.py:328] 2024-11-19 19:21:48,338 >> `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+[WARNING|logging.py:328] 2024-11-19 19:21:48,343 >> `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[WARNING|logging.py:328] 2024-11-19 19:21:48,705 >> `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+{'loss': 0.99, 'grad_norm': 1.8537175638315346, 'learning_rate': 5e-05, 'epoch': 0.01}
+{'loss': 0.3735, 'grad_norm': 0.6730474842885736, 'learning_rate': 5e-05, 'epoch': 0.03}
+{'loss': 0.2277, 'grad_norm': 0.5076323556486863, 'learning_rate': 5e-05, 'epoch': 0.04}
+{'loss': 0.1796, 'grad_norm': 0.36474454131300316, 'learning_rate': 5e-05, 'epoch': 0.05}
+{'loss': 0.149, 'grad_norm': 0.32342000029394824, 'learning_rate': 5e-05, 'epoch': 0.07}
+{'loss': 0.138, 'grad_norm': 0.31605260418092246, 'learning_rate': 5e-05, 'epoch': 0.08}
+{'loss': 0.1258, 'grad_norm': 0.28228319649229533, 'learning_rate': 5e-05, 'epoch': 0.09}
+{'loss': 0.1212, 'grad_norm': 0.2728134663882623, 'learning_rate': 5e-05, 'epoch': 0.11}
+{'loss': 0.1098, 'grad_norm': 0.28056147856854635, 'learning_rate': 5e-05, 'epoch': 0.12}
+{'loss': 0.107, 'grad_norm': 0.23892891523728285, 'learning_rate': 5e-05, 'epoch': 0.13}
+{'loss': 0.1018, 'grad_norm': 0.25707386150614386, 'learning_rate': 5e-05, 'epoch': 0.15}
+{'loss': 0.0989, 'grad_norm': 0.24168202502814412, 'learning_rate': 5e-05, 'epoch': 0.16}
+{'loss': 0.0959, 'grad_norm': 0.20066901198081422, 'learning_rate': 5e-05, 'epoch': 0.17}
+{'loss': 0.0962, 'grad_norm': 0.2822036865889458, 'learning_rate': 5e-05, 'epoch': 0.19}
+{'loss': 0.0906, 'grad_norm': 0.23113684076457905, 'learning_rate': 5e-05, 'epoch': 0.2}
+{'loss': 0.0892, 'grad_norm': 0.33948588986843836, 'learning_rate': 5e-05, 'epoch': 0.21}
+{'loss': 0.0875, 'grad_norm': 0.20765578340947277, 'learning_rate': 5e-05, 'epoch': 0.23}
+{'loss': 0.0848, 'grad_norm': 0.20528552149548757, 'learning_rate': 5e-05, 'epoch': 0.24}
+{'loss': 0.0849, 'grad_norm': 0.19462256643762044, 'learning_rate': 5e-05, 'epoch': 0.25}
+{'loss': 0.0824, 'grad_norm': 0.32629437915731774, 'learning_rate': 5e-05, 'epoch': 0.27}
+{'loss': 0.0799, 'grad_norm': 0.2202809439711245, 'learning_rate': 5e-05, 'epoch': 0.28}
+{'loss': 0.0796, 'grad_norm': 0.19352362621215474, 'learning_rate': 5e-05, 'epoch': 0.29}
+{'loss': 0.0781, 'grad_norm': 0.20116409731153548, 'learning_rate': 5e-05, 'epoch': 0.31}
+{'loss': 0.0769, 'grad_norm': 0.1892276483990246, 'learning_rate': 5e-05, 'epoch': 0.32}
+{'loss': 0.0763, 'grad_norm': 0.19927713062335176, 'learning_rate': 5e-05, 'epoch': 0.33}
+{'loss': 0.0742, 'grad_norm': 0.20700428445212918, 'learning_rate': 5e-05, 'epoch': 0.35}
+{'loss': 0.0747, 'grad_norm': 0.17599484923395478, 'learning_rate': 5e-05, 'epoch': 0.36}
+{'loss': 0.0724, 'grad_norm': 0.28970704517867246, 'learning_rate': 5e-05, 'epoch': 0.37}
+{'loss': 0.0723, 'grad_norm': 0.21704088689502035, 'learning_rate': 5e-05, 'epoch': 0.39}
+{'loss': 0.07, 'grad_norm': 0.15591890302548045, 'learning_rate': 5e-05, 'epoch': 0.4}
+{'loss': 0.0695, 'grad_norm': 0.20523852478815607, 'learning_rate': 5e-05, 'epoch': 0.41}
+{'loss': 0.0702, 'grad_norm': 0.17835680994435904, 'learning_rate': 5e-05, 'epoch': 0.43}
+{'loss': 0.0676, 'grad_norm': 0.24604438861926162, 'learning_rate': 5e-05, 'epoch': 0.44}
+{'loss': 0.0705, 'grad_norm': 0.24020905089843272, 'learning_rate': 5e-05, 'epoch': 0.46}
+{'loss': 0.0683, 'grad_norm': 0.2014987844851727, 'learning_rate': 5e-05, 'epoch': 0.47}
+{'loss': 0.0669, 'grad_norm': 0.20892719128173812, 'learning_rate': 5e-05, 'epoch': 0.48}
+{'loss': 0.0673, 'grad_norm': 0.1990647749418998, 'learning_rate': 5e-05, 'epoch': 0.5}
+{'loss': 0.0656, 'grad_norm': 0.20713754840035575, 'learning_rate': 5e-05, 'epoch': 0.51}
+{'loss': 0.0652, 'grad_norm': 0.22084665273289306, 'learning_rate': 5e-05, 'epoch': 0.52}
+{'loss': 0.0646, 'grad_norm': 0.21076186250015913, 'learning_rate': 5e-05, 'epoch': 0.54}
+{'loss': 0.0647, 'grad_norm': 0.2189832958993716, 'learning_rate': 5e-05, 'epoch': 0.55}
+{'loss': 0.0636, 'grad_norm': 0.22021014088009427, 'learning_rate': 5e-05, 'epoch': 0.56}
+{'loss': 0.0631, 'grad_norm': 0.2440138907509244, 'learning_rate': 5e-05, 'epoch': 0.58}
+{'loss': 0.063, 'grad_norm': 0.17844881314157923, 'learning_rate': 5e-05, 'epoch': 0.59}
+{'loss': 0.0618, 'grad_norm': 0.1812166886302038, 'learning_rate': 5e-05, 'epoch': 0.6}
+{'loss': 0.0628, 'grad_norm': 0.2068120407694251, 'learning_rate': 5e-05, 'epoch': 0.62}
+{'loss': 0.0615, 'grad_norm': 0.1865434585930711, 'learning_rate': 5e-05, 'epoch': 0.63}
+{'loss': 0.0617, 'grad_norm': 0.18179990081498512, 'learning_rate': 5e-05, 'epoch': 0.64}
+{'loss': 0.0621, 'grad_norm': 0.1945646368430802, 'learning_rate': 5e-05, 'epoch': 0.66}
+{'loss': 0.0602, 'grad_norm': 0.20534407310477837, 'learning_rate': 5e-05, 'epoch': 0.67}
+{'loss': 0.0609, 'grad_norm': 0.1916338093381904, 'learning_rate': 5e-05, 'epoch': 0.68}
+{'loss': 0.0594, 'grad_norm': 0.24095578153993774, 'learning_rate': 5e-05, 'epoch': 0.7}
+{'loss': 0.0586, 'grad_norm': 0.1994146337697125, 'learning_rate': 5e-05, 'epoch': 0.71}
+{'loss': 0.0598, 'grad_norm': 0.2223218699189345, 'learning_rate': 5e-05, 'epoch': 0.72}
+{'loss': 0.0581, 'grad_norm': 0.21098215019116978, 'learning_rate': 5e-05, 'epoch': 0.74}
+{'loss': 0.0579, 'grad_norm': 0.22498485858620737, 'learning_rate': 5e-05, 'epoch': 0.75}
+{'loss': 0.0575, 'grad_norm': 0.2348535341393435, 'learning_rate': 5e-05, 'epoch': 0.76}
+{'loss': 0.0595, 'grad_norm': 0.18204432919383565, 'learning_rate': 5e-05, 'epoch': 0.78}
+{'loss': 0.0594, 'grad_norm': 0.16801549017223283, 'learning_rate': 5e-05, 'epoch': 0.79}
+{'loss': 0.0572, 'grad_norm': 0.12705930524375808, 'learning_rate': 5e-05, 'epoch': 0.8}
+{'loss': 0.0576, 'grad_norm': 0.13938331112008856, 'learning_rate': 5e-05, 'epoch': 0.82}
+{'loss': 0.0553, 'grad_norm': 0.16440168582031314, 'learning_rate': 5e-05, 'epoch': 0.83}
+{'loss': 0.0557, 'grad_norm': 0.20750391284286762, 'learning_rate': 5e-05, 'epoch': 0.84}
+{'loss': 0.0563, 'grad_norm': 0.21698655602729805, 'learning_rate': 5e-05, 'epoch': 0.86}
+{'loss': 0.0568, 'grad_norm': 0.4608349120209035, 'learning_rate': 5e-05, 'epoch': 0.87}
+{'loss': 0.056, 'grad_norm': 0.17750787450556707, 'learning_rate': 5e-05, 'epoch': 0.88}
+{'loss': 0.0555, 'grad_norm': 0.19980645910765993, 'learning_rate': 5e-05, 'epoch': 0.9}
+{'loss': 0.0555, 'grad_norm': 0.16515462542540565, 'learning_rate': 5e-05, 'epoch': 0.91}
+{'loss': 0.0542, 'grad_norm': 0.14835302559281138, 'learning_rate': 5e-05, 'epoch': 0.92}
+{'loss': 0.0571, 'grad_norm': 0.24704149703911474, 'learning_rate': 5e-05, 'epoch': 0.94}
+{'loss': 0.0546, 'grad_norm': 0.2031859618187105, 'learning_rate': 5e-05, 'epoch': 0.95}
+{'loss': 0.0568, 'grad_norm': 0.15853391608551737, 'learning_rate': 5e-05, 'epoch': 0.96}
+{'loss': 0.0541, 'grad_norm': 0.21821266834984362, 'learning_rate': 5e-05, 'epoch': 0.98}
+{'loss': 0.0545, 'grad_norm': 0.2270699031530182, 'learning_rate': 5e-05, 'epoch': 0.99}
+  4%|█████████▍                                                                                                                                                                                                                        | 747/17928 [13:31<5:10:14,  1.08s/it][INFO|gner_trainer.py:60] 2024-11-19 19:35:18,799 >> ***** Running Evaluation *****
+[INFO|gner_trainer.py:62] 2024-11-19 19:35:18,799 >>   Num examples = 13681
+[INFO|gner_trainer.py:65] 2024-11-19 19:35:18,799 >>   Batch size = 32
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3534.63it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3562.34it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3541.58it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3479.78it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3476.31it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3500.14it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3537.84it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3525.19it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4054.42it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4058.01it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4055.07it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4027.02it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4011.35it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4047.48it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1340.51it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4047.48it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4045.66it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1342.19it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1349.50it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1326.90it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1331.82it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1339.44it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1341.41it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1339.95it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1066.22it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1065.23it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1071.96it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1057.83it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1060.02it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1064.83it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1064.97it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1060.83it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 987.61it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 978.60it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 987.64it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 973.88it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 975.27it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 982.07it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 981.43it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 980.04it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 965.84it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 966.13it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 966.24it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 955.54it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 953.18it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 960.97it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 960.71it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 959.00it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1100.34it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1101.59it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1102.67it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1086.79it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1086.70it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1093.29it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1092.90it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1093.56it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 548.64it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 538.20it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 537.65it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 534.00it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 532.88it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 536.03it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 534.95it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 534.61it/s]
+{'eval_mit-movie_precision': 0.2940691927512275, 'eval_mit-movie_recall': 0.20059936317662108, 'eval_mit-movie_f1': 0.23850350735630052, 'eval_mit-restaurant_precision': 0.30958036421216867, 'eval_mit-restaurant_recall': 0.12412698412698019, 'eval_mit-restaurant_f1': 0.17720371625190542, 'eval_crossner_ai_precision': 0.3006263048016576, 'eval_crossner_ai_recall': 0.4480398257622621, 'eval_crossner_ai_f1': 0.359820089906943, 'eval_crossner_literature_precision': 0.3681891025640878, 'eval_crossner_literature_recall': 0.46367305751763555, 'eval_crossner_literature_f1': 0.41045109418913983, 'eval_crossner_music_precision': 0.4314868804664597, 'eval_crossner_music_recall': 0.4737516005121487, 'eval_crossner_music_f1': 0.4516325907343491, 'eval_crossner_politics_precision': 0.47101599833782526, 'eval_crossner_politics_recall': 0.5812820512820364, 'eval_crossner_politics_f1': 0.5203718580935418, 'eval_crossner_science_precision': 0.4335894621295161, 'eval_crossner_science_recall': 0.6245059288537302, 'eval_crossner_science_f1': 0.5118237770815107, 'eval_wiki_passage_from_zero_precision': 0.7392910796215828, 'eval_wiki_passage_from_zero_recall': 0.729779559118235, 'eval_wiki_passage_from_zero_f1': 0.7345045280768284, 'eval_average_f1': 0.4255388952113148, 'eval_runtime': 521.3224, 'eval_samples_per_second': 26.243, 'eval_steps_per_second': 0.104, 'epoch': 1.0}
+  4%|█████████▍                                                                                                                                                                                                                        | 747/17928 [22:12<5:10:14,  1.08s/it]
+[INFO|trainer.py:3812] 2024-11-19 19:44:00,972 >> Saving model checkpoint to output/flan-t5-base-concept-learning/checkpoint-747
+[INFO|configuration_utils.py:414] 2024-11-19 19:44:00,974 >> Configuration saved in output/flan-t5-base-concept-learning/checkpoint-747/config.json
+[INFO|configuration_utils.py:865] 2024-11-19 19:44:00,975 >> Configuration saved in output/flan-t5-base-concept-learning/checkpoint-747/generation_config.json
+[INFO|modeling_utils.py:3035] 2024-11-19 19:44:01,524 >> Model weights saved in output/flan-t5-base-concept-learning/checkpoint-747/model.safetensors
+[INFO|tokenization_utils_base.py:2646] 2024-11-19 19:44:01,525 >> tokenizer config file saved in output/flan-t5-base-concept-learning/checkpoint-747/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2655] 2024-11-19 19:44:01,526 >> Special tokens file saved in output/flan-t5-base-concept-learning/checkpoint-747/special_tokens_map.json
+[INFO|tokenization_t5_fast.py:175] 2024-11-19 19:44:01,527 >> Copy vocab file to output/flan-t5-base-concept-learning/checkpoint-747/spiece.model
+[2024-11-19 19:44:01,545] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step747 is about to be saved!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+[2024-11-19 19:44:01,551] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/flan-t5-base-concept-learning/checkpoint-747/global_step747/mp_rank_00_model_states.pt
+[2024-11-19 19:44:01,551] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-base-concept-learning/checkpoint-747/global_step747/mp_rank_00_model_states.pt...
+[2024-11-19 19:44:02,189] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-base-concept-learning/checkpoint-747/global_step747/mp_rank_00_model_states.pt.
+[2024-11-19 19:44:02,191] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-base-concept-learning/checkpoint-747/global_step747/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-19 19:44:02,778] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-base-concept-learning/checkpoint-747/global_step747/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-19 19:44:02,779] [INFO] [engine.py:3477:_save_zero_checkpoint] bf16_zero checkpoint saved output/flan-t5-base-concept-learning/checkpoint-747/global_step747/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-19 19:44:02,779] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step747 is ready now!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+{'loss': 0.0535, 'grad_norm': 0.20217044913195012, 'learning_rate': 5e-05, 'epoch': 1.0}
+{'loss': 0.0538, 'grad_norm': 0.14283871026204492, 'learning_rate': 5e-05, 'epoch': 1.02}
+{'loss': 0.0521, 'grad_norm': 0.1739737832657105, 'learning_rate': 5e-05, 'epoch': 1.03}
+{'loss': 0.0529, 'grad_norm': 0.16450179415089644, 'learning_rate': 5e-05, 'epoch': 1.04}
+{'loss': 0.0528, 'grad_norm': 0.1717023361507995, 'learning_rate': 5e-05, 'epoch': 1.06}
+{'loss': 0.053, 'grad_norm': 0.19319672920632866, 'learning_rate': 5e-05, 'epoch': 1.07}
+{'loss': 0.053, 'grad_norm': 0.15795241022358633, 'learning_rate': 5e-05, 'epoch': 1.08}
+{'loss': 0.0521, 'grad_norm': 0.14831870118602883, 'learning_rate': 5e-05, 'epoch': 1.1}
+{'loss': 0.0527, 'grad_norm': 0.24894997504234764, 'learning_rate': 5e-05, 'epoch': 1.11}
+{'loss': 0.0526, 'grad_norm': 0.15966056666583833, 'learning_rate': 5e-05, 'epoch': 1.12}
+{'loss': 0.0517, 'grad_norm': 0.1787426300296785, 'learning_rate': 5e-05, 'epoch': 1.14}
+{'loss': 0.0501, 'grad_norm': 0.1648997842096897, 'learning_rate': 5e-05, 'epoch': 1.15}
+{'loss': 0.0512, 'grad_norm': 0.14740455888615528, 'learning_rate': 5e-05, 'epoch': 1.16}
+{'loss': 0.0512, 'grad_norm': 0.23223264989421993, 'learning_rate': 5e-05, 'epoch': 1.18}
+{'loss': 0.0504, 'grad_norm': 0.13477779416412936, 'learning_rate': 5e-05, 'epoch': 1.19}
+{'loss': 0.0528, 'grad_norm': 0.1713385391984059, 'learning_rate': 5e-05, 'epoch': 1.2}
+{'loss': 0.0483, 'grad_norm': 0.14038791804604236, 'learning_rate': 5e-05, 'epoch': 1.22}
+{'loss': 0.0509, 'grad_norm': 0.12336460976368313, 'learning_rate': 5e-05, 'epoch': 1.23}
+{'loss': 0.0494, 'grad_norm': 0.1393010881442552, 'learning_rate': 5e-05, 'epoch': 1.24}
+{'loss': 0.0509, 'grad_norm': 0.25237085769601897, 'learning_rate': 5e-05, 'epoch': 1.26}
+{'loss': 0.0519, 'grad_norm': 0.17477793462184626, 'learning_rate': 5e-05, 'epoch': 1.27}
+{'loss': 0.051, 'grad_norm': 0.23500939184302178, 'learning_rate': 5e-05, 'epoch': 1.29}
+{'loss': 0.0495, 'grad_norm': 0.20072485506553991, 'learning_rate': 5e-05, 'epoch': 1.3}
+{'loss': 0.0504, 'grad_norm': 0.13068445813439472, 'learning_rate': 5e-05, 'epoch': 1.31}
+{'loss': 0.0504, 'grad_norm': 0.14513963805491537, 'learning_rate': 5e-05, 'epoch': 1.33}
+{'loss': 0.0491, 'grad_norm': 0.1241590141818736, 'learning_rate': 5e-05, 'epoch': 1.34}
+{'loss': 0.0494, 'grad_norm': 0.1482482444018358, 'learning_rate': 5e-05, 'epoch': 1.35}
+{'loss': 0.05, 'grad_norm': 0.2213173396198934, 'learning_rate': 5e-05, 'epoch': 1.37}
+{'loss': 0.0497, 'grad_norm': 0.19706213246996937, 'learning_rate': 5e-05, 'epoch': 1.38}
+{'loss': 0.0489, 'grad_norm': 0.10821187228434638, 'learning_rate': 5e-05, 'epoch': 1.39}
+{'loss': 0.049, 'grad_norm': 0.16215852199248562, 'learning_rate': 5e-05, 'epoch': 1.41}
+{'loss': 0.0476, 'grad_norm': 0.16269720884685665, 'learning_rate': 5e-05, 'epoch': 1.42}
+{'loss': 0.0477, 'grad_norm': 0.15898519464229965, 'learning_rate': 5e-05, 'epoch': 1.43}
+{'loss': 0.0496, 'grad_norm': 0.12360834886074108, 'learning_rate': 5e-05, 'epoch': 1.45}
+{'loss': 0.0484, 'grad_norm': 0.25839365855992896, 'learning_rate': 5e-05, 'epoch': 1.46}
+{'loss': 0.0476, 'grad_norm': 0.14980624346068025, 'learning_rate': 5e-05, 'epoch': 1.47}
+{'loss': 0.0486, 'grad_norm': 0.12211325462338334, 'learning_rate': 5e-05, 'epoch': 1.49}
+{'loss': 0.0476, 'grad_norm': 0.1638690057228526, 'learning_rate': 5e-05, 'epoch': 1.5}
+{'loss': 0.0458, 'grad_norm': 0.17622929269642812, 'learning_rate': 5e-05, 'epoch': 1.51}
+{'loss': 0.0482, 'grad_norm': 0.20362948163394753, 'learning_rate': 5e-05, 'epoch': 1.53}
+{'loss': 0.0475, 'grad_norm': 0.1223381917916197, 'learning_rate': 5e-05, 'epoch': 1.54}
+{'loss': 0.0493, 'grad_norm': 0.19614685183088626, 'learning_rate': 5e-05, 'epoch': 1.55}
+{'loss': 0.047, 'grad_norm': 0.16455277914311575, 'learning_rate': 5e-05, 'epoch': 1.57}
+{'loss': 0.0472, 'grad_norm': 0.1564893796199534, 'learning_rate': 5e-05, 'epoch': 1.58}
+{'loss': 0.0473, 'grad_norm': 0.17858922180015416, 'learning_rate': 5e-05, 'epoch': 1.59}
+{'loss': 0.047, 'grad_norm': 0.23815685683642257, 'learning_rate': 5e-05, 'epoch': 1.61}
+{'loss': 0.0462, 'grad_norm': 0.2210424144578222, 'learning_rate': 5e-05, 'epoch': 1.62}
+{'loss': 0.0451, 'grad_norm': 0.19489850035969286, 'learning_rate': 5e-05, 'epoch': 1.63}
+{'loss': 0.0479, 'grad_norm': 0.13342159511466667, 'learning_rate': 5e-05, 'epoch': 1.65}
+{'loss': 0.0463, 'grad_norm': 0.2138528775518342, 'learning_rate': 5e-05, 'epoch': 1.66}
+{'loss': 0.045, 'grad_norm': 0.1847578034953205, 'learning_rate': 5e-05, 'epoch': 1.67}
+{'loss': 0.0467, 'grad_norm': 0.17870347471237152, 'learning_rate': 5e-05, 'epoch': 1.69}
+{'loss': 0.0465, 'grad_norm': 0.19529138450922306, 'learning_rate': 5e-05, 'epoch': 1.7}
+{'loss': 0.0462, 'grad_norm': 0.13236253612950838, 'learning_rate': 5e-05, 'epoch': 1.71}
+{'loss': 0.0475, 'grad_norm': 0.1328878749807315, 'learning_rate': 5e-05, 'epoch': 1.73}
+{'loss': 0.0468, 'grad_norm': 0.10990119703666419, 'learning_rate': 5e-05, 'epoch': 1.74}
+{'loss': 0.0455, 'grad_norm': 0.110766491586161, 'learning_rate': 5e-05, 'epoch': 1.75}
+{'loss': 0.045, 'grad_norm': 0.15265402619490365, 'learning_rate': 5e-05, 'epoch': 1.77}
+{'loss': 0.0463, 'grad_norm': 0.10338879408792659, 'learning_rate': 5e-05, 'epoch': 1.78}
+{'loss': 0.0452, 'grad_norm': 0.13033439891327553, 'learning_rate': 5e-05, 'epoch': 1.79}
+{'loss': 0.046, 'grad_norm': 0.11625971691990922, 'learning_rate': 5e-05, 'epoch': 1.81}
+{'loss': 0.0462, 'grad_norm': 0.2181417916592348, 'learning_rate': 5e-05, 'epoch': 1.82}
+{'loss': 0.0443, 'grad_norm': 0.1807418037379148, 'learning_rate': 5e-05, 'epoch': 1.83}
+{'loss': 0.0454, 'grad_norm': 0.16156793855445123, 'learning_rate': 5e-05, 'epoch': 1.85}
+{'loss': 0.0457, 'grad_norm': 0.21219840947282267, 'learning_rate': 5e-05, 'epoch': 1.86}
+{'loss': 0.0452, 'grad_norm': 0.15541008868137496, 'learning_rate': 5e-05, 'epoch': 1.87}
+{'loss': 0.045, 'grad_norm': 0.13902766294990157, 'learning_rate': 5e-05, 'epoch': 1.89}
+{'loss': 0.0456, 'grad_norm': 0.18443753749804373, 'learning_rate': 5e-05, 'epoch': 1.9}
+{'loss': 0.0446, 'grad_norm': 0.1778374886343093, 'learning_rate': 5e-05, 'epoch': 1.91}
+{'loss': 0.0448, 'grad_norm': 0.12978029866309637, 'learning_rate': 5e-05, 'epoch': 1.93}
+{'loss': 0.046, 'grad_norm': 0.12076153869467411, 'learning_rate': 5e-05, 'epoch': 1.94}
+{'loss': 0.0435, 'grad_norm': 0.13377484712468998, 'learning_rate': 5e-05, 'epoch': 1.95}
+{'loss': 0.0447, 'grad_norm': 0.12605638710344372, 'learning_rate': 5e-05, 'epoch': 1.97}
+{'loss': 0.0453, 'grad_norm': 0.10025854903706881, 'learning_rate': 5e-05, 'epoch': 1.98}
+{'loss': 0.0456, 'grad_norm': 0.10794563055588634, 'learning_rate': 5e-05, 'epoch': 1.99}
+  8%|██████████████████▊                                                                                                                                                                                                              | 1494/17928 [35:38<5:05:38,  1.12s/it][INFO|gner_trainer.py:60] 2024-11-19 19:57:26,157 >> ***** Running Evaluation *****
+[INFO|gner_trainer.py:62] 2024-11-19 19:57:26,157 >>   Num examples = 13681
+[INFO|gner_trainer.py:65] 2024-11-19 19:57:26,157 >>   Batch size = 32
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3602.52it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3636.11it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3580.77it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3614.08it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3599.19it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3595.41it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3536.77it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4059.84it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4089.69it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4031.68it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4080.20it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4076.30it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4054.15it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3622.80it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 3992.55it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1396.37it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1382.39it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1399.63it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1381.36it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1391.98it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1377.31it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4072.03it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1376.70it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1094.45it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1086.46it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1099.30it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1089.00it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1092.83it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1081.52it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1391.78it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1081.96it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 966.92it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 978.64it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1095.69it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 975.40it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 974.33it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 973.18it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 968.98it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 963.21it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 975.95it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 944.90it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 954.47it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 953.90it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 953.96it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 946.23it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 946.42it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 946.66it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1081.50it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1090.03it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 955.80it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1083.48it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1088.58it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1088.79it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1081.73it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1083.05it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1091.73it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 539.51it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 529.82it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 531.90it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 528.19it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 528.05it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 528.22it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 527.27it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 533.52it/s]
+{'eval_mit-movie_precision': 0.35336300692382905, 'eval_mit-movie_recall': 0.26765311856152335, 'eval_mit-movie_f1': 0.3045934135713232, 'eval_mit-restaurant_precision': 0.36189889025891725, 'eval_mit-restaurant_recall': 0.18634920634920044, 'eval_mit-restaurant_f1': 0.24601844086039693, 'eval_crossner_ai_precision': 0.2847974328118618, 'eval_crossner_ai_recall': 0.4418170504044529, 'eval_crossner_ai_f1': 0.3463414633669522, 'eval_crossner_literature_precision': 0.37066666666665254, 'eval_crossner_literature_recall': 0.49091826437938996, 'eval_crossner_literature_f1': 0.42240069454613693, 'eval_crossner_music_precision': 0.48375247244983094, 'eval_crossner_music_recall': 0.5480153649167558, 'eval_crossner_music_f1': 0.5138826353996757, 'eval_crossner_politics_precision': 0.46107301331181, 'eval_crossner_politics_recall': 0.5861538461538311, 'eval_crossner_politics_f1': 0.5161435989572495, 'eval_crossner_science_precision': 0.47338557146715826, 'eval_crossner_science_recall': 0.6924901185770477, 'eval_crossner_science_f1': 0.5623495425612808, 'eval_wiki_passage_from_zero_precision': 0.7418494425575178, 'eval_wiki_passage_from_zero_recall': 0.7747494989979944, 'eval_wiki_passage_from_zero_f1': 0.7579426151069137, 'eval_average_f1': 0.4587090505462411, 'eval_runtime': 514.9469, 'eval_samples_per_second': 26.568, 'eval_steps_per_second': 0.105, 'epoch': 2.0}
+  8%|██████████████████▊                                                                                                                                                                                                              | 1494/17928 [44:13<5:05:38,  1.12s/it]
+[INFO|trainer.py:3812] 2024-11-19 20:06:01,908 >> Saving model checkpoint to output/flan-t5-base-concept-learning/checkpoint-1494
+[INFO|configuration_utils.py:414] 2024-11-19 20:06:01,911 >> Configuration saved in output/flan-t5-base-concept-learning/checkpoint-1494/config.json
+[INFO|configuration_utils.py:865] 2024-11-19 20:06:01,911 >> Configuration saved in output/flan-t5-base-concept-learning/checkpoint-1494/generation_config.json
+[INFO|modeling_utils.py:3035] 2024-11-19 20:06:02,477 >> Model weights saved in output/flan-t5-base-concept-learning/checkpoint-1494/model.safetensors
+[INFO|tokenization_utils_base.py:2646] 2024-11-19 20:06:02,479 >> tokenizer config file saved in output/flan-t5-base-concept-learning/checkpoint-1494/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2655] 2024-11-19 20:06:02,479 >> Special tokens file saved in output/flan-t5-base-concept-learning/checkpoint-1494/special_tokens_map.json
+[INFO|tokenization_t5_fast.py:175] 2024-11-19 20:06:02,480 >> Copy vocab file to output/flan-t5-base-concept-learning/checkpoint-1494/spiece.model
+[2024-11-19 20:06:02,496] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step1494 is about to be saved!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+[2024-11-19 20:06:02,502] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/flan-t5-base-concept-learning/checkpoint-1494/global_step1494/mp_rank_00_model_states.pt
+[2024-11-19 20:06:02,502] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-base-concept-learning/checkpoint-1494/global_step1494/mp_rank_00_model_states.pt...
+[2024-11-19 20:06:03,148] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-base-concept-learning/checkpoint-1494/global_step1494/mp_rank_00_model_states.pt.
+[2024-11-19 20:06:03,150] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-base-concept-learning/checkpoint-1494/global_step1494/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-19 20:06:03,776] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-base-concept-learning/checkpoint-1494/global_step1494/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-19 20:06:03,776] [INFO] [engine.py:3477:_save_zero_checkpoint] bf16_zero checkpoint saved output/flan-t5-base-concept-learning/checkpoint-1494/global_step1494/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-19 20:06:03,776] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step1494 is ready now!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+{'loss': 0.0435, 'grad_norm': 0.16063738288164192, 'learning_rate': 5e-05, 'epoch': 2.01}
+{'loss': 0.0436, 'grad_norm': 0.20453247868436225, 'learning_rate': 5e-05, 'epoch': 2.02}
+{'loss': 0.0435, 'grad_norm': 0.12718692671625528, 'learning_rate': 5e-05, 'epoch': 2.03}
+{'loss': 0.0443, 'grad_norm': 0.1706429943003714, 'learning_rate': 5e-05, 'epoch': 2.05}
+{'loss': 0.0445, 'grad_norm': 0.15097746978329235, 'learning_rate': 5e-05, 'epoch': 2.06}
+{'loss': 0.0445, 'grad_norm': 0.1987438712884539, 'learning_rate': 5e-05, 'epoch': 2.07}
+{'loss': 0.0439, 'grad_norm': 0.09542554381809977, 'learning_rate': 5e-05, 'epoch': 2.09}
+{'loss': 0.0435, 'grad_norm': 0.11832798865862147, 'learning_rate': 5e-05, 'epoch': 2.1}
+{'loss': 0.0446, 'grad_norm': 0.1860797157889069, 'learning_rate': 5e-05, 'epoch': 2.12}
+{'loss': 0.0436, 'grad_norm': 0.16965428471617078, 'learning_rate': 5e-05, 'epoch': 2.13}
+{'loss': 0.0429, 'grad_norm': 0.15531407430299932, 'learning_rate': 5e-05, 'epoch': 2.14}
+{'loss': 0.0444, 'grad_norm': 0.1508950715525266, 'learning_rate': 5e-05, 'epoch': 2.16}
+{'loss': 0.0436, 'grad_norm': 0.11053544312262713, 'learning_rate': 5e-05, 'epoch': 2.17}
+{'loss': 0.0432, 'grad_norm': 0.19402888016029943, 'learning_rate': 5e-05, 'epoch': 2.18}
+{'loss': 0.0445, 'grad_norm': 0.17390031065828107, 'learning_rate': 5e-05, 'epoch': 2.2}
+{'loss': 0.0441, 'grad_norm': 0.10650942560246261, 'learning_rate': 5e-05, 'epoch': 2.21}
+{'loss': 0.0433, 'grad_norm': 0.1764695836640789, 'learning_rate': 5e-05, 'epoch': 2.22}
+{'loss': 0.0425, 'grad_norm': 0.18291208863956054, 'learning_rate': 5e-05, 'epoch': 2.24}
+{'loss': 0.0439, 'grad_norm': 0.1390695109368111, 'learning_rate': 5e-05, 'epoch': 2.25}
+{'loss': 0.0436, 'grad_norm': 0.11471137069296118, 'learning_rate': 5e-05, 'epoch': 2.26}
+{'loss': 0.0425, 'grad_norm': 0.19359696366334458, 'learning_rate': 5e-05, 'epoch': 2.28}
+{'loss': 0.0422, 'grad_norm': 0.23503281943709312, 'learning_rate': 5e-05, 'epoch': 2.29}
+{'loss': 0.0439, 'grad_norm': 0.14334707103389102, 'learning_rate': 5e-05, 'epoch': 2.3}
+{'loss': 0.0422, 'grad_norm': 0.11476485727986949, 'learning_rate': 5e-05, 'epoch': 2.32}
+{'loss': 0.0437, 'grad_norm': 0.19099606138807015, 'learning_rate': 5e-05, 'epoch': 2.33}
+{'loss': 0.0422, 'grad_norm': 0.18089973955009145, 'learning_rate': 5e-05, 'epoch': 2.34}
+{'loss': 0.0419, 'grad_norm': 0.17284202010544808, 'learning_rate': 5e-05, 'epoch': 2.36}
+{'loss': 0.0427, 'grad_norm': 0.12993521099496427, 'learning_rate': 5e-05, 'epoch': 2.37}
+{'loss': 0.0431, 'grad_norm': 0.1481832661090254, 'learning_rate': 5e-05, 'epoch': 2.38}
+{'loss': 0.0419, 'grad_norm': 0.1029144997946173, 'learning_rate': 5e-05, 'epoch': 2.4}
+{'loss': 0.0421, 'grad_norm': 0.10973051738299988, 'learning_rate': 5e-05, 'epoch': 2.41}
+{'loss': 0.0418, 'grad_norm': 0.13251893472783224, 'learning_rate': 5e-05, 'epoch': 2.42}
+{'loss': 0.0412, 'grad_norm': 0.11625915616903891, 'learning_rate': 5e-05, 'epoch': 2.44}
+{'loss': 0.0423, 'grad_norm': 0.15912617327991, 'learning_rate': 5e-05, 'epoch': 2.45}
+{'loss': 0.0416, 'grad_norm': 0.14393215119274672, 'learning_rate': 5e-05, 'epoch': 2.46}
+{'loss': 0.0412, 'grad_norm': 0.16984359538537142, 'learning_rate': 5e-05, 'epoch': 2.48}
+{'loss': 0.0418, 'grad_norm': 0.18539164223373797, 'learning_rate': 5e-05, 'epoch': 2.49}
+{'loss': 0.0412, 'grad_norm': 0.09761738480620119, 'learning_rate': 5e-05, 'epoch': 2.5}
+{'loss': 0.0413, 'grad_norm': 0.13842223760331515, 'learning_rate': 5e-05, 'epoch': 2.52}
+{'loss': 0.0425, 'grad_norm': 0.11125098031796142, 'learning_rate': 5e-05, 'epoch': 2.53}
+{'loss': 0.0429, 'grad_norm': 0.16500012090707453, 'learning_rate': 5e-05, 'epoch': 2.54}
+{'loss': 0.0412, 'grad_norm': 0.1904607796350904, 'learning_rate': 5e-05, 'epoch': 2.56}
+{'loss': 0.0414, 'grad_norm': 0.14068616093363073, 'learning_rate': 5e-05, 'epoch': 2.57}
+{'loss': 0.0409, 'grad_norm': 0.12095813694662134, 'learning_rate': 5e-05, 'epoch': 2.58}
+{'loss': 0.0421, 'grad_norm': 0.133331756346536, 'learning_rate': 5e-05, 'epoch': 2.6}
+{'loss': 0.0421, 'grad_norm': 0.1822131067114249, 'learning_rate': 5e-05, 'epoch': 2.61}
+{'loss': 0.0412, 'grad_norm': 0.1389611008462403, 'learning_rate': 5e-05, 'epoch': 2.62}
+{'loss': 0.042, 'grad_norm': 0.25870561513907875, 'learning_rate': 5e-05, 'epoch': 2.64}
+{'loss': 0.0412, 'grad_norm': 0.1495583218051886, 'learning_rate': 5e-05, 'epoch': 2.65}
+{'loss': 0.0416, 'grad_norm': 0.08627134738778332, 'learning_rate': 5e-05, 'epoch': 2.66}
+{'loss': 0.0423, 'grad_norm': 0.13354736967476086, 'learning_rate': 5e-05, 'epoch': 2.68}
+{'loss': 0.0404, 'grad_norm': 0.12991090341693742, 'learning_rate': 5e-05, 'epoch': 2.69}
+{'loss': 0.041, 'grad_norm': 0.1254171399873798, 'learning_rate': 5e-05, 'epoch': 2.7}
+{'loss': 0.0412, 'grad_norm': 0.1201118413774419, 'learning_rate': 5e-05, 'epoch': 2.72}
+{'loss': 0.0403, 'grad_norm': 0.09672047014971585, 'learning_rate': 5e-05, 'epoch': 2.73}
+{'loss': 0.0411, 'grad_norm': 0.10241778331355555, 'learning_rate': 5e-05, 'epoch': 2.74}
+{'loss': 0.0413, 'grad_norm': 0.13413221666158281, 'learning_rate': 5e-05, 'epoch': 2.76}
+{'loss': 0.0403, 'grad_norm': 0.20326430788917596, 'learning_rate': 5e-05, 'epoch': 2.77}
+{'loss': 0.0395, 'grad_norm': 0.1042733530244423, 'learning_rate': 5e-05, 'epoch': 2.78}
+{'loss': 0.04, 'grad_norm': 0.10274636340086878, 'learning_rate': 5e-05, 'epoch': 2.8}
+{'loss': 0.0412, 'grad_norm': 0.08361483100875262, 'learning_rate': 5e-05, 'epoch': 2.81}
+{'loss': 0.0415, 'grad_norm': 0.1264197957876029, 'learning_rate': 5e-05, 'epoch': 2.82}
+{'loss': 0.0402, 'grad_norm': 0.13607857552774758, 'learning_rate': 5e-05, 'epoch': 2.84}
+{'loss': 0.04, 'grad_norm': 0.10708832976436224, 'learning_rate': 5e-05, 'epoch': 2.85}
+{'loss': 0.0405, 'grad_norm': 0.09924960144861371, 'learning_rate': 5e-05, 'epoch': 2.86}
+{'loss': 0.0396, 'grad_norm': 0.3598081217796455, 'learning_rate': 5e-05, 'epoch': 2.88}
+{'loss': 0.0394, 'grad_norm': 0.11103601363093449, 'learning_rate': 5e-05, 'epoch': 2.89}
+{'loss': 0.0421, 'grad_norm': 0.10127809942595274, 'learning_rate': 5e-05, 'epoch': 2.9}
+{'loss': 0.0396, 'grad_norm': 0.12265687778336541, 'learning_rate': 5e-05, 'epoch': 2.92}
+{'loss': 0.0399, 'grad_norm': 0.12394825841995655, 'learning_rate': 5e-05, 'epoch': 2.93}
+{'loss': 0.0411, 'grad_norm': 0.13110782040822375, 'learning_rate': 5e-05, 'epoch': 2.95}
+{'loss': 0.0395, 'grad_norm': 0.1343483407721831, 'learning_rate': 5e-05, 'epoch': 2.96}
+{'loss': 0.0402, 'grad_norm': 0.1473512431006198, 'learning_rate': 5e-05, 'epoch': 2.97}
+{'loss': 0.0406, 'grad_norm': 0.20264648046305558, 'learning_rate': 5e-05, 'epoch': 2.99}
+{'loss': 0.0396, 'grad_norm': 0.11195923291439921, 'learning_rate': 5e-05, 'epoch': 3.0}
+ 12%|████████████████████████████▏                                                                                                                                                                                                    | 2241/17928 [57:37<4:39:54,  1.07s/it][INFO|gner_trainer.py:60] 2024-11-19 20:19:25,277 >> ***** Running Evaluation *****
+[INFO|gner_trainer.py:62] 2024-11-19 20:19:25,277 >>   Num examples = 13681
+[INFO|gner_trainer.py:65] 2024-11-19 20:19:25,277 >>   Batch size = 32
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3652.06it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3592.71it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3652.05it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3629.16it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3658.62it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3620.86it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3601.63it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 2443/2443 [00:00<00:00, 3627.25it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4092.68it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4040.22it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4086.55it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4063.98it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4078.79it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4039.83it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4026.28it/s]
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1521/1521 [00:00<00:00, 4076.64it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1394.23it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1380.08it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1355.62it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1352.64it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1386.28it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1349.35it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1377.94it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 431/431 [00:00<00:00, 1348.58it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1096.40it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1081.68it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1085.98it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1089.02it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1083.08it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1081.67it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1077.18it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 416/416 [00:00<00:00, 1087.93it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 980.16it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 968.99it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 970.02it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 972.61it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 948.65it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 975.08it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 967.63it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 465/465 [00:00<00:00, 975.15it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 959.02it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 949.85it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 951.65it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 953.46it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 946.90it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 953.40it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 947.64it/s]
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 651/651 [00:00<00:00, 954.90it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1094.65it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1081.88it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1085.43it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1086.35it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1081.83it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1081.82it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1062.00it/s]
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:00<00:00, 1089.53it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 539.67it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 536.85it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 538.52it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 536.97it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 536.96it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 528.98it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 539.56it/s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7211/7211 [00:13<00:00, 534.06it/s]
+{'eval_mit-movie_precision': 0.43680158927240037, 'eval_mit-movie_recall': 0.32946244615095843, 'eval_mit-movie_f1': 0.37561392265009763, 'eval_mit-restaurant_precision': 0.39609236234455913, 'eval_mit-restaurant_recall': 0.21238095238094565, 'eval_mit-restaurant_f1': 0.2765034097499587, 'eval_crossner_ai_precision': 0.3237380058406206, 'eval_crossner_ai_recall': 0.48288736776599356, 'eval_crossner_ai_f1': 0.38761238756431465, 'eval_crossner_literature_precision': 0.3765624999999853, 'eval_crossner_literature_recall': 0.48637739656909756, 'eval_crossner_literature_f1': 0.4244826067319447, 'eval_crossner_music_precision': 0.5215127432173056, 'eval_crossner_music_recall': 0.6091549295774453, 'eval_crossner_music_f1': 0.5619371031541818, 'eval_crossner_politics_precision': 0.5028632025450582, 'eval_crossner_politics_recall': 0.6079487179487023, 'eval_crossner_politics_f1': 0.5504352872400458, 'eval_crossner_science_precision': 0.492851135407892, 'eval_crossner_science_recall': 0.694861660079024, 'eval_crossner_science_f1': 0.576677054240422, 'eval_wiki_passage_from_zero_precision': 0.7834013439714136, 'eval_wiki_passage_from_zero_recall': 0.7733066132264513, 'eval_wiki_passage_from_zero_f1': 0.7783212480716661, 'eval_average_f1': 0.4914478774253289, 'eval_runtime': 515.5555, 'eval_samples_per_second': 26.536, 'eval_steps_per_second': 0.105, 'epoch': 3.0}
+ 12%|███████████████████████████▉                                                                                                                                                                                                   | 2241/17928 [1:06:13<4:39:54,  1.07s/it]
+[INFO|trainer.py:3812] 2024-11-19 20:28:01,131 >> Saving model checkpoint to output/flan-t5-base-concept-learning/checkpoint-2241
+[INFO|configuration_utils.py:414] 2024-11-19 20:28:01,133 >> Configuration saved in output/flan-t5-base-concept-learning/checkpoint-2241/config.json
+[INFO|configuration_utils.py:865] 2024-11-19 20:28:01,133 >> Configuration saved in output/flan-t5-base-concept-learning/checkpoint-2241/generation_config.json
+[INFO|modeling_utils.py:3035] 2024-11-19 20:28:01,714 >> Model weights saved in output/flan-t5-base-concept-learning/checkpoint-2241/model.safetensors
+[INFO|tokenization_utils_base.py:2646] 2024-11-19 20:28:01,716 >> tokenizer config file saved in output/flan-t5-base-concept-learning/checkpoint-2241/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2655] 2024-11-19 20:28:01,716 >> Special tokens file saved in output/flan-t5-base-concept-learning/checkpoint-2241/special_tokens_map.json
+[INFO|tokenization_t5_fast.py:175] 2024-11-19 20:28:01,717 >> Copy vocab file to output/flan-t5-base-concept-learning/checkpoint-2241/spiece.model
+[2024-11-19 20:28:01,729] [INFO] [logging.py:96:log_dist] [Rank 0] [Torch] Checkpoint global_step2241 is about to be saved!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/nn/modules/module.py:1898: UserWarning: Positional args are being deprecated, use kwargs instead. Refer to https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module.state_dict for details.
+  warnings.warn(
+[2024-11-19 20:28:01,743] [INFO] [logging.py:96:log_dist] [Rank 0] Saving model checkpoint: output/flan-t5-base-concept-learning/checkpoint-2241/global_step2241/mp_rank_00_model_states.pt
+[2024-11-19 20:28:01,743] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-base-concept-learning/checkpoint-2241/global_step2241/mp_rank_00_model_states.pt...
+[2024-11-19 20:28:02,393] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-base-concept-learning/checkpoint-2241/global_step2241/mp_rank_00_model_states.pt.
+[2024-11-19 20:28:02,394] [INFO] [torch_checkpoint_engine.py:21:save] [Torch] Saving output/flan-t5-base-concept-learning/checkpoint-2241/global_step2241/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt...
+[2024-11-19 20:28:02,965] [INFO] [torch_checkpoint_engine.py:23:save] [Torch] Saved output/flan-t5-base-concept-learning/checkpoint-2241/global_step2241/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt.
+[2024-11-19 20:28:02,965] [INFO] [engine.py:3477:_save_zero_checkpoint] bf16_zero checkpoint saved output/flan-t5-base-concept-learning/checkpoint-2241/global_step2241/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt
+[2024-11-19 20:28:02,965] [INFO] [torch_checkpoint_engine.py:33:commit] [Torch] Checkpoint global_step2241 is ready now!
+/raid/chrisjihee/miniforge3/envs/GNER/lib/python3.11/site-packages/torch/autograd/graph.py:744: UserWarning: c10d::broadcast_: an autograd kernel was not registered to the Autograd key(s) but we are trying to backprop through it. This may lead to silently incorrect behavior. This behavior is deprecated and will be removed in a future version of PyTorch. If your operator is differentiable, please ensure you have registered an autograd kernel to the correct Autograd key (e.g. DispatchKey::Autograd, DispatchKey::CompositeImplicitAutograd). If your operator is not differentiable, or to squash this warning and use the previous behavior, please register torch::CppFunction::makeFallthrough() to DispatchKey::Autograd. (Triggered internally at ../torch/csrc/autograd/autograd_not_implemented_fallback.cpp:63.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+{'loss': 0.04, 'grad_norm': 0.21053784090947747, 'learning_rate': 5e-05, 'epoch': 3.01}
+{'loss': 0.0404, 'grad_norm': 0.10401809846281714, 'learning_rate': 5e-05, 'epoch': 3.03}
+{'loss': 0.0393, 'grad_norm': 0.09460461031998672, 'learning_rate': 5e-05, 'epoch': 3.04}
+{'loss': 0.0404, 'grad_norm': 0.24798257249599254, 'learning_rate': 5e-05, 'epoch': 3.05}
+{'loss': 0.0415, 'grad_norm': 0.15100978372311435, 'learning_rate': 5e-05, 'epoch': 3.07}
+{'loss': 0.0402, 'grad_norm': 0.20828769998658142, 'learning_rate': 5e-05, 'epoch': 3.08}
+{'loss': 0.0392, 'grad_norm': 0.17215764582212317, 'learning_rate': 5e-05, 'epoch': 3.09}
+ 13%|████████████████████████████▊                                                                                                                                                                                                  | 2313/17928 [1:07:33<4:54:15,  1.13s/it]
+
