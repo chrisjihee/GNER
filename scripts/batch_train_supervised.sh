@@ -1,17 +1,17 @@
 echo ""
 echo ""
 echo "========================================================================================================================"
-echo "[bash scripts/train_mistral_7b_task_adaptation.sh]"
+echo "[bash scripts/train_llama3_1b_supervised-plus.sh]"
 echo "========================================================================================================================"
-bash scripts/train_mistral_7b_task_adaptation.sh
+bash scripts/train_llama3_1b_supervised-plus.sh
 echo "========================================================================================================================"
 echo ""
 
 echo ""
 echo ""
 echo "========================================================================================================================"
-echo "[bash scripts/train_llama30_8b-sta_task_adaptation.sh]"
+echo "[bash scripts/train_llama3_1b_supervised-base.sh]"
 echo "========================================================================================================================"
-bash scripts/train_llama30_8b-sta_task_adaptation.sh
+bash scripts/train_llama3_1b_supervised-base.sh
 echo "========================================================================================================================"
 echo ""
