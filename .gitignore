@@ -163,6 +163,7 @@ cython_debug/
 data/crossner_*
 data/mit-*
 data/pile-ner.*
+data/linked-entity-pile.*
 output/
 gradio_cached_examples/
 
