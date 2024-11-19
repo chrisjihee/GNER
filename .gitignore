@@ -162,7 +162,7 @@ cython_debug/
 # GNER Data and Output file
 data/crossner_*
 data/mit-*
-data/pile-ner.json
+data/pile-ner.*
 output/
 gradio_cached_examples/
 
