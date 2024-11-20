@@ -2,7 +2,7 @@ set -x
 port=$(shuf -i25000-30000 -n1)
 TRAIN_JSON_DIR=data/zero-shot-train-plus-plus-plus.jsonl
 VALID_JSON_DIR=data/zero-shot-test.jsonl
-MODEL_NAME_OR_PATH=meta-llama/Llama-3.2-3B
+MODEL_NAME_OR_PATH=etri-lirs/eagle-3b-preview
 OUTPUT_DIR=output/train_llama3_3b_supervised-plus-plus-plus
 RUN_NAME=train_llama3_3b_supervised-plus-plus-plus
 DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero2_llama.json
