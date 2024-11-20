@@ -3,8 +3,8 @@ port=$(shuf -i25000-30000 -n1)
 TRAIN_JSON_DIR=data/zero-shot-train-plus-plus.jsonl
 VALID_JSON_DIR=data/zero-shot-test.jsonl
 MODEL_NAME_OR_PATH=meta-llama/Llama-3.2-1B
-OUTPUT_DIR=output/llama3-1b-supervised
-RUN_NAME=llama3-1B-experiment
+OUTPUT_DIR=output/train_llama3_1b_supervised-plus-plus
+RUN_NAME=train_llama3_1b_supervised-plus-plus
 DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero1_llama.json
 deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --do_train --do_eval --predict_with_generate \
