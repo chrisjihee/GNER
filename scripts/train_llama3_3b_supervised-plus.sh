@@ -5,7 +5,7 @@ VALID_JSON_DIR=data/zero-shot-test.jsonl
 MODEL_NAME_OR_PATH=meta-llama/Llama-3.2-3B
 OUTPUT_DIR=output/llama3-3B-supervised
 RUN_NAME=llama3-3B-supervised
-DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero0_llama.json
+DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero1_llama.json
 deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --do_train --do_eval --predict_with_generate \
     --train_json_dir $TRAIN_JSON_DIR \
@@ -23,7 +23,7 @@ deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --lr_scheduler_type cosine \
     --learning_rate 2e-05 \
     --warmup_ratio 0.04 --weight_decay 0. \
-    --num_train_epochs 3 \
+    --num_train_epochs 6 \
     --max_source_length 640 \
     --max_target_length 640 \
     --generation_max_length 1280 \
