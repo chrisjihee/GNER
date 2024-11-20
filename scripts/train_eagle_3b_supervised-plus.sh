@@ -1,10 +1,10 @@
 set -x
 port=$(shuf -i25000-30000 -n1)
-TRAIN_JSON_DIR=data/zero-shot-train-plus-plus-plus.jsonl
+TRAIN_JSON_DIR=data/zero-shot-train-plus.jsonl
 VALID_JSON_DIR=data/zero-shot-test.jsonl
-MODEL_NAME_OR_PATH=meta-llama/Llama-3.2-3B
-OUTPUT_DIR=output/train_llama3_3b_supervised-plus-plus-plus
-RUN_NAME=train_llama3_3b_supervised-plus-plus-plus
+MODEL_NAME_OR_PATH=etri-lirs/eagle-3b-preview
+OUTPUT_DIR=output/train_eagle_3b_supervised-plus
+RUN_NAME=train_eagle_3b_supervised-plus
 DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero2_llama.json
 deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --do_train --do_eval --predict_with_generate \
