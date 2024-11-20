@@ -1,6 +1,6 @@
 set -x
 port=$(shuf -i25000-30000 -n1)
-TRAIN_JSON_DIR=data/zero-shot-train-plus.jsonl
+TRAIN_JSON_DIR=data/zero-shot-train-plus-plus.json
 VALID_JSON_DIR=data/zero-shot-test.jsonl
 MODEL_NAME_OR_PATH=meta-llama/Llama-3.2-1B
 OUTPUT_DIR=output/llama3-1b-supervised
