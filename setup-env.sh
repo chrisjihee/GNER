@@ -12,6 +12,9 @@ pip install -U -r requirements.txt
 mamba list cuda; mamba list libcu;
 ds_report
 
+# option
+#ln -s ~/.cache/huggingface .cache_hf
+
 # train
 #bash scripts/train_llama_task_adaptation-min4.sh
 #bash scripts/train_llama_task_adaptation-min8.sh
