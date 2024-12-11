@@ -1,3 +1,4 @@
+import random
 import logging
 import os
 import sys
@@ -215,6 +216,7 @@ def main():
 
     # Set seed before initializing model.
     set_seed(training_args.seed)
+    ran = random.Random(training_args.seed)
     if not data_args.no_load_gner_customized_datasets:
         raw_datasets = load_dataset(
             os.path.join(CURRENT_DIR, "gner_dataset.py"),
@@ -392,7 +394,9 @@ def main():
 
         if data_args.max_eval_samples is not None:
             max_eval_samples = min(len(eval_dataset), data_args.max_eval_samples)
-            eval_dataset = eval_dataset.select(range(max_eval_samples))
+            whole_indices = list(range(len(eval_dataset)))
+            ran.shuffle(whole_indices)  # randomize the indices
+            eval_dataset = eval_dataset.select(whole_indices[:max_eval_samples])
 
         with training_args.main_process_first(desc="validation dataset map pre-processing"):
             eval_dataset = eval_dataset.map(
