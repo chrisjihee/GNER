@@ -215,5 +215,4 @@ class GNERTrainer(Seq2SeqTrainer):
             if not key.startswith(f"{metric_key_prefix}_"):
                 metrics[f"{metric_key_prefix}_{key}"] = metrics.pop(key)
 
-        exit(1)  # TODO: remove this line after debugging
         return EvalLoopOutput(predictions=all_preds, label_ids=all_labels, metrics=metrics, num_samples=num_samples)
