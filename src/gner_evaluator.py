@@ -3,7 +3,6 @@ import re
 import string
 from collections import defaultdict
 from transformers import AutoTokenizer
-from tqdm import tqdm
 import argparse
 
 
@@ -191,7 +190,7 @@ def parser(words, labels):
 class NEREvaluator:
     def evaluate(self, examples: list, tokenizer):
         n_correct, n_pos_gold, n_pos_pred = 0, 0, 0
-        for example in tqdm(examples):
+        for example in examples:
             words = example['instance']['words']
             labels = example['instance']['labels']
             predictions = extract_predictions(example, tokenizer)
