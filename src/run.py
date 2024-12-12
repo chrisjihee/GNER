@@ -444,7 +444,7 @@ def main():
     # and some of the information will also be used in evaluation.
     training_args.remove_unused_columns = False
 
-    def compute_ner_metrics(dataset, preds, save_prefix=None):
+    def compute_ner_metrics(dataset, preds, save_prefix=None, save_suffix=None):
         preds = np.where(preds != -100, preds, tokenizer.pad_token_id)
         decoded_preds = tokenizer.batch_decode(preds, skip_special_tokens=True)
         if not is_encoder_decoder:
@@ -458,7 +458,7 @@ def main():
 
         results = compute_metrics(all_examples, tokenizer=tokenizer)
         if save_prefix is not None:
-            with open(os.path.join(training_args.output_dir, f"{save_prefix}_text_generations.jsonl"), "w") as fout:
+            with open(os.path.join(training_args.output_dir, f"{save_prefix}_text_generations{'_' + save_suffix if save_suffix else ''}.jsonl"), "w") as fout:
                 for example in all_examples:
                     fout.write(json.dumps(example) + "\n")
         return results

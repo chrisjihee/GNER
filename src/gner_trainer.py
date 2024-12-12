@@ -198,7 +198,7 @@ class GNERTrainer(Seq2SeqTrainer):
 
         # Metrics!
         if self.compute_metrics is not None and all_preds is not None:
-            metrics = self.compute_metrics(dataset=eval_dataset, preds=all_preds, save_prefix=metric_key_prefix)
+            metrics = self.compute_metrics(dataset=eval_dataset, preds=all_preds, save_prefix=metric_key_prefix, save_suffix=f"{self.state.global_step}")
         else:
             metrics = {}
 
@@ -215,4 +215,5 @@ class GNERTrainer(Seq2SeqTrainer):
             if not key.startswith(f"{metric_key_prefix}_"):
                 metrics[f"{metric_key_prefix}_{key}"] = metrics.pop(key)
 
+        exit(1)
         return EvalLoopOutput(predictions=all_preds, label_ids=all_labels, metrics=metrics, num_samples=num_samples)
