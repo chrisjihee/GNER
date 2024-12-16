@@ -164,6 +164,7 @@ data/crossner_*
 data/mit-*
 data/pile-ner*
 data/linked-entity-pile.*
+data/KG-generation-*.jsonl
 output/
 gradio_cached_examples/
 
