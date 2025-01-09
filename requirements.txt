@@ -8,6 +8,8 @@ sentencepiece
 --extra-index-url https://download.pytorch.org/whl/cu118
 numpy<2.0.0
 torch<2.4.0
-deepspeed<0.13.2
 accelerate<1.0.0
 transformers<4.47.0,>=4.46.0
+
+# manual install
+#deepspeed<0.13.2
