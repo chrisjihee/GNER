@@ -8,9 +8,13 @@ mamba install -n GNER cuda-libraries=11.8 cuda-libraries-dev=11.8 cuda-cudart=11
                       libcusparse=11 libcusparse-dev=11 libcublas=11 libcublas-dev=11 \
                       -c nvidia -c pytorch -y
 pip install -U -r requirements.txt
-#DS_BUILD_FUSED_ADAM=1 DS_BUILD_CPU_ADAM=1 pip install --no-cache deepspeed==0.13.1
-mamba list cuda; mamba list libcu;
+pip uninstall deepspeed
+DS_BUILD_FUSED_ADAM=1 pip install --no-cache deepspeed==0.13.1  # [OK]
+DS_BUILD_FUSED_ADAM=1 DS_BUILD_CPU_ADAM=1 pip install --no-cache deepspeed==0.13.1  # [OK]
+
+# check
 ds_report
+mamba list cuda; mamba list libcu;
 
 # option
 #ln -s ~/.cache/huggingface .cache_hf
