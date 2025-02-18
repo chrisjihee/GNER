@@ -56,4 +56,5 @@ def main(dataset_name, output_dir):
 
 if __name__ == "__main__":
     # main("ghadeermobasher/BC5CDR-Chemical-Disease", output_dir="data/bc5cdr")
-    main("eriktks/conll2003", output_dir="data/conll2003")
+    main("strombergnlp/broad_twitter_corpus", output_dir="data/broad_twitter_corpus")
+    # main("eriktks/conll2003", output_dir="data/conll2003")
