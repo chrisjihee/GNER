@@ -8,6 +8,7 @@ Usage:
     2. Run this script:
        python save_bc5cdr_chemical_disease.py
 """
+
 from pathlib import Path
 
 from datasets import load_dataset
@@ -32,6 +33,89 @@ def save_conll_format(dataset_splits, output_file, label_names):
                     f.write(f"{token}\t{label}\n")
                 # Separate each sentence/example by a blank line
                 f.write("\n")
+
+
+def generate_label_file_from_train(dataset_folder):
+    """
+    Reads the CoNLL-style train.txt in the given dataset folder,
+    extracts all unique labels, and saves them to label.txt.
+
+    :param dataset_folder: Path (str or Path) to the dataset folder containing train.txt.
+                          The train.txt file should follow the format:
+                              token    label
+    """
+    dataset_folder = Path(dataset_folder)
+    train_file = dataset_folder / "train.txt"
+    label_file = dataset_folder / "label.txt"
+
+    if not train_file.exists():
+        print(f"[WARNING] {train_file} does not exist. Cannot generate label.txt.")
+        return
+
+    unique_labels = set()
+
+    with open(train_file, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            # Skip blank lines (separators between sentences)
+            if not line:
+                continue
+            # Each non-empty line should contain "token [tab] label"
+            parts = line.split("\t")
+            if len(parts) == 2:
+                # The second part is the label
+                label = parts[1]
+                unique_labels.add(label)
+
+    # Save the sorted unique labels to label.txt
+    with open(label_file, "w", encoding="utf-8") as f:
+        for label in sorted(unique_labels):
+            f.write(f"{label}\n")
+
+    print(f"[INFO] Generated label.txt with {len(unique_labels)} unique labels at: {label_file}")
+
+
+def count_non_empty_lines(file_path):
+    """
+    Counts the number of non-empty lines in a given file.
+    Blank lines (i.e., just separators) are not counted.
+
+    :param file_path: Path to the file.
+    :return: Number of non-empty lines.
+    """
+    if not Path(file_path).exists():
+        return 0
+    count = 0
+    with open(file_path, "r", encoding="utf-8") as f:
+        for line in f:
+            if line.strip():
+                count += 1
+    return count
+
+
+def print_dataset_stats(dataset_folder):
+    """
+    Prints the number of token lines (non-empty) in train.txt, dev.txt, and test.txt,
+    and the number of lines in label.txt.
+
+    :param dataset_folder: Path (str or Path) to the dataset folder containing
+                           train.txt, dev.txt, test.txt, and label.txt.
+    """
+    dataset_folder = Path(dataset_folder)
+    train_file = dataset_folder / "train.txt"
+    dev_file = dataset_folder / "dev.txt"
+    test_file = dataset_folder / "test.txt"
+    label_file = dataset_folder / "label.txt"
+
+    # Count non-empty lines in each file
+    train_count = count_non_empty_lines(train_file)
+    dev_count = count_non_empty_lines(dev_file)
+    test_count = count_non_empty_lines(test_file)
+    label_count = "Unknown"
+    if label_file.exists():
+        label_count = count_non_empty_lines(label_file)
+
+    print(f"[STATS] {dataset_folder.name:25s}: #train={train_count}, #valid={dev_count}, #test={test_count}, #label={label_count}")
 
 
 def main(dataset_name, output_dir, sub_name=None, label2id=None, train_split="train", dev_splits=["validation"], test_splits=["test"]):
@@ -172,5 +256,12 @@ if __name__ == "__main__":
     # main("ncbi/ncbi_disease", "data/ncbi")
     # main("tner/ontonotes5", "data/Ontonotes", label2id=ontonotes5_label2id)
     # main("rmyeid/polyglot_ner", "data/PolyglotNER")
-    main("tner/tweetner7", "data/TweetNER7", label2id=tweetner7_label2id,
-         train_split="train_all", dev_splits=["validation_2020", "validation_2021"], test_splits=["test_2020"])
+    # main("tner/tweetner7", "data/TweetNER7", label2id=tweetner7_label2id,
+    #      train_split="train_all", dev_splits=["validation_2020", "validation_2021"], test_splits=["test_2020"])
+
+    # for dataset_dir in sorted([x for x in Path("data").glob("*") if x.is_dir()]):
+    #     if not Path(dataset_dir / "label.txt").exists():
+    #         generate_label_file_from_train(dataset_dir)
+
+    for dataset_dir in sorted([x for x in Path("data").glob("*") if x.is_dir()]):
+        print_dataset_stats(dataset_dir)
