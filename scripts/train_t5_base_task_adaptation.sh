@@ -2,17 +2,17 @@ set -x
 
 port=$(shuf -i25000-30000 -n1)
 
-MODEL_NAME_OR_PATH=google/flan-t5-large
+MODEL_NAME_OR_PATH=google/flan-t5-base
 DATA_DIR=data
 TRAIN_JSON_DIR=data/pile-ner.json
 DATA_CONFIG_DIR=configs/dataset_configs/task_adaptation_configs
 INSTRUCTION_FILE=configs/instruction_configs/instruction.json
-OUTPUT_DIR=output/flan-t5-large-task-adaptation
+OUTPUT_DIR=output/flan-t5-base-task-adaptation
 DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero0_t5.json
 
-RUN_NAME=flan-t5-large-experiment
+RUN_NAME=flan-t5-base-experiment
 
-deepspeed --include="localhost:0,1,2,3" --master_port $port src/run.py \
+deepspeed --include="localhost:0,1,2,3,4,5,6,7" --master_port $port src/run.py \
     --do_train \
     --do_predict \
     --predict_with_generate \
@@ -26,11 +26,11 @@ deepspeed --include="localhost:0,1,2,3" --master_port $port src/run.py \
     --data_config_dir $DATA_CONFIG_DIR \
     --instruction_file $INSTRUCTION_FILE \
     --output_dir $OUTPUT_DIR \
-    --per_device_train_batch_size 4 \
+    --per_device_train_batch_size 32 \
     --per_device_eval_batch_size 8 \
-    --gradient_accumulation_steps 8 \
+    --gradient_accumulation_steps 1 \
     --learning_rate 5e-05 \
-    --num_train_epochs 10 \
+    --num_train_epochs 12 \
     --deepspeed $DEEPSPEED_CONFIG \
     --run_name $RUN_NAME \
     --max_source_length 640 \
