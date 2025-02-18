@@ -53,9 +53,16 @@ def main(dataset_name, output_dir):
     save_conll_format(dataset["validation"], output_dir / "dev.txt", label_names)
     save_conll_format(dataset["test"], output_dir / "test.txt", label_names)
 
+    # Print the number of samples in each split
+    print(f"Number of train samples: {len(dataset['train'])}")
+    print(f"Number of dev samples: {len(dataset['validation'])}")
+    print(f"Number of test samples: {len(dataset['test'])}")
+
 
 if __name__ == "__main__":
     # main("ghadeermobasher/BC5CDR-Chemical-Disease", output_dir="data/bc5cdr")
+    # main("chintagunta85/bc4chemd", "data/bc4chemd")
     # main("strombergnlp/broad_twitter_corpus", "data/broad_twitter_corpus")
     # main("eriktks/conll2003", "data/conll2003")
-    main("chintagunta85/bc4chemd", "data/bc4chemd")
+    main("DFKI-SLT/fabner", "data/FabNER")
+    # main("bigbio/anat_em", "data/AnatEM")
