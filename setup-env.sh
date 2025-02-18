@@ -19,4 +19,4 @@ huggingface-cli whoami
 ln -s ~/.cache/huggingface .cache_hf
 
 # train
-bash scripts/train_llama_task_adaptation-full.sh
+bash scripts/train_t5_large_task_adaptation.sh
