@@ -34,11 +34,13 @@ def save_conll_format(dataset_split, output_file, label_names):
 
 
 def main(dataset_name, output_dir):
+    print("=" * 80)
+    print(f"Saving the '{dataset_name}' dataset to '{output_dir}'...")
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Load the dataset from Hugging Face
-    dataset = load_dataset(dataset_name)
+    dataset = load_dataset(dataset_name, trust_remote_code=True)
 
     # Retrieve the list of label names
     label_names = dataset["train"].features["ner_tags"].feature.names
@@ -60,9 +62,8 @@ def main(dataset_name, output_dir):
 
 
 if __name__ == "__main__":
-    # main("ghadeermobasher/BC5CDR-Chemical-Disease", output_dir="data/bc5cdr")
-    # main("chintagunta85/bc4chemd", "data/bc4chemd")
-    # main("strombergnlp/broad_twitter_corpus", "data/broad_twitter_corpus")
-    # main("eriktks/conll2003", "data/conll2003")
+    main("ghadeermobasher/BC5CDR-Chemical-Disease", "data/bc5cdr")
+    main("chintagunta85/bc4chemd", "data/bc4chemd")
+    main("strombergnlp/broad_twitter_corpus", "data/broad_twitter_corpus")
+    main("eriktks/conll2003", "data/conll2003")
     main("DFKI-SLT/fabner", "data/FabNER")
-    # main("bigbio/anat_em", "data/AnatEM")
