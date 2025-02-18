@@ -66,4 +66,5 @@ if __name__ == "__main__":
     # main("chintagunta85/bc4chemd", "data/bc4chemd")
     # main("strombergnlp/broad_twitter_corpus", "data/broad_twitter_corpus")
     # main("eriktks/conll2003", "data/conll2003")
-    main("DFKI-SLT/fabner", "data/FabNER")
+    # main("DFKI-SLT/fabner", "data/FabNER")
+    main("ncbi/ncbi_disease", "data/ncbi")
