@@ -23,6 +23,6 @@ cd data; gzip -d -k pile-ner.json.gz; cd ..
 cd data; gzip -d -k pile-ner.jsonl.gz; cd ..
 
 # train
-screen -h 1000000 -R GNER
+screen -h 5000000 -R GNER
 conda activate GNER
 bash scripts/train_t5_large_task_adaptation.sh
