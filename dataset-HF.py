@@ -13,7 +13,7 @@ from pathlib import Path
 from datasets import load_dataset
 
 
-def save_conll_format(dataset_split, output_file, label_names):
+def save_conll_format(dataset_splits, output_file, label_names):
     """
     Save the dataset split to a file in CoNLL-like format.
 
@@ -22,25 +22,26 @@ def save_conll_format(dataset_split, output_file, label_names):
     :param label_names: A list of label names corresponding to the numerical tags.
     """
     with open(output_file, "w", encoding="utf-8") as f:
-        for example in dataset_split:
-            tokens = example["tokens"]
-            tags = example["ner_tags"] if "ner_tags" in example else example["tags"]
-            for token, tag_id in zip(tokens, tags):
-                # Convert the numerical tag ID to its string label
-                label = label_names[tag_id]
-                f.write(f"{token}\t{label}\n")
-            # Separate each sentence/example by a blank line
-            f.write("\n")
+        for dataset_split in dataset_splits:
+            for example in dataset_split:
+                tokens = example["tokens"]
+                tags = example["ner_tags"] if "ner_tags" in example else example["tags"]
+                for token, tag_id in zip(tokens, tags):
+                    # Convert the numerical tag ID to its string label
+                    label = label_names[tag_id]
+                    f.write(f"{token}\t{label}\n")
+                # Separate each sentence/example by a blank line
+                f.write("\n")
 
 
-def main(dataset_name, output_dir, label2id=None):
+def main(dataset_name, output_dir, sub_name=None, label2id=None, train_split="train", dev_splits=["validation"], test_splits=["test"]):
     print("=" * 80)
-    print(f"Saving the '{dataset_name}' dataset to '{output_dir}'...")
+    print(f"Saving the '{dataset_name}/{sub_name}' dataset to '{output_dir}'...")
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Load the dataset from Hugging Face
-    dataset = load_dataset(dataset_name, trust_remote_code=True)
+    dataset = load_dataset(dataset_name, sub_name, trust_remote_code=True)
 
     # Retrieve the list of label names
     if label2id:
@@ -48,7 +49,7 @@ def main(dataset_name, output_dir, label2id=None):
         for label, id in label2id.items():
             label_names[id] = label
     else:
-        label_names = dataset["train"].features["ner_tags"].feature.names
+        label_names = dataset[train_split].features["ner_tags"].feature.names
 
     # Save the label list to label.txt
     with open(output_dir / "label.txt", "w", encoding="utf-8") as f:
@@ -56,15 +57,53 @@ def main(dataset_name, output_dir, label2id=None):
             f.write(f"{label}\n")
 
     # Save the train, dev, and test splits in CoNLL-like format
-    save_conll_format(dataset["train"], output_dir / "train.txt", label_names)
-    save_conll_format(dataset["validation"], output_dir / "dev.txt", label_names)
-    save_conll_format(dataset["test"], output_dir / "test.txt", label_names)
+    save_conll_format([dataset[train_split]], output_dir / "train.txt", label_names)
+    save_conll_format([dataset[x] for x in dev_splits], output_dir / "dev.txt", label_names)
+    save_conll_format([dataset[x] for x in test_splits], output_dir / "test.txt", label_names)
 
     # Print the number of samples in each split
-    print(f"Number of train samples: {len(dataset['train'])}")
-    print(f"Number of dev samples: {len(dataset['validation'])}")
-    print(f"Number of test samples: {len(dataset['test'])}")
+    print(f"Number of train samples: {len(dataset[train_split])}")
+    print(f"Number of dev samples: {sum([len(dataset[x]) for x in dev_splits])}")
+    print(f"Number of test samples: {sum([len(dataset[x]) for x in test_splits])}")
 
+
+multinerd_label2id = {
+    "O": 0,
+    "B-PER": 1,
+    "I-PER": 2,
+    "B-LOC": 3,
+    "I-LOC": 4,
+    "B-ORG": 5,
+    "I-ORG": 6,
+    "B-ANIM": 7,
+    "I-ANIM": 8,
+    "B-BIO": 9,
+    "I-BIO": 10,
+    "B-CEL": 11,
+    "I-CEL": 12,
+    "B-DIS": 13,
+    "I-DIS": 14,
+    "B-EVE": 15,
+    "I-EVE": 16,
+    "B-FOOD": 17,
+    "I-FOOD": 18,
+    "B-INST": 19,
+    "I-INST": 20,
+    "B-MEDIA": 21,
+    "I-MEDIA": 22,
+    "B-PLANT": 23,
+    "I-PLANT": 24,
+    "B-MYTH": 25,
+    "I-MYTH": 26,
+    "B-TIME": 27,
+    "I-TIME": 28,
+    "B-VEHI": 29,
+    "I-VEHI": 30,
+    "B-SUPER": 31,
+    "I-SUPER": 32,
+    "B-PHY": 33,
+    "I-PHY": 34
+}
 
 ontonotes5_label2id = {
     "O": 0,
@@ -106,6 +145,24 @@ ontonotes5_label2id = {
     "I-LANGUAGE": 36
 }
 
+tweetner7_label2id = {
+    "B-corporation": 0,
+    "B-creative_work": 1,
+    "B-event": 2,
+    "B-group": 3,
+    "B-location": 4,
+    "B-person": 5,
+    "B-product": 6,
+    "I-corporation": 7,
+    "I-creative_work": 8,
+    "I-event": 9,
+    "I-group": 10,
+    "I-location": 11,
+    "I-person": 12,
+    "I-product": 13,
+    "O": 14
+}
+
 if __name__ == "__main__":
     # main("ghadeermobasher/BC5CDR-Chemical-Disease", "data/bc5cdr")
     # main("chintagunta85/bc4chemd", "data/bc4chemd")
@@ -113,4 +170,7 @@ if __name__ == "__main__":
     # main("eriktks/conll2003", "data/conll2003")
     # main("DFKI-SLT/fabner", "data/FabNER")
     # main("ncbi/ncbi_disease", "data/ncbi")
-    main("tner/ontonotes5", "data/Ontonotes", label2id=ontonotes5_label2id)
+    # main("tner/ontonotes5", "data/Ontonotes", label2id=ontonotes5_label2id)
+    # main("rmyeid/polyglot_ner", "data/PolyglotNER")
+    main("tner/tweetner7", "data/TweetNER7", label2id=tweetner7_label2id,
+         train_split="train_all", dev_splits=["validation_2020", "validation_2021"], test_splits=["test_2020"])
