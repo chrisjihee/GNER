@@ -209,8 +209,8 @@ class GNERDataset(datasets.GeneratorBasedBuilder):
             over_sampling = dataset.get("over_sampling", False)
             dataset_path = os.path.join(data_dir, dataset_name, split + ".txt")
             labels_path = os.path.join(data_dir, dataset_name, "label.txt")
-            assert os.path.exists(dataset_path)
-            assert os.path.exists(labels_path)
+            assert os.path.exists(dataset_path), f"dataset_path not exists: {dataset_path}"
+            assert os.path.exists(labels_path), f"labels_path not exists: {labels_path}"
 
             # load data from files
             instances, label_list = self._load_dataset(dataset_path, labels_path)
