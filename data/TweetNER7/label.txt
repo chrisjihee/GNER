@@ -1,0 +1,15 @@
+B-corporation
+B-creative_work
+B-event
+B-group
+B-location
+B-person
+B-product
+I-corporation
+I-creative_work
+I-event
+I-group
+I-location
+I-person
+I-product
+O
