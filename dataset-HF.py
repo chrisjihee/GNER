@@ -62,8 +62,8 @@ def main(dataset_name, output_dir):
 
 
 if __name__ == "__main__":
-    main("ghadeermobasher/BC5CDR-Chemical-Disease", "data/bc5cdr")
-    main("chintagunta85/bc4chemd", "data/bc4chemd")
-    main("strombergnlp/broad_twitter_corpus", "data/broad_twitter_corpus")
-    main("eriktks/conll2003", "data/conll2003")
+    # main("ghadeermobasher/BC5CDR-Chemical-Disease", "data/bc5cdr")
+    # main("chintagunta85/bc4chemd", "data/bc4chemd")
+    # main("strombergnlp/broad_twitter_corpus", "data/broad_twitter_corpus")
+    # main("eriktks/conll2003", "data/conll2003")
     main("DFKI-SLT/fabner", "data/FabNER")
