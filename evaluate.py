@@ -20,6 +20,7 @@ def extract(preds_text):
         pre_bound = r
     return words, labels
 
+
 # judge if b exist as a subsequence of a
 # if true, return the corresponding match index between a and b
 # else return false
@@ -36,6 +37,7 @@ def contains_in_order(a, b):
             if idx_b == m:
                 return match_idx
     return False
+
 
 # Traditional LCS solution
 # the complexity is O(N^2)
@@ -62,6 +64,7 @@ def lcs_solve(a, b):
         i, j = u, v
     return match_idx
 
+
 # A fast version of LCS with a complexity of O(NlogN)
 # in the condiction that there are few depulicate words in the sentence
 # input: a = [word_1, word_2, ..., word_n], b = [word_1, word_2, ..., word_m]
@@ -70,7 +73,7 @@ def lcs_solve_fast(a, b):
     n, m = len(a), len(b)
     match_idx = [-1] * n
     match_list_b = defaultdict(list)
-    
+
     # First we can convert the LCS problem into a LIS problem,
     # i.e., LCS(a, b) <=> LIS(index_list)
     for idx, word in enumerate(reversed(b)):
@@ -133,6 +136,7 @@ def hierarchical_matching(raw_words, words, labels, tokenizer=None):
     match_labels = [labels[idx] if idx != -1 and labels[idx] else 'O' for idx in match_idx]
     return match_labels
 
+
 # convert the unstructured texts into structured entities
 def extract_predictions(example, tokenizer=None):
     pred_words, pred_labels = extract(example['prediction'].strip())
@@ -146,22 +150,29 @@ def extract_predictions(example, tokenizer=None):
     # assert len(predictions) == len(example['instance']['labels'])
     return predictions
 
-# normalize answer, 
+
+# normalize answer,
 # cp from https://github.com/universal-ner/universal-ner/blob/main/src/eval/evaluate.py
 def normalize_answer(s):
     """Lower text and remove punctuation, articles and extra whitespace."""
+
     def remove_articles(text):
         return re.sub(r'\b(a|an|the)\b', ' ', text)
+
     def white_space_fix(text):
         return ' '.join(text.split())
+
     def remove_punc(text):
         exclude = set(string.punctuation)
         return ''.join(ch for ch in text if ch not in exclude)
+
     def lower(text):
         return text.lower()
+
     return white_space_fix(remove_articles(remove_punc(lower(s))))
 
-# parser BIO format into entity format, 
+
+# parser BIO format into entity format,
 # modified from https://github.com/universal-ner/universal-ner/blob/main/src/eval/evaluate.py
 def parser(words, labels):
     assert len(words) == len(labels)
@@ -185,6 +196,7 @@ def parser(words, labels):
         if item not in formatted_items:
             formatted_items.append(item)
     return formatted_items
+
 
 # compute F1 score
 # modified from https://github.com/universal-ner/universal-ner/blob/main/src/eval/evaluate.py
@@ -211,11 +223,14 @@ class NEREvaluator:
             'f1': f1,
         }
 
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--tokenizer-path", default="google/flan-t5-base", type=str, required=True)
-    parser.add_argument("--prediction-path", default="model_predictions/flan-t5-xxl-stage1-beam1.jsonl", type=str, required=True)
+    parser.add_argument("--tokenizer-path", default="google/flan-t5-base", type=str)
+    parser.add_argument("--prediction-path", default="prediction_results/flan-t5-base-task-adaptation-beam2.jsonl", type=str)
     args = parser.parse_args()
+    print("=" * 120)
+    print(f"prediction file: {args.prediction_path}")
 
     # load tokenizer and prediction data
     tokenizer = AutoTokenizer.from_pretrained(args.tokenizer_path)
@@ -229,10 +244,11 @@ def main():
     tot_f1, tot_dataset = 0, 0
     for dataset in all_examples:
         eval_result = NEREvaluator().evaluate(all_examples[dataset], tokenizer=tokenizer)
-        print(f'Dataset: {dataset}, F1: {eval_result["f1"]}, Precision: {eval_result["precision"]}, Recall: {eval_result["recall"]}')
+        print(f'{dataset:20s} | F: {eval_result["f1"]:.4f} | P: {eval_result["precision"]:.4f} | R: {eval_result["recall"]:.4f}')
         tot_f1 += eval_result["f1"]
         tot_dataset += 1
-    print(f'avg_f1: {tot_f1 / tot_dataset}')
+    print(f'{"Average":20s} | F: {tot_f1 / tot_dataset:.4f}')
+    print("=" * 120)
 
 
 if __name__ == "__main__":
