@@ -10,6 +10,28 @@ from transformers.trainer_seq2seq import Seq2SeqTrainer
 logger = logging.get_logger(__name__)
 
 
+class EmptyDataset(Dataset):
+    def __len__(self):
+        return 0
+
+    def __getitem__(self, index):
+        raise IndexError("This dataset is empty.")
+
+
+class SingleItemDataset(Dataset):
+    def __len__(self):
+        return 1
+
+    def __getitem__(self, idx):
+        if idx != 0:
+            raise IndexError("SingleItemDataset에는 단 하나의 아이템만 존재합니다.")
+        return {
+            "input_ids": torch.tensor([0]),
+            "attention_mask": torch.tensor([1]),
+            "labels": torch.tensor([0]),
+        }
+
+
 class TrainingValues(BaseModel):
     num_train_epochs: float
     num_update_steps_per_epoch: int
@@ -25,7 +47,7 @@ class TrainingValues(BaseModel):
         total_train_batch_size = trainer.args.world_size * trainer._train_batch_size * trainer.args.gradient_accumulation_steps
         values = trainer.set_initial_training_values(
             args=trainer.args,
-            dataloader=trainer.get_train_dataloader(),
+            dataloader=trainer.get_train_dataloader() if trainer.args.do_train else DataLoader(SingleItemDataset()),
             total_train_batch_size=total_train_batch_size
         )
         return cls(**dict(zip(cls.__annotations__.keys(), list(values) + [total_train_batch_size])))

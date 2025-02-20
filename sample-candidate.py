@@ -269,7 +269,7 @@ def main(  # --pretrained output/GNER-zeroshot/FlanT5-Base-BL/checkpoint-8250 --
         # for CustomDataArguments
         cuda_device: Annotated[int, typer.Option("--cuda_device")] = 0,
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-large",  # "google/flan-t5-large", "dyyyyyyyy/GNER-T5-large", "dyyyyyyyy/GNER-T5-large-v2", "dyyyyyyyy/GNER-LLaMA-7B"
-        train_file: Annotated[str, typer.Option("--train_file")] = "data/zero-shot-train.jsonl",  # "data/zero-shot-train.jsonl",
+        train_file: Annotated[str, typer.Option("--train_file")] = None,  # "data/zero-shot-train.jsonl",
         eval_file: Annotated[str, typer.Option("--eval_file")] = "data/zero-shot-dev-10.jsonl",  # "data/zero-shot-dev-100.jsonl",
         pred_file: Annotated[str, typer.Option("--pred_file")] = None,  # "data/zero-shot-test-100.jsonl",
         use_cache_data: Annotated[bool, typer.Option("--use_cache_data/--no_use_cache_data")] = False,
