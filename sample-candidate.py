@@ -573,6 +573,7 @@ def main(  # --pretrained output/GNER-zeroshot/FlanT5-Base-BL/checkpoint-8250 --
             data_collator=data_collator,
             compute_metrics=compute_metrics,
             is_encoder_decoder=is_encoder_decoder,
+            progress_seconds=args.data.progress_seconds,
         )
         trainer.remove_callback(PrinterCallback)
         trainer.add_callback(gner.CustomProgressCallback(
