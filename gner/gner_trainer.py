@@ -146,19 +146,6 @@ class CustomProgressCallback(TrainerCallback):
         if state.is_world_process_zero:
             if eval_dataloader and has_length(eval_dataloader):
                 if self.prediction_pbar is None:
-                    if not args.do_train:
-                        logger.info(hr(c='-'))
-                        logger.info(f"***** Running Evaluation *****")
-                        logger.info(f">> Train Model Type   = {self.trainer.model.config.model_type}")
-                        logger.info(f">> Train Model Path   = {self.trainer.model.name_or_path}")
-                        logger.info(f">> Train Model Class  = {self.trainer.model.__class__.__name__}")
-                        logger.info(f">> Train Model Params = {get_model_param_count(self.trainer.model, trainable_only=True):,}")
-                        if self.trainer.accelerator.state.deepspeed_plugin:
-                            logger.info(f">> Zero Optim Stage   = {self.trainer.accelerator.state.deepspeed_plugin.deepspeed_config['zero_optimization']['stage']}")
-                        if self.trainer.eval_dataset:
-                            logger.info(f">> Eval Examples      = {len(self.trainer.eval_dataset):,}")
-                            logger.info(f">> Eval Batch Size    = {self.trainer.args.per_device_eval_batch_size * self.trainer.args.world_size:,}"
-                                        f" = {self.trainer.args.per_device_eval_batch_size} * {self.trainer.args.world_size}")
                     self.prediction_pbar = ProgIter(
                         time_thresh=self.progress_seconds,
                         verbose=3,
@@ -264,12 +251,19 @@ class GNERTrainer(Seq2SeqTrainer):
 
         batch_size = self.args.eval_batch_size
 
-        logger.info(f"***** Running {description} *****")
-        if has_length(dataloader):
-            logger.info(f"  Num examples = {self.num_examples(dataloader)}")
-        else:
-            logger.info("  Num examples: Unknown")
-        logger.info(f"  Batch size = {batch_size}")
+        if not self.args.do_train:
+            logger.info(hr(c='-'))
+            logger.info(f"***** Running {description} *****")
+            logger.info(f">> Train Model Type   = {self.model.config.model_type}")
+            logger.info(f">> Train Model Path   = {self.model.name_or_path}")
+            logger.info(f">> Train Model Class  = {self.model.__class__.__name__}")
+            logger.info(f">> Train Model Params = {get_model_param_count(self.model, trainable_only=True):,}")
+            if self.accelerator.state.deepspeed_plugin:
+                logger.info(f">> Zero Optim Stage   = {self.accelerator.state.deepspeed_plugin.deepspeed_config['zero_optimization']['stage']}")
+            if self.eval_dataset:
+                logger.info(f">> Eval Examples      = {len(self.eval_dataset):,}")
+                logger.info(f">> Eval Batch Size    = {self.args.eval_batch_size:,}"
+                            f" = {self.args.per_device_eval_batch_size} * {self.args.world_size}")
 
         model.eval()
 
