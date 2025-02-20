@@ -57,7 +57,7 @@ class CustomProgressCallback(TrainerCallback):
 
     def __init__(
             self,
-            trainer: Trainer,
+            trainer: "GNERTrainer",
             metric_file: str | Path,
             logging_epochs: float = -1,
             eval_epochs: float = -1,
@@ -72,7 +72,6 @@ class CustomProgressCallback(TrainerCallback):
         self.progress_seconds: float = progress_seconds
 
         self.training_pbar: Optional[ProgIter] = None
-        self.prediction_pbar: Optional[ProgIter] = None
         self.current_step: int = 0
         self.metrics_table: pd.DataFrame = pd.DataFrame()
         self.metric_formats: Mapping[str, str] | None = metric_formats
@@ -145,29 +144,20 @@ class CustomProgressCallback(TrainerCallback):
     def on_prediction_step(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, eval_dataloader=None, **kwargs):
         if state.is_world_process_zero:
             if eval_dataloader and has_length(eval_dataloader):
-                if self.prediction_pbar is None:
-                    self.prediction_pbar = ProgIter(
-                        time_thresh=self.progress_seconds,
-                        verbose=3,
-                        stream=LoggerWriter(logger),
-                        total=len(eval_dataloader),
-                        desc="[checking]",
-                    )
-                    self.prediction_pbar.begin()
-                if self.prediction_pbar is not None:
-                    self.prediction_pbar.step()
+                if self.trainer.prediction_pbar is not None:
+                    self.trainer.prediction_pbar.step()
 
     def on_evaluate(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
-        if self.prediction_pbar is not None:
-            self.prediction_pbar.end()
-            self.prediction_pbar = None
+        if self.trainer.prediction_pbar is not None:
+            self.trainer.prediction_pbar.end()
+            self.trainer.prediction_pbar = None
             if self.training_pbar is not None:
                 self.training_pbar.display_message()
 
     def on_predict(self, args: TrainingArguments, state: TrainerState, control: TrainerControl, **kwargs):
-        if self.prediction_pbar is not None:
-            self.prediction_pbar.end()
-            self.prediction_pbar = None
+        if self.trainer.prediction_pbar is not None:
+            self.trainer.prediction_pbar.end()
+            self.trainer.prediction_pbar = None
             if self.training_pbar is not None:
                 self.training_pbar.display_message()
 
@@ -190,7 +180,7 @@ class CustomProgressCallback(TrainerCallback):
                 formatted_metrics = ', '.join([f'{k}={metrics[k]:{self.metric_formats[k]}}' for k in self.metric_formats if k in metrics])
                 if self.training_pbar is not None and formatted_metrics:
                     self.training_pbar.set_extra(f"| {formatted_metrics}")
-                    if self.prediction_pbar is None:
+                    if self.trainer.prediction_pbar is None:
                         self.training_pbar.display_message()
 
 
@@ -198,6 +188,8 @@ class GNERTrainer(Seq2SeqTrainer):
 
     def __init__(self, *args, **kwargs):
         self.is_encoder_decoder = kwargs.pop("is_encoder_decoder", False)
+        self.progress_seconds = kwargs.pop("progress_seconds", 3.0)
+        self.prediction_pbar: Optional[ProgIter] = None
         super().__init__(*args, **kwargs)
 
     def evaluation_loop(
@@ -287,6 +279,14 @@ class GNERTrainer(Seq2SeqTrainer):
         all_labels = None
         all_inputs = None
         # Will be useful when we have an iterable dataset so don't know its length.
+        self.prediction_pbar = ProgIter(
+            time_thresh=self.progress_seconds,
+            verbose=3,
+            stream=LoggerWriter(logger),
+            total=len(dataloader),
+            desc="[checking]",
+        )
+        self.prediction_pbar.begin()
 
         observed_num_examples = 0
         # Main evaluation loop
