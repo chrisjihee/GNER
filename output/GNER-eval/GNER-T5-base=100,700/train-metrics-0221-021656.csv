@@ -1,2 +1,0 @@
-step,epoch,eval_crossner_ai,eval_crossner_literature,eval_crossner_music,eval_crossner_politics,eval_crossner_science,eval_mit-movie,eval_mit-restaurant,eval_average,eval_runtime,eval_samples_per_second,eval_steps_per_second
-0,0.0,0.5027808675816506,0.5685164212409276,0.7123098201435468,0.5828750981432528,0.6597938143831141,0.5506493505992432,0.43380281685254507,0.5729611698491829,53.1214,13.177,0.019
