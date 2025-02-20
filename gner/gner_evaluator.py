@@ -234,8 +234,8 @@ class NEREvaluator:
         recall = n_correct / (n_pos_gold + 1e-10)
         f1 = 2 * prec * recall / (prec + recall + 1e-10)
         return {
-            'precision': prec,
-            'recall': recall,
+            'prec': prec,
+            'rec': recall,
             'f1': f1,
         }
 
