@@ -153,6 +153,20 @@ def extract_predictions(example, tokenizer=None):
     return predictions
 
 
+# convert the unstructured texts into structured entities
+def extract_predictions2(example: GenNERSampleWrapper, tokenizer=None):
+    pred_words, pred_labels = extract(example.instance.prediction_output.strip())
+    valid_labels = []
+    for label in example.label_list:
+        valid_labels.extend([f'B-{label}', f'I-{label}'])
+    for i, label in enumerate(pred_labels):
+        if label not in valid_labels:
+            pred_labels[i] = "O"
+    predictions = hierarchical_matching(example.instance.words, pred_words, pred_labels, tokenizer=tokenizer)
+    assert len(predictions) == len(example.instance.labels)
+    return predictions
+
+
 # normalize answer,
 # cp from https://github.com/universal-ner/universal-ner/blob/main/src/eval/evaluate.py
 def normalize_answer(s):
@@ -230,7 +244,7 @@ class NEREvaluator:
         for example in examples:
             words = example.instance.words
             labels = example.instance.labels
-            predictions = extract_predictions(example, tokenizer)
+            predictions = extract_predictions2(example, tokenizer)
             gold_tuples = parser(words, labels)
             pred_tuples = parser(words, predictions)
             for t in pred_tuples:
