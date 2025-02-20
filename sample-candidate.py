@@ -245,17 +245,22 @@ def eval_predictions(dataset, preds, tokenizer, is_encoder_decoder, output_dir=N
         for i, preds in enumerate(decoded_preds):
             decoded_preds[i] = preds[preds.find(match_pattern) + len(match_pattern):].strip()
 
-    all_examples: List[GenNERSampleWrapper] = [GenNERSampleWrapper.model_validate(example) for example in dataset]
+    all_examples = [example.copy() for example in dataset]
     for idx, decoded_pred in enumerate(decoded_preds):
-        all_examples[idx].instance.prediction_output = decoded_pred
+        all_examples[idx]["prediction"] = decoded_pred
+    # all_examples: List[GenNERSampleWrapper] = [GenNERSampleWrapper.model_validate(example) for example in dataset]
+    # for idx, decoded_pred in enumerate(decoded_preds):
+    #     all_examples[idx].instance.prediction_output = decoded_pred
 
-    results = gner.compute_metrics2(all_examples, tokenizer=tokenizer, detailed=False, average_key="average")
+    results = gner.compute_metrics(all_examples, tokenizer=tokenizer, detailed=False, average_key="average")
+    # results = gner.compute_metrics2(all_examples, tokenizer=tokenizer, detailed=False, average_key="average")
     if write_predictions and output_dir is not None and save_prefix is not None:
         suffix = f"_{save_suffix}" if save_suffix else ""
         file_name = f"{save_prefix}-text_generations{suffix}.jsonl"
         with open(os.path.join(output_dir, file_name), "w") as fout:
             for example in all_examples:
-                fout.write(example.model_dump_json() + "\n")
+                fout.write(json.dumps(example) + "\n")
+                # fout.write(example.model_dump_json() + "\n")
     return results
 
 
