@@ -143,6 +143,17 @@ class CustomProgressCallback(TrainerCallback):
         if state.is_world_process_zero:
             if eval_dataloader and has_length(eval_dataloader):
                 if self.prediction_pbar is None:
+                    if not args.do_train:
+                        logger.info(hr(c='-'))
+                        logger.info(f"***** Running Evaluation *****")
+                        logger.info(f">> Train Model Params = {get_model_param_count(self.trainer.model, trainable_only=True):,}")
+                        logger.info(f">> Trainer Callbacks  = {', '.join(type(x).__name__ for x in self.trainer.callback_handler.callbacks)}")
+                        if self.trainer.accelerator.state.deepspeed_plugin:
+                            logger.info(f">> Zero Optim Stage   = {self.trainer.accelerator.state.deepspeed_plugin.deepspeed_config['zero_optimization']['stage']}")
+                        if self.trainer.eval_dataset:
+                            logger.info(f">> Eval Examples      = {len(self.trainer.eval_dataset):,}")
+                            logger.info(f">> Eval Batch Size    = {self.trainer.args.per_device_eval_batch_size * self.trainer.args.world_size:,}"
+                                        f" = {self.trainer.args.per_device_eval_batch_size} * {self.trainer.args.world_size}")
                     self.prediction_pbar = ProgIter(
                         time_thresh=self.progress_seconds,
                         verbose=3,
@@ -183,9 +194,9 @@ class CustomProgressCallback(TrainerCallback):
             new_metrics_row = pd.DataFrame([metrics])
             self.metrics_table = pd.concat([self.metrics_table, new_metrics_row], ignore_index=True)
             self.metrics_table.to_csv(self.metric_file, index=False)
-            if self.training_pbar is not None and self.metric_formats:
+            if self.metric_formats:
                 formatted_metrics = ', '.join([f'{k}={metrics[k]:{self.metric_formats[k]}}' for k in self.metric_formats if k in metrics])
-                if formatted_metrics:
+                if self.training_pbar is not None and formatted_metrics:
                     self.training_pbar.set_extra(f"| {formatted_metrics}")
                     if self.prediction_pbar is None:
                         self.training_pbar.display_message()
