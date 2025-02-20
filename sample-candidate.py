@@ -275,8 +275,8 @@ def main(  # --pretrained output/GNER-zeroshot/FlanT5-Base-BL/checkpoint-8250 --
         # Experimental Arguments
         cuda_device: Annotated[int, typer.Option("--cuda_device")] = 0,
         per_device_eval_batch_size: Annotated[int, typer.Option("--per_device_eval_batch_size")] = 200,
-        run_version: Annotated[str, typer.Option("--run_version")] = "GNER-T5-large-v2=100,200",
-        pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-large-v2",  # "dyyyyyyyy/GNER-T5-base", "dyyyyyyyy/GNER-T5-large", "dyyyyyyyy/GNER-T5-large-v2", "dyyyyyyyy/GNER-LLaMA-7B"
+        run_version: Annotated[str, typer.Option("--run_version")] = "GNER-T5-base=100,200",
+        pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-base", "dyyyyyyyy/GNER-T5-large", "dyyyyyyyy/GNER-T5-large-v2", "dyyyyyyyy/GNER-LLaMA-7B"
         eval_file: Annotated[str, typer.Option("--eval_file")] = "data/zero-shot-dev-100.jsonl",  # "data/zero-shot-dev-100.jsonl",
         # for CustomDataArguments
         train_file: Annotated[str, typer.Option("--train_file")] = None,  # "data/zero-shot-train.jsonl",
@@ -438,7 +438,8 @@ def main(  # --pretrained output/GNER-zeroshot/FlanT5-Base-BL/checkpoint-8250 --
 
     # Set random seed
     set_seed(args.train.seed)
-    torch.set_float32_matmul_precision('high')
+    torch.backends.cudnn.deterministic = True
+    torch.set_float32_matmul_precision("medium")
     accelerator.wait_for_everyone()
 
     with JobTimer(f"python {args.env.current_file} {' '.join(args.env.command_args)}",
@@ -593,6 +594,12 @@ def main(  # --pretrained output/GNER-zeroshot/FlanT5-Base-BL/checkpoint-8250 --
 
         # Evaluate
         if args.train.do_eval:
+            # gen_kwargs = {
+            #     "do_sample": False,
+            #     "temperature": 1.0,
+            #     "top_p": 1.0,
+            # }
+            # eval_result: Dict[str, float] = trainer.evaluate(eval_dataset, metric_key_prefix="eval", **gen_kwargs)
             eval_result: Dict[str, float] = trainer.evaluate(eval_dataset, metric_key_prefix="eval")
             with patch("builtins.print", side_effect=lambda *xs: logger.info(*xs)):
                 trainer.log_metrics("eval", eval_result)
