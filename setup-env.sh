@@ -1,28 +1,42 @@
 #!/bin/bash
-# basic
+# 1. Install Miniforge
+wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+bash Miniforge3-$(uname)-$(uname -m).sh
+
+# 2. Clone the repository
+rm -rf GNER*; git clone https://github.com/chrisjihee/GNER.git; cd GNER*;
+
+# 3. Create a new environment
+conda search conda -c conda-forge
 conda install -n base -c conda-forge conda=25.1.1 -y;
 conda create -n GNER python=3.12 -y; conda activate GNER
 conda install -n GNER cuda-libraries=11.8 cuda-libraries-dev=11.8 cuda-cudart=11.8 cuda-cudart-dev=11.8 \
                       cuda-nvrtc=11.8 cuda-nvrtc-dev=11.8 cuda-driver-dev=11.8 \
-                      cuda-nvcc=11.8 cuda-cccl=11.8 cuda-runtime=11.8 cuda-version=12.4 \
+                      cuda-nvcc=11.8 cuda-cccl=11.8 cuda-runtime=11.8 cuda-version=11.8 \
                       libcusparse=11 libcusparse-dev=11 libcublas=11 libcublas-dev=11 \
                       -c nvidia -c pytorch -y
-pip install -U -r requirements.txt
-DS_BUILD_FUSED_ADAM=1 DS_BUILD_CPU_ADAM=1 pip install --no-cache deepspeed==0.13.1
+pip list; echo ==========; conda --version; echo ==========; conda list
 
-# check
-conda list cuda; conda list libcu;
-ds_report
-huggingface-cli whoami
+# 4. Install the required packages
+pip install -r requirements.txt
+export CUDA_HOME=""; DS_BUILD_FUSED_ADAM=1 pip install --no-cache deepspeed; ds_report
+MAX_JOBS=40 pip install --no-cache --no-build-isolation --upgrade flash-attn;  # for Micorsoft's Phi models
+rm -rf transformers; git clone https://github.com/chrisjihee/transformers.git; pip install -U -e transformers
+rm -rf chrisbase;    git clone https://github.com/chrisjihee/chrisbase.git;    pip install -U -e chrisbase
+rm -rf chrisdata;    git clone https://github.com/chrisjihee/chrisdata.git;    pip install -U -e chrisdata
+rm -rf progiter;     git clone https://github.com/chrisjihee/progiter.git;     pip install -U -e progiter
+pip list | grep -E "torch|lightn|trans|accel|speed|flash|numpy|piece|chris|prog|pydantic"
 
-# option
-ln -s ~/.cache/huggingface .cache_hf
-
-# data
+# 5. Unzip some archived data
 cd data; gzip -d -k pile-ner.json.gz; cd ..
 cd data; gzip -d -k pile-ner.jsonl.gz; cd ..
 
-# train
+# 6. Login to Hugging Face and link the cache
+huggingface-cli whoami
+huggingface-cli login
+ln -s ~/.cache/huggingface ./.cache_hf
+
+# 7. Run the training script
 screen -h 5000000 -R GNER
 conda activate GNER
 bash scripts/train_t5_large_task_adaptation.sh
