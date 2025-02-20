@@ -227,7 +227,7 @@ class NEREvaluator:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--tokenizer-path", default="dyyyyyyyy/GNER-T5-base", type=str)
-    parser.add_argument("--prediction-path", default="output/GNER/eval-text_generations_0.jsonl", type=str)
+    parser.add_argument("--prediction-path", default="output/GNER-eval/GNER-T5-base=100,10/eval-text_generations_0.jsonl", type=str)
     args = parser.parse_args()
     print("=" * 120)
     print(f"prediction file: {args.prediction_path}")
