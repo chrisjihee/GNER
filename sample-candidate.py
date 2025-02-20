@@ -310,8 +310,8 @@ def main(  # --pretrained output/GNER-zeroshot/FlanT5-Base-BL/checkpoint-8250 --
         trainer_deepspeed: Annotated[str, typer.Option("--trainer_deepspeed")] = None,  # for deepspeed.launcher.runner
         accelerate_deepspeed: Annotated[bool, typer.Option("--accelerate_deepspeed")] = False,  # for accelerate.commands.launch
         # for ProjectEnv
-        run_version: Annotated[str, typer.Option("--run_version")] = None,
-        output_name: Annotated[str, typer.Option("--output_name")] = "GNER",
+        run_version: Annotated[str, typer.Option("--run_version")] = "GNER-T5-base",
+        output_name: Annotated[str, typer.Option("--output_name")] = "GNER-evaluation",
         output_home: Annotated[str, typer.Option("--output_home")] = "output",
         output_file: Annotated[str, typer.Option("--output_file")] = "train-metrics.csv",
         logging_file: Annotated[str, typer.Option("--logging_file")] = "train-loggings.out",
