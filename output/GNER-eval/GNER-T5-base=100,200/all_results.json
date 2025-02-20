@@ -1,0 +1,13 @@
+{
+    "eval_average": 0.5764261325687022,
+    "eval_crossner_ai": 0.5044642856651935,
+    "eval_crossner_literature": 0.5720771849668979,
+    "eval_crossner_music": 0.7289073305169885,
+    "eval_crossner_politics": 0.5808477236548789,
+    "eval_crossner_science": 0.6597938143831141,
+    "eval_mit-movie": 0.5558441557940456,
+    "eval_mit-restaurant": 0.4330484329997971,
+    "eval_runtime": 45.4758,
+    "eval_samples_per_second": 15.393,
+    "eval_steps_per_second": 0.088
+}
