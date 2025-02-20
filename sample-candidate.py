@@ -272,11 +272,14 @@ def eval_predictions(dataset, preds, tokenizer, is_encoder_decoder, output_dir=N
 # [4]: https://huggingface.co/docs/transformers/en/main_classes/trainer
 # [5]: https://huggingface.co/docs/transformers/en/main_classes/logging
 def main(  # --pretrained output/GNER-zeroshot/FlanT5-Base-BL/checkpoint-8250 --eval_file data/gner/crossner_ai-debug=10.jsonl
-        # for CustomDataArguments
+        # Experimental Arguments
         cuda_device: Annotated[int, typer.Option("--cuda_device")] = 0,
+        run_version: Annotated[str, typer.Option("--run_version")] = "GNER-T5-base=100,10",
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-base", "dyyyyyyyy/GNER-T5-large", "dyyyyyyyy/GNER-T5-large-v2", "dyyyyyyyy/GNER-LLaMA-7B"
+        eval_file: Annotated[str, typer.Option("--eval_file")] = "data/zero-shot-dev-100.jsonl",  # "data/zero-shot-dev-100.jsonl",
+        per_device_eval_batch_size: Annotated[int, typer.Option("--per_device_eval_batch_size")] = 10,
+        # for CustomDataArguments
         train_file: Annotated[str, typer.Option("--train_file")] = None,  # "data/zero-shot-train.jsonl",
-        eval_file: Annotated[str, typer.Option("--eval_file")] = "data/zero-shot-dev-10.jsonl",  # "data/zero-shot-dev-100.jsonl",
         pred_file: Annotated[str, typer.Option("--pred_file")] = None,  # "data/zero-shot-test-100.jsonl",
         use_cache_data: Annotated[bool, typer.Option("--use_cache_data/--no_use_cache_data")] = False,
         progress_seconds: Annotated[float, typer.Option("--progress_seconds")] = 5.0,
@@ -291,7 +294,6 @@ def main(  # --pretrained output/GNER-zeroshot/FlanT5-Base-BL/checkpoint-8250 --
         gradient_checkpointing: Annotated[bool, typer.Option("--gradient_checkpointing/--no_gradient_checkpointing")] = True,
         per_device_train_batch_size: Annotated[int, typer.Option("--per_device_train_batch_size")] = 1,
         gradient_accumulation_steps: Annotated[int, typer.Option("--gradient_accumulation_steps")] = 1,
-        per_device_eval_batch_size: Annotated[int, typer.Option("--per_device_eval_batch_size")] = 20,
         eval_accumulation_steps: Annotated[int, typer.Option("--eval_accumulation_steps")] = 1,
         num_train_epochs: Annotated[float, typer.Option("--num_train_epochs")] = 1,
         logging_epochs: Annotated[float, typer.Option("--logging_epochs")] = -1,
@@ -310,8 +312,7 @@ def main(  # --pretrained output/GNER-zeroshot/FlanT5-Base-BL/checkpoint-8250 --
         trainer_deepspeed: Annotated[str, typer.Option("--trainer_deepspeed")] = None,  # for deepspeed.launcher.runner
         accelerate_deepspeed: Annotated[bool, typer.Option("--accelerate_deepspeed")] = False,  # for accelerate.commands.launch
         # for ProjectEnv
-        run_version: Annotated[str, typer.Option("--run_version")] = "GNER-T5-base",
-        output_name: Annotated[str, typer.Option("--output_name")] = "GNER-evaluation",
+        output_name: Annotated[str, typer.Option("--output_name")] = "GNER-eval",
         output_home: Annotated[str, typer.Option("--output_home")] = "output",
         output_file: Annotated[str, typer.Option("--output_file")] = "train-metrics.csv",
         logging_file: Annotated[str, typer.Option("--logging_file")] = "train-loggings.out",

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="sample-candidate (GNER-T5-large)" type="PythonConfigurationType" factoryName="Python" singleton="false">
+  <configuration default="false" name="sample-candidate (GNER)" type="PythonConfigurationType" factoryName="Python" singleton="false">
     <module name="GNER" />
     <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />

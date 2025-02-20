@@ -100,6 +100,8 @@ class CustomProgressCallback(TrainerCallback):
                         f" = {self.trainer._train_batch_size} * {self.trainer.args.gradient_accumulation_steps} * {self.trainer.args.world_size}")
             logger.info(f">> Train Optim Steps  = {self.training_values.max_steps:,}"
                         f" = {self.training_values.num_update_steps_per_epoch:,} * {self.trainer.args.num_train_epochs}")
+            logger.info(f">> Train Model Path   = {self.trainer.model.name_or_path}")
+            logger.info(f">> Train Model Class  = {self.trainer.model.__class__.__name__}")
             logger.info(f">> Train Model Params = {get_model_param_count(self.trainer.model, trainable_only=True):,}")
             logger.info(f">> Trainer Callbacks  = {', '.join(type(x).__name__ for x in self.trainer.callback_handler.callbacks)}")
             if self.trainer.accelerator.state.deepspeed_plugin:
@@ -146,6 +148,9 @@ class CustomProgressCallback(TrainerCallback):
                     if not args.do_train:
                         logger.info(hr(c='-'))
                         logger.info(f"***** Running Evaluation *****")
+                        logger.info(f">> Tokenizer Path     = {self.trainer.processing_class.name_or_path}")
+                        logger.info(f">> Train Model Type   = {self.trainer.model.config.model_type}")
+                        logger.info(f">> Train Model Path   = {self.trainer.model.name_or_path}")
                         logger.info(f">> Train Model Class  = {self.trainer.model.__class__.__name__}")
                         logger.info(f">> Train Model Params = {get_model_param_count(self.trainer.model, trainable_only=True):,}")
                         if self.trainer.accelerator.state.deepspeed_plugin:
