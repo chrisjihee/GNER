@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import sys
@@ -39,7 +40,7 @@ from transformers.utils import is_torch_tf32_available, is_torch_bf16_gpu_availa
 from transformers.utils.logging import set_verbosity as transformers_set_verbosity
 
 # Global settings
-logger: logging.Logger = logging.getLogger("DeepKNLP")
+logger: logging.Logger = logging.getLogger("gner")
 
 
 def update_progress(
@@ -278,7 +279,7 @@ def main(  # --pretrained output/GNER-zeroshot/FlanT5-Base-BL/checkpoint-8250 --
         eval_file: Annotated[str, typer.Option("--eval_file")] = "data/zero-shot-dev-10.jsonl",  # "data/zero-shot-dev-100.jsonl",
         pred_file: Annotated[str, typer.Option("--pred_file")] = None,  # "data/zero-shot-test-100.jsonl",
         use_cache_data: Annotated[bool, typer.Option("--use_cache_data/--no_use_cache_data")] = False,
-        progress_seconds: Annotated[float, typer.Option("--progress_seconds")] = 10.0,
+        progress_seconds: Annotated[float, typer.Option("--progress_seconds")] = 5.0,
         max_source_length: Annotated[int, typer.Option("--max_source_length")] = 640,
         max_target_length: Annotated[int, typer.Option("--max_target_length")] = 640,
         write_predictions: Annotated[bool, typer.Option("--write_predictions/--no_write_predictions")] = True,
@@ -290,7 +291,7 @@ def main(  # --pretrained output/GNER-zeroshot/FlanT5-Base-BL/checkpoint-8250 --
         gradient_checkpointing: Annotated[bool, typer.Option("--gradient_checkpointing/--no_gradient_checkpointing")] = True,
         per_device_train_batch_size: Annotated[int, typer.Option("--per_device_train_batch_size")] = 1,
         gradient_accumulation_steps: Annotated[int, typer.Option("--gradient_accumulation_steps")] = 1,
-        per_device_eval_batch_size: Annotated[int, typer.Option("--per_device_eval_batch_size")] = 5,
+        per_device_eval_batch_size: Annotated[int, typer.Option("--per_device_eval_batch_size")] = 20,
         eval_accumulation_steps: Annotated[int, typer.Option("--eval_accumulation_steps")] = 1,
         num_train_epochs: Annotated[float, typer.Option("--num_train_epochs")] = 1,
         logging_epochs: Annotated[float, typer.Option("--logging_epochs")] = -1,
@@ -430,9 +431,9 @@ def main(  # --pretrained output/GNER-zeroshot/FlanT5-Base-BL/checkpoint-8250 --
     set_verbosity_info("c10d-NullHandler-default")
     if accelerator.is_main_process:
         if debugging:
-            set_verbosity_debug("DeepKNLP", "chrisdata")
+            set_verbosity_debug("chrisdata", "gner")
         else:
-            set_verbosity_info("DeepKNLP", "chrisbase")
+            set_verbosity_info("chrisbase", "gner")
 
     # Set random seed
     set_seed(args.train.seed)
