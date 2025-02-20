@@ -274,7 +274,7 @@ def eval_predictions(dataset, preds, tokenizer, is_encoder_decoder, output_dir=N
 def main(  # --pretrained output/GNER-zeroshot/FlanT5-Base-BL/checkpoint-8250 --eval_file data/gner/crossner_ai-debug=10.jsonl
         # for CustomDataArguments
         cuda_device: Annotated[int, typer.Option("--cuda_device")] = 0,
-        pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-large",  # "google/flan-t5-large", "dyyyyyyyy/GNER-T5-large", "dyyyyyyyy/GNER-T5-large-v2", "dyyyyyyyy/GNER-LLaMA-7B"
+        pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-base", "dyyyyyyyy/GNER-T5-large", "dyyyyyyyy/GNER-T5-large-v2", "dyyyyyyyy/GNER-LLaMA-7B"
         train_file: Annotated[str, typer.Option("--train_file")] = None,  # "data/zero-shot-train.jsonl",
         eval_file: Annotated[str, typer.Option("--eval_file")] = "data/zero-shot-dev-10.jsonl",  # "data/zero-shot-dev-100.jsonl",
         pred_file: Annotated[str, typer.Option("--pred_file")] = None,  # "data/zero-shot-test-100.jsonl",
