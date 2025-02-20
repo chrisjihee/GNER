@@ -251,115 +251,6 @@ def eval_predictions(dataset, preds, tokenizer, is_encoder_decoder, output_dir=N
     for idx, decoded_pred in enumerate(decoded_preds):
         all_examples[idx].instance.prediction_output = decoded_pred
 
-    # Multi-Round Prediction
-    if all_examples[0].instance.group is not None:
-        grouped_examples = {k: list(vs) for k, vs in grouped(all_examples, key=lambda x: x.instance.group)}
-        merged_examples = []
-
-        # Word Query Prediction
-        if all_examples[0].instance.target_index is not None:
-            for group, group_examples in grouped_examples.items():
-                group_examples: List[GenNERSampleWrapper] = group_examples
-                merged_example = GenNERSampleWrapper.model_validate(group_examples[0].model_dump())
-                merged_labels = ['O' for _ in merged_example.instance.labels]
-                predictable = ['O']
-                logger.debug(f"  -----")
-                logger.debug(f"* label_list : {merged_example.label_list}")
-                for entity_type in merged_example.label_list:
-                    predictable.extend([f'B-{entity_type}', f'I-{entity_type}'])
-                if accelerator and accelerator.is_main_process:
-                    logger.debug(f"  -----")
-                    logger.debug(f"* predictable : {predictable}")
-
-                for i, example in enumerate(group_examples):
-                    if accelerator and accelerator.is_main_process:
-                        logger.debug(f"  -----")
-                        logger.debug(f"* words[{example.instance.target_index}].word              : {example.instance.words[example.instance.target_index]}")
-                        logger.debug(f"  words[{example.instance.target_index}].prompt_labels     : {example.instance.prompt_labels}")
-                        logger.debug(f"  words[{example.instance.target_index}].prediction_output : {example.instance.prediction_output}")
-                    pred_words, pred_labels = GenNERSample.extract(example.instance.prediction_output)
-                    if len(pred_words) == 0:
-                        pred_label = example.instance.prediction_output.rsplit('(', 1)[-1].rsplit(')', 1)[0]
-                        if accelerator and accelerator.is_main_process:
-                            logger.debug(f"  words[{example.instance.target_index}].pred_label(1)     : {pred_label}")
-                    elif len(pred_words) == 1:
-                        if len(pred_labels) == 1:
-                            pred_label = pred_labels[0]
-                        else:
-                            pred_label = example.instance.prediction_output.rsplit('(', 1)[-1].rsplit(')', 1)[0]
-                        if accelerator and accelerator.is_main_process:
-                            logger.debug(f"  words[{example.instance.target_index}].pred_label(2)     : {pred_label}")
-                    else:
-                        assert len(pred_words) == len(pred_labels), f"pred_words(={len(pred_words)}) != pred_labels(={len(pred_labels)})"
-                        # pred_words = example.instance.prediction_output.split()
-                        if len(example.instance.words) == len(pred_words):
-                            # pred_label = pred_words[example.instance.target_index].rsplit('(', 1)[-1].rsplit(')', 1)[0]
-                            pred_label = pred_labels[example.instance.target_index]
-                            if accelerator and accelerator.is_main_process:
-                                logger.debug(f"  words[{example.instance.target_index}].pred_label(3)     : {pred_label}")
-                        else:
-                            target_word = example.instance.words[example.instance.target_index]
-                            target_indices = [i for i, pred_word in enumerate(pred_words) if target_word in pred_word]
-                            if len(target_indices) > 0:
-                                near_index = sorted(target_indices, key=lambda x: abs(example.instance.target_index - x))[0]
-                                # pred_label = pred_words[near_index].rsplit('(', 1)[-1].rsplit(')', 1)[0]
-                                pred_label = pred_labels[near_index]
-                                if accelerator and accelerator.is_main_process:
-                                    logger.debug(f"  words[{example.instance.target_index}].pred_label(4)     : {pred_label}")
-                            else:
-                                pred_label = 'O'
-                                if accelerator and accelerator.is_main_process:
-                                    logger.debug(f"  words[{example.instance.target_index}].pred_label(5)     : {pred_label}")
-                    pred_label = pred_label if pred_label in predictable else 'O'
-                    merged_labels[example.instance.target_index] = pred_label
-                    if accelerator and accelerator.is_main_process:
-                        logger.debug(f"  words[{example.instance.target_index}].pred_label(F)     : {pred_label}")
-
-                merged_example.instance.prediction_output = GenNERSample.get_prompt_labels(merged_example.instance.words, merged_labels)
-                merged_examples.append(merged_example)
-                if accelerator and accelerator.is_main_process:
-                    logger.debug(f"  -----")
-                    logger.debug(f"* merged.words                : {merged_example.instance.words}")
-                    logger.debug(f"  merged.labels               : {merged_example.instance.labels}")
-                    logger.debug(f"  merged.prediction_output(F) : {merged_example.instance.prediction_output}")
-                    logger.debug(f"================================")
-
-        # EntityType Query Prediction
-        if all_examples[0].instance.target_label is not None:
-            for group, group_examples in grouped_examples.items():
-                group_examples: List[GenNERSampleWrapper] = group_examples
-                merged_example = GenNERSampleWrapper.model_validate(group_examples[0].model_dump())
-                pred_labels = ['O' for _ in group_examples[0].instance.labels]
-
-                for i, example in enumerate(group_examples):
-                    entities: List[GenNERSampleEntitySpan] = []
-                    try:
-                        entities = [GenNERSampleEntitySpan.model_validate(x) for x in json.loads(example.instance.prediction_output)]
-                    except json.JSONDecodeError:
-                        pass
-                    if accelerator and accelerator.is_main_process:
-                        if entities:
-                            logger.debug(f"* prediction_output={example.instance.prediction_output} / words={example.instance.words}")
-                    for entity_span in entities:
-                        span_words = [x for i, x in enumerate(example.instance.words) if i in entity_span.span]
-                        if entity_span.entity != ' '.join(span_words):
-                            entity_span.span = find_sublist_range(example.instance.words, entity_span.entity.split(), case_sensitive=False)
-                        if accelerator and accelerator.is_main_process:
-                            logger.debug(f" - entity={entity_span.entity} / span={entity_span.span}")
-                        for j, idx in enumerate(entity_span.span):
-                            bi_tag = 'B' if j == 0 else 'I'
-                            pred_labels[idx] = f"{bi_tag}-{example.instance.target_label}"
-
-                merged_example.instance.prediction_output = GenNERSample.get_prompt_labels(merged_example.instance.words, pred_labels)
-                merged_examples.append(merged_example)
-                if accelerator and accelerator.is_main_process:
-                    logger.debug(f"* words={merged_example.instance.words}")
-                    logger.debug(f"  labels={merged_example.instance.labels}")
-                    logger.debug(f"  prediction_output={merged_example.instance.prediction_output}")
-
-        all_examples = merged_examples
-        assert len(all_examples) > 0 and len(all_examples) == len(grouped_examples)
-
     results = gner.compute_metrics2(all_examples, tokenizer=tokenizer, detailed=False, average_key="average")
     if write_predictions and output_dir is not None and save_prefix is not None:
         suffix = f"_{save_suffix}" if save_suffix else ""
@@ -651,41 +542,40 @@ def main(  # --pretrained output/GNER-zeroshot/FlanT5-Base-BL/checkpoint-8250 --
         accelerator.wait_for_everyone()
 
         model = model.to(device=f"cuda:{cuda_device}" if torch.cuda.is_available() else "cpu")
+        num_return = 5
+        temperature = 2.0
+        top_p = 0.9
+        decoding_algorithm = "beam"  # "beam", "sample"
         if train_dataset:
             pass
         if eval_dataset:
-            for sample in eval_dataset:
-                print("=" * 120)
-                print(f"INSTRUCTION: {sample["instance"]["instruction_inputs"].replace('\\n', '\n')}")
-                print(f"     ANSWER: {sample["instance"]["prompt_labels"]}")
-                print(f" LABEL LIST: {sample["label_list"]}")
-
-                input_ids = torch.tensor([sample["input_ids"]]).to(model.device)
-                attention_mask = torch.tensor([sample["attention_mask"]]).to(model.device)
-                num_return = 10
-
-                print("=" * 120)
-                outputs = model.generate(input_ids=input_ids, attention_mask=attention_mask,
-                                         max_new_tokens=640, num_return_sequences=num_return,
-                                         do_sample=False, num_beams=num_return)
-                print(f"[Beam Search(b={num_return})] :", input_ids.shape, attention_mask.shape, outputs.shape)
-                print("-" * 120)
-                outputs = [tokenizer.decode(x, skip_special_tokens=True).strip() for x in outputs]
-                for x in outputs:
-                    print(x)
-
-                # print("=" * 120)
-                # temperature = 2.0
-                # top_p = 0.9
-                # outputs = model.generate(input_ids=input_ids, attention_mask=attention_mask,
-                #                          max_new_tokens=640, num_return_sequences=num_return,
-                #                          do_sample=True, num_beams=1, temperature=temperature, top_p=top_p)
-                # print(f"[Sampling(b=1, temprature={temperature}, top_p={top_p})] :", input_ids.shape, attention_mask.shape, outputs.shape)
-                # print("-" * 120)
-                # outputs = [tokenizer.decode(x, skip_special_tokens=True).strip() for x in outputs]
-
-                print("=" * 120)
-                print()
+            # eval_examples = [example.copy() for example in eval_dataset]
+            for example in ProgIter(eval_dataset, desc=f"Generate:", stream=LoggerWriter(logger), verbose=3):
+                if decoding_algorithm == "beam":
+                    with torch.no_grad():
+                        outputs = model.generate(
+                            input_ids=torch.tensor([example["input_ids"]]).to(model.device),
+                            attention_mask=torch.tensor([example["attention_mask"]]).to(model.device),
+                            max_new_tokens=generation_max_length, num_return_sequences=num_return,
+                            do_sample=False, num_beams=num_return,
+                        )
+                elif decoding_algorithm == "sample":
+                    with torch.no_grad():
+                        outputs = model.generate(
+                            input_ids=torch.tensor([example["input_ids"]]).to(model.device),
+                            attention_mask=torch.tensor([example["attention_mask"]]).to(model.device),
+                            max_new_tokens=generation_max_length, num_return_sequences=num_return,
+                            do_sample=True, num_beams=1, temperature=temperature, top_p=top_p,
+                        )
+                else:
+                    raise ValueError(f"Unknown decoding_algorithm: {decoding_algorithm}")
+                decoded_preds = tokenizer.batch_decode(outputs, skip_special_tokens=True)
+                # print(f"decoded_preds={decoded_preds}")
+                example["prediction"] = decoded_preds[0]
+            results = compute_metrics(all_examples, tokenizer=tokenizer)
+            print(results)
+            print("=" * 120)
+            print()
 
         if pred_dataset:
             pass
