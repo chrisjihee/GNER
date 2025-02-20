@@ -1,7 +1,8 @@
 import logging
 import os
 import sys
-from typing import Callable, Optional, List
+from typing import Callable, Optional, List, Dict
+from unittest.mock import patch
 
 import datasets
 import numpy as np
@@ -31,6 +32,7 @@ from transformers import (
     AutoModelForSeq2SeqLM,
     PreTrainedTokenizerBase,
     BatchEncoding,
+    PrinterCallback,
     set_seed,
 )
 from transformers.utils import is_torch_tf32_available, is_torch_bf16_gpu_available
@@ -267,7 +269,7 @@ def main(  # --pretrained output/GNER-zeroshot/FlanT5-Base-BL/checkpoint-8250 --
         # for CustomDataArguments
         cuda_device: Annotated[int, typer.Option("--cuda_device")] = 0,
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-large",  # "google/flan-t5-large", "dyyyyyyyy/GNER-T5-large", "dyyyyyyyy/GNER-T5-large-v2", "dyyyyyyyy/GNER-LLaMA-7B"
-        train_file: Annotated[str, typer.Option("--train_file")] = None,  # "data/zero-shot-train.jsonl",
+        train_file: Annotated[str, typer.Option("--train_file")] = "data/zero-shot-train.jsonl",  # "data/zero-shot-train.jsonl",
         eval_file: Annotated[str, typer.Option("--eval_file")] = "data/zero-shot-dev-10.jsonl",  # "data/zero-shot-dev-100.jsonl",
         pred_file: Annotated[str, typer.Option("--pred_file")] = None,  # "data/zero-shot-test-100.jsonl",
         use_cache_data: Annotated[bool, typer.Option("--use_cache_data/--no_use_cache_data")] = False,
@@ -537,94 +539,136 @@ def main(  # --pretrained output/GNER-zeroshot/FlanT5-Base-BL/checkpoint-8250 --
         args.train.do_predict = bool(pred_dataset)
         accelerator.wait_for_everyone()
 
-        model = model.to(device=f"cuda:{cuda_device}" if torch.cuda.is_available() else "cpu")
-        num_return = 5
-        temperature = 2.0
-        top_p = 0.9
-        decoding_algorithm = "beam"  # "beam", "sample"
+        # Data collator
+        label_pad_token_id = -100 if args.data.ignore_pad_token_for_loss else tokenizer.pad_token_id
+        data_collator = gner.DataCollatorForGNER(
+            tokenizer=tokenizer,
+            model=model,
+            padding=True,
+            pad_to_multiple_of=8 if args.train.fp16 else None,
+            label_pad_token_id=label_pad_token_id,
+            return_tensors="pt",
+        )
 
-        if train_dataset:
-            pass
+        # Set compute_metrics function
+        compute_metrics = lambda *vs, **ws: eval_predictions(
+            *vs, **ws, write_predictions=args.data.write_predictions, accelerator=accelerator,
+        ) if args.train.predict_with_generate else None
 
-        if eval_dataset:
-            model.eval()
+        # Initialize trainer
+        trainer = gner.GNERTrainer(
+            args=args.train,
+            model=model,
+            train_dataset=train_dataset,
+            eval_dataset=eval_dataset,
+            processing_class=tokenizer,
+            data_collator=data_collator,
+            compute_metrics=compute_metrics,
+            is_encoder_decoder=is_encoder_decoder,
+        )
+        trainer.remove_callback(PrinterCallback)
+        trainer.add_callback(gner.CustomProgressCallback(
+            trainer=trainer,
+            metric_file=args.env.output_dir / args.env.output_file,
+            logging_epochs=args.train.logging_epochs,
+            eval_epochs=args.train.eval_epochs if args.train.do_eval else 0,
+            save_epochs=args.train.save_epochs,
+            progress_seconds=args.data.progress_seconds,
+            metric_formats={
+                "epoch": ".2f",
+                "loss": ".6f",
+                "train_loss": ".4f",
+                "eval_average": ".4f",
+                "total_pflos": ".3f",
+            },
+        ))
+        accelerator.wait_for_everyone()
 
-            def collate_fn(examples):
-                input_ids_list = [ex["input_ids"] for ex in examples]
-                attention_mask_list = [ex["attention_mask"] for ex in examples]
-                return tokenizer.pad(
-                    {
-                        "input_ids": input_ids_list,
-                        "attention_mask": attention_mask_list,
-                    },
-                    padding="longest",
-                    return_tensors="pt",
-                )
+        # Evaluate
+        if args.train.do_eval:
+            eval_result: Dict[str, float] = trainer.evaluate(eval_dataset, metric_key_prefix="eval")
+            with patch("builtins.print", side_effect=lambda *xs: logger.info(*xs)):
+                trainer.log_metrics("eval", eval_result)
+                trainer.save_metrics("eval", eval_result)
 
-            label_pad_token_id = -100 if args.data.ignore_pad_token_for_loss else tokenizer.pad_token_id
-            data_collator = gner.DataCollatorForGNER(
-                tokenizer=tokenizer,
-                model=model,
-                padding=True,
-                pad_to_multiple_of=8 if args.train.fp16 else None,
-                label_pad_token_id=label_pad_token_id,
-                return_tensors="pt",
-            )
-
-            predictions = []
-            eval_dataloader = DataLoader(
-                eval_dataset,
-                batch_size=per_device_eval_batch_size,
-                shuffle=False,
-                # collate_fn=collate_fn,
-                collate_fn=data_collator,
-            )
-
-            with torch.no_grad():
-                for batch in ProgIter(eval_dataloader, desc="Generating:", stream=LoggerWriter(logger), verbose=3):
-                    input_ids = batch["input_ids"].to(model.device)
-                    attention_mask = batch["attention_mask"].to(model.device)
-
-                    if decoding_algorithm == "beam":
-                        outputs = model.generate(
-                            input_ids=input_ids,
-                            attention_mask=attention_mask,
-                            max_new_tokens=generation_max_length,
-                            num_return_sequences=num_return,
-                            num_beams=num_return,
-                            do_sample=False,
-                        )
-                    elif decoding_algorithm == "sample":
-                        outputs = model.generate(
-                            input_ids=input_ids,
-                            attention_mask=attention_mask,
-                            max_new_tokens=generation_max_length,
-                            num_return_sequences=num_return,
-                            num_beams=1,
-                            do_sample=True,
-                            temperature=temperature,
-                            top_p=top_p,
-                        )
-                    else:
-                        raise ValueError(f"Unknown decoding_algorithm: {decoding_algorithm}")
-                    decoded_preds = tokenizer.batch_decode(outputs, skip_special_tokens=True)
-                    for i in range(0, len(decoded_preds), num_return):
-                        predictions.append(decoded_preds[i])
-
-                assert len(predictions) == len(eval_dataset), f"predictions(={len(predictions)}) != eval_dataset(={len(eval_dataset)})"
-                all_examples = []
-                for idx, example in enumerate(eval_dataset):
-                    ex = example.copy()
-                    ex["prediction"] = predictions[idx]
-                    all_examples.append(ex)
-                results = gner.compute_metrics(all_examples, tokenizer=tokenizer)
-                print("=" * 120)
-                print(results)
-                print("=" * 120)
-                print()
-
-        if pred_dataset:
-            pass
+        # model = model.to(device=f"cuda:{cuda_device}" if torch.cuda.is_available() else "cpu")
+        # num_return = 5
+        # temperature = 2.0
+        # top_p = 0.9
+        # decoding_algorithm = "beam"  # "beam", "sample"
+        #
+        # if train_dataset:
+        #     pass
+        #
+        # if eval_dataset:
+        #     model.eval()
+        #
+        #     def collate_fn(examples):
+        #         input_ids_list = [ex["input_ids"] for ex in examples]
+        #         attention_mask_list = [ex["attention_mask"] for ex in examples]
+        #         return tokenizer.pad(
+        #             {
+        #                 "input_ids": input_ids_list,
+        #                 "attention_mask": attention_mask_list,
+        #             },
+        #             padding="longest",
+        #             return_tensors="pt",
+        #         )
+        #
+        #     predictions = []
+        #     eval_dataloader = DataLoader(
+        #         eval_dataset,
+        #         batch_size=per_device_eval_batch_size,
+        #         shuffle=False,
+        #         # collate_fn=collate_fn,
+        #         collate_fn=data_collator,
+        #     )
+        #
+        #     with torch.no_grad():
+        #         for batch in ProgIter(eval_dataloader, desc="Generating:", stream=LoggerWriter(logger), verbose=3):
+        #             input_ids = batch["input_ids"].to(model.device)
+        #             attention_mask = batch["attention_mask"].to(model.device)
+        #
+        #             if decoding_algorithm == "beam":
+        #                 outputs = model.generate(
+        #                     input_ids=input_ids,
+        #                     attention_mask=attention_mask,
+        #                     max_new_tokens=generation_max_length,
+        #                     num_return_sequences=num_return,
+        #                     num_beams=num_return,
+        #                     do_sample=False,
+        #                 )
+        #             elif decoding_algorithm == "sample":
+        #                 outputs = model.generate(
+        #                     input_ids=input_ids,
+        #                     attention_mask=attention_mask,
+        #                     max_new_tokens=generation_max_length,
+        #                     num_return_sequences=num_return,
+        #                     num_beams=1,
+        #                     do_sample=True,
+        #                     temperature=temperature,
+        #                     top_p=top_p,
+        #                 )
+        #             else:
+        #                 raise ValueError(f"Unknown decoding_algorithm: {decoding_algorithm}")
+        #             decoded_preds = tokenizer.batch_decode(outputs, skip_special_tokens=True)
+        #             for i in range(0, len(decoded_preds), num_return):
+        #                 predictions.append(decoded_preds[i])
+        #
+        #         assert len(predictions) == len(eval_dataset), f"predictions(={len(predictions)}) != eval_dataset(={len(eval_dataset)})"
+        #         all_examples = []
+        #         for idx, example in enumerate(eval_dataset):
+        #             ex = example.copy()
+        #             ex["prediction"] = predictions[idx]
+        #             all_examples.append(ex)
+        #         results = gner.compute_metrics(all_examples, tokenizer=tokenizer)
+        #         print("=" * 120)
+        #         print(results)
+        #         print("=" * 120)
+        #         print()
+        #
+        # if pred_dataset:
+        #     pass
 
     accelerator.end_training()
 
