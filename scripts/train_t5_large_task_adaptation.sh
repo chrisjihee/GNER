@@ -12,7 +12,7 @@ DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero0_t5.json
 
 RUN_NAME=flan-t5-large-experiment
 
-deepspeed --include="localhost:0,1,2,3" --master_port $port src/run.py \
+deepspeed --include="localhost:0,1,2,3" --master_port $port gner/run.py \
     --do_train \
     --do_predict \
     --predict_with_generate \
