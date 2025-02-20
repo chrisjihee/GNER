@@ -275,8 +275,8 @@ def main(  # --pretrained output/GNER-zeroshot/FlanT5-Base-BL/checkpoint-8250 --
         # Experimental Arguments
         cuda_device: Annotated[int, typer.Option("--cuda_device")] = 0,
         per_device_eval_batch_size: Annotated[int, typer.Option("--per_device_eval_batch_size")] = 25,
-        run_version: Annotated[str, typer.Option("--run_version")] = "GNER-T5-large=100,25",
-        pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-large",  # "dyyyyyyyy/GNER-T5-base", "dyyyyyyyy/GNER-T5-large", "dyyyyyyyy/GNER-T5-large-v2", "dyyyyyyyy/GNER-LLaMA-7B"
+        run_version: Annotated[str, typer.Option("--run_version")] = "GNER-T5-large-v2=100,25",
+        pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-large-v2",  # "dyyyyyyyy/GNER-T5-base", "dyyyyyyyy/GNER-T5-large", "dyyyyyyyy/GNER-T5-large-v2", "dyyyyyyyy/GNER-LLaMA-7B"
         eval_file: Annotated[str, typer.Option("--eval_file")] = "data/zero-shot-dev-100.jsonl",  # "data/zero-shot-dev-100.jsonl",
         # for CustomDataArguments
         train_file: Annotated[str, typer.Option("--train_file")] = None,  # "data/zero-shot-train.jsonl",
