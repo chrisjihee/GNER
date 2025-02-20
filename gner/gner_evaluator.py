@@ -262,7 +262,7 @@ class NEREvaluator:
         }
 
 
-def compute_metrics(examples, tokenizer=None):
+def compute_metrics(examples, tokenizer=None, average_key="average", detailed=False):
     all_examples = defaultdict(list)
     for example in examples:
         all_examples[example['dataset']].append(example)
@@ -272,12 +272,18 @@ def compute_metrics(examples, tokenizer=None):
     tot_f1, tot_dataset = 0, 0
     for dataset in all_examples:
         eval_result = NEREvaluator().evaluate(all_examples[dataset], tokenizer=tokenizer)
-        results[f"{dataset}_precision"] = eval_result["precision"]
-        results[f"{dataset}_recall"] = eval_result["recall"]
-        results[f"{dataset}_f1"] = eval_result["f1"]
+        if detailed:
+            results[f"{dataset}_prec"] = eval_result["prec"]
+            results[f"{dataset}_rec"] = eval_result["rec"]
+            results[f"{dataset}_f1"] = eval_result["f1"]
+        else:
+            results[dataset] = eval_result["f1"]
         tot_f1 += eval_result["f1"]
         tot_dataset += 1
-    results["average_f1"] = tot_f1 / tot_dataset
+    if detailed:
+        results[f"{average_key}_f1"] = tot_f1 / tot_dataset
+    else:
+        results[average_key] = tot_f1 / tot_dataset
     return results
 
 
@@ -288,23 +294,23 @@ def compute_metrics2(examples: List[GenNERSampleWrapper], tokenizer=None, averag
 
     # evaluate
     evaluator = NEREvaluator()
-    all_results = {}
+    results = {}
     tot_f1, tot_dataset = 0, 0
     for dataset in all_examples:
         eval_result = evaluator.evaluate2(all_examples[dataset], tokenizer=tokenizer)
         if detailed:
-            all_results[f"{dataset}_prec"] = eval_result["prec"]
-            all_results[f"{dataset}_rec"] = eval_result["rec"]
-            all_results[f"{dataset}_f1"] = eval_result["f1"]
+            results[f"{dataset}_prec"] = eval_result["prec"]
+            results[f"{dataset}_rec"] = eval_result["rec"]
+            results[f"{dataset}_f1"] = eval_result["f1"]
         else:
-            all_results[dataset] = eval_result["f1"]
+            results[dataset] = eval_result["f1"]
         tot_f1 += eval_result["f1"]
         tot_dataset += 1
     if detailed:
-        all_results[f"{average_key}_f1"] = tot_f1 / tot_dataset
+        results[f"{average_key}_f1"] = tot_f1 / tot_dataset
     else:
-        all_results[average_key] = tot_f1 / tot_dataset
-    return all_results
+        results[average_key] = tot_f1 / tot_dataset
+    return results
 
 
 def main():
