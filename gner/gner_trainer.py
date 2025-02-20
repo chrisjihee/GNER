@@ -146,8 +146,8 @@ class CustomProgressCallback(TrainerCallback):
                     if not args.do_train:
                         logger.info(hr(c='-'))
                         logger.info(f"***** Running Evaluation *****")
+                        logger.info(f">> Train Model Class  = {self.trainer.model.__class__.__name__}")
                         logger.info(f">> Train Model Params = {get_model_param_count(self.trainer.model, trainable_only=True):,}")
-                        logger.info(f">> Trainer Callbacks  = {', '.join(type(x).__name__ for x in self.trainer.callback_handler.callbacks)}")
                         if self.trainer.accelerator.state.deepspeed_plugin:
                             logger.info(f">> Zero Optim Stage   = {self.trainer.accelerator.state.deepspeed_plugin.deepspeed_config['zero_optimization']['stage']}")
                         if self.trainer.eval_dataset:
