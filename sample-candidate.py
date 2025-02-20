@@ -274,8 +274,8 @@ def eval_predictions(dataset, preds, tokenizer, is_encoder_decoder, output_dir=N
 def main(  # --pretrained output/GNER-zeroshot/FlanT5-Base-BL/checkpoint-8250 --eval_file data/gner/crossner_ai-debug=10.jsonl
         # Experimental Arguments
         cuda_device: Annotated[int, typer.Option("--cuda_device")] = 0,
-        per_device_eval_batch_size: Annotated[int, typer.Option("--per_device_eval_batch_size")] = 100,
-        run_version: Annotated[str, typer.Option("--run_version")] = "GNER-T5-base=100,100",
+        per_device_eval_batch_size: Annotated[int, typer.Option("--per_device_eval_batch_size")] = 200,
+        run_version: Annotated[str, typer.Option("--run_version")] = "GNER-T5-base=100,200",
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-base", "dyyyyyyyy/GNER-T5-large", "dyyyyyyyy/GNER-T5-large-v2", "dyyyyyyyy/GNER-LLaMA-7B"
         eval_file: Annotated[str, typer.Option("--eval_file")] = "data/zero-shot-dev-100.jsonl",  # "data/zero-shot-dev-100.jsonl",
         # for CustomDataArguments
