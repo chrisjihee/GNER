@@ -7,7 +7,7 @@ DATA_DIR=data
 DATA_CONFIG_DIR=configs/dataset/supervised
 INSTRUCTION_FILE=configs/instruction/GNER-paper.json
 OUTPUT_DIR=output/flan-t5-large-supervised
-DEEPSPEED_CONFIG=configs/deepspeed/deepspeed_zero0_t5.json
+DEEPSPEED_CONFIG=configs/deepspeed/ds0_t5.json
 
 RUN_NAME=flan-t5-large-experiment
 
