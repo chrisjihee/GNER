@@ -1,4 +1,7 @@
 {
+    "fp16": {
+        "enabled": "auto"
+    },
     "bf16": {
         "enabled": "auto"
     },
@@ -12,16 +15,15 @@
         }
     },
     "scheduler": {
-        "type": "WarmupDecayLR",
+        "type": "WarmupLR",
         "params": {
             "warmup_min_lr": "auto",
             "warmup_max_lr": "auto",
-            "warmup_num_steps": "auto",
-            "total_num_steps": "auto"
+            "warmup_num_steps": "auto"
         }
     },
     "zero_optimization": {
-        "stage": 3,
+        "stage": 1,
         "allgather_partitions": true,
         "allgather_bucket_size": 2e8,
         "overlap_comm": true,

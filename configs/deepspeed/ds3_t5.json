@@ -1,4 +1,7 @@
 {
+    "fp16": {
+        "enabled": "auto"
+    },
     "bf16": {
         "enabled": "auto"
     },
@@ -20,7 +23,7 @@
         }
     },
     "zero_optimization": {
-        "stage": 2,
+        "stage": 3,
         "allgather_partitions": true,
         "allgather_bucket_size": 2e8,
         "overlap_comm": true,
