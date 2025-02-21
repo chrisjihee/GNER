@@ -4,10 +4,10 @@ port=$(shuf -i25000-30000 -n1)
 
 MODEL_NAME_OR_PATH=google/flan-t5-large
 DATA_DIR=data
-DATA_CONFIG_DIR=configs/dataset_configs/supervised_configs
-INSTRUCTION_FILE=configs/instruction_configs/instruction.json
+DATA_CONFIG_DIR=configs/dataset/supervised
+INSTRUCTION_FILE=configs/instruction/GNER-paper.json
 OUTPUT_DIR=output/flan-t5-large-supervised
-DEEPSPEED_CONFIG=configs/deepspeed_configs/deepspeed_zero0_t5.json
+DEEPSPEED_CONFIG=configs/deepspeed/deepspeed_zero0_t5.json
 
 RUN_NAME=flan-t5-large-experiment
 

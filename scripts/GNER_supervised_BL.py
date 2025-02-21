@@ -15,9 +15,7 @@ cuda_devices = os.getenv("CUDA_VISIBLE_DEVICES", "0,1,2,3" if not debugging else
 experiment_type = "BL"
 dataset_type = "united"
 output_name = "GNER-supervised"
-train_file = f"data/gner/{dataset_type}/zero-shot-train.jsonl"  # TODO: sync with the paper's settings
-eval_file = f"data/gner/{dataset_type}/zero-shot-dev.jsonl"
-pred_file = f"data/gner/{dataset_type}/zero-shot-test.jsonl"
+data_config_dir = "configs/dataset/supervised"
 metric_for_best_model = "eval_average"
 generation_max_length = 640
 save_total_limit = 2
@@ -42,9 +40,7 @@ for ds_config, run_prefix, pretrained in model_specs:
                 --include=localhost:{cuda_devices}
                 --master_port={port}
             task2-nerG-trainer.py
-                --pred_file {pred_file}
-                --eval_file {eval_file}
-                --train_file {train_file}
+                --data_config_dir {data_config_dir}
                 --output_file train-metrics-{dataset_type}-{train_epochs}ep.csv
                 --logging_file train-loggings-{dataset_type}-{train_epochs}ep.out
                 --output_name {output_name}
