@@ -173,6 +173,7 @@ def preprocess_row(
 
 
 def preprocess_dataset(
+        dataset: Optional[datasets.Dataset],
         file_path: Optional[str],
         dataset_name: str,
         is_encoder_decoder: bool,
@@ -185,12 +186,13 @@ def preprocess_dataset(
         cache_path_func: Optional[Callable[[str], str]] = None,
         progress_seconds: float = 2.0,
 ) -> Optional[datasets.Dataset]:
-    if file_path is None:
+    if dataset is None and file_path is None:
         return None
 
     # Load the raw dataset
-    dataset = load_dataset("json", data_files=str(file_path), split="train")
-    logger.info(f"Loaded raw {dataset_name} (#={len(dataset)}): {file_path}")
+    if dataset is None:
+        dataset = load_dataset("json", data_files=str(file_path), split="train")
+        logger.info(f"Loaded raw {dataset_name} (#={len(dataset)}): {file_path}")
 
     # Prepare a progress bar
     with ProgIter(
@@ -380,9 +382,9 @@ def main(
         # for CustomDataArguments
         pretrained: Annotated[str, typer.Option("--pretrained")] = ...,  # "google/flan-t5-large",
         data_dir: Annotated[str, typer.Option("--data_dir")] = "data",
-        data_config_dir: Annotated[str, typer.Option("--data_config_dir")] = "configs/dataset/supervised",
+        data_config_dir: Annotated[str, typer.Option("--data_config_dir")] = None,  # "configs/dataset/supervised",
         instruct_file: Annotated[str, typer.Option("--instruct_file")] = "configs/instruction/GNER-paper.json",
-        train_file: Annotated[str, typer.Option("--train_file")] = ...,  # "data/gner/each-sampled/crossner_ai-train=100.jsonl",
+        train_file: Annotated[str, typer.Option("--train_file")] = None,  # "data/gner/each-sampled/crossner_ai-train=100.jsonl",
         eval_file: Annotated[str, typer.Option("--eval_file")] = None,  # "data/gner/each-sampled/crossner_ai-dev=100.jsonl",
         pred_file: Annotated[str, typer.Option("--pred_file")] = None,  # "data/gner/each-sampled/crossner_ai-test=100.jsonl",
         use_cache_data: Annotated[bool, typer.Option("--use_cache_data/--no_use_cache_data")] = False,
@@ -551,16 +553,22 @@ def main(
     torch.set_float32_matmul_precision("medium")
     accelerator.wait_for_everyone()
 
-    # Load dataset
-    raw_datasets = load_dataset(
-        "gner/gner_dataset.py",
-        data_dir=args.data.data_dir,
-        instruction_file=args.data.instruct_file,
-        data_config_dir=args.data.data_config_dir,
-        add_dataset_name=False,
-        trust_remote_code=True,
-    )
-    raw_datasets.cleanup_cache_files()
+    # Load dataset according to the data configuration
+    if args.data.data_config_dir:
+        raw_datasets = load_dataset(
+            "gner/gner_dataset.py",
+            data_dir=args.data.data_dir,
+            data_config_dir=args.data.data_config_dir,
+            instruction_file=args.data.instruct_file,
+            add_dataset_name=False,
+            trust_remote_code=True,
+        )
+        raw_datasets.cleanup_cache_files()
+        print(type(raw_datasets))
+        exit(1)
+        logger.info(f"Loaded raw {dataset_name} (#={len(dataset)}): {args.data.data_config_dir}")
+    else:
+        raw_datasets = {}
 
     with JobTimer(f"python {args.env.current_file} {' '.join(args.env.command_args)}",
                   rt=1, rb=1, rc='=', verbose=verbose, args=args):
@@ -618,6 +626,7 @@ def main(
 
         # Preprocess training dataset (if do_train)
         train_dataset = preprocess_dataset(
+            dataset=raw_datasets[datasets.Split.TRAIN] if datasets.Split.TRAIN in raw_datasets else None,
             file_path=args.data.train_file if args.train.do_train else None,
             dataset_name="train_dataset",
             is_encoder_decoder=is_encoder_decoder,
