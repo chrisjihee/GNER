@@ -129545,4 +129545,3 @@ gingival	B-Disease
 hyperplasia	I-Disease
 .	O
 
-
