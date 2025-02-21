@@ -1,4 +1,7 @@
 {
+    "fp16": {
+        "enabled": "auto"
+    },
     "bf16": {
         "enabled": "auto"
     },
@@ -12,12 +15,11 @@
         }
     },
     "scheduler": {
-        "type": "WarmupDecayLR",
+        "type": "WarmupLR",
         "params": {
             "warmup_min_lr": "auto",
             "warmup_max_lr": "auto",
-            "warmup_num_steps": "auto",
-            "total_num_steps": "auto"
+            "warmup_num_steps": "auto"
         }
     },
     "zero_optimization": {
