@@ -1,3 +1,1 @@
-O
-B-Disease
-I-Disease
+Disease
