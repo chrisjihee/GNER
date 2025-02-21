@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import sys
+from pathlib import Path
 from typing import Callable, Optional, List, Dict
 from unittest.mock import patch
 
@@ -564,9 +565,14 @@ def main(
             trust_remote_code=True,
         )
         raw_datasets.cleanup_cache_files()
-        print(type(raw_datasets))
-        exit(1)
-        logger.info(f"Loaded raw {dataset_name} (#={len(dataset)}): {args.data.data_config_dir}")
+        for split_name, dataset in raw_datasets.items():
+            output_file = f"{args.data.data_dir}/{Path(args.data.data_config_dir).name}-{split_name}.jsonl"
+            dataset.to_json(
+                output_file,
+                lines=True,
+                force_ascii=False
+            )
+            logger.info(f"Loaded raw {split_name} (#={len(dataset)}): {args.data.data_config_dir} -> {output_file}")
     else:
         raw_datasets = {}
 
