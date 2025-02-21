@@ -650,6 +650,7 @@ def main(
 
         # Preprocess evaluation dataset (if do_eval)
         eval_dataset = preprocess_dataset(
+            dataset=raw_datasets[datasets.Split.VALIDATION] if datasets.Split.VALIDATION in raw_datasets else None,
             file_path=args.data.eval_file if args.train.do_eval else None,
             dataset_name="eval_dataset",
             is_encoder_decoder=is_encoder_decoder,
@@ -667,6 +668,7 @@ def main(
 
         # Preprocess prediction dataset (if do_predict)
         pred_dataset = preprocess_dataset(
+            dataset=raw_datasets[datasets.Split.TEST] if datasets.Split.TEST in raw_datasets else None,
             file_path=args.data.pred_file if args.train.do_predict else None,
             dataset_name="pred_dataset",
             is_encoder_decoder=is_encoder_decoder,
