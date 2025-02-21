@@ -1,1 +1,1 @@
-https://huggingface.co/datasets/unimelb-nlp/wikiann/viewer/en
+https://huggingface.co/datasets/unimelb-nlp/wikiann
