@@ -10,6 +10,7 @@ debugging = False
 port = random.randint(25000, 30000)
 hostname = socket.gethostname()
 cuda_devices = os.getenv("CUDA_VISIBLE_DEVICES", "0,1,2,3" if not debugging else "0")
+source_file = "finetune.py"
 
 # Training arguments
 experiment_type = "BL"
@@ -39,7 +40,7 @@ for ds_config, run_prefix, pretrained in model_specs:
             deepspeed.launcher.runner
                 --include=localhost:{cuda_devices}
                 --master_port={port}
-            task2-nerG-trainer.py
+            {source_file}
                 --data_config_dir {data_config_dir}
                 --output_file train-metrics-{dataset_type}-{train_epochs}ep.csv
                 --logging_file train-loggings-{dataset_type}-{train_epochs}ep.out
