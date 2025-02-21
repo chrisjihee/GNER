@@ -11,7 +11,7 @@ from chrisbase.util import grouped
 
 # Global settings
 main = AppTyper()
-logger: logging.Logger = logging.getLogger("DeepKNLP")
+logger: logging.Logger = logging.getLogger("gner")
 
 
 def normalize_epoch(df: pd.DataFrame, unit_epoch: float = 0.5) -> pd.DataFrame:
