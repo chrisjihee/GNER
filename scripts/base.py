@@ -1,13 +1,13 @@
 
 # List of pretrained models
 model_specs = [
-    # ("configs/deepspeed/ds2_t5.json", "FlanT5-Base", "google/flan-t5-base"),
+    ("configs/deepspeed/ds2_t5.json", "FlanT5-Base", "google/flan-t5-base"),
     ("configs/deepspeed/ds2_t5.json", "FlanT5-Large", "google/flan-t5-large"),
-    # ("configs/deepspeed/ds2_t5.json", "FlanT5-3B", "google/flan-t5-xl"),
-    # ("configs/deepspeed/ds2_llama.json", "Llama3-1B", "meta-llama/Llama-3.2-1B"),
-    # ("configs/deepspeed/ds2_llama.json", "Llama3-3B", "meta-llama/Llama-3.2-3B"),
-    # ("configs/deepspeed/ds2_llama.json", "EAGLE-1B", "etri-lirs/egpt-1.3b-preview"),
-    # ("configs/deepspeed/ds2_llama.json", "EAGLE-3B", "etri-lirs/eagle-3b-preview"),
+    ("configs/deepspeed/ds2_t5.json", "FlanT5-3B", "google/flan-t5-xl"),
+    ("configs/deepspeed/ds2_llama.json", "Llama3-1B", "meta-llama/Llama-3.2-1B"),
+    ("configs/deepspeed/ds2_llama.json", "Llama3-3B", "meta-llama/Llama-3.2-3B"),
+    ("configs/deepspeed/ds2_llama.json", "EAGLE-1B", "etri-lirs/egpt-1.3b-preview"),
+    ("configs/deepspeed/ds2_llama.json", "EAGLE-3B", "etri-lirs/eagle-3b-preview"),
     # ("configs/deepspeed/ds2_llama.json", "Qwen2-1B", "Qwen/Qwen2.5-1.5B"),
     # ("configs/deepspeed/ds2_llama.json", "Qwen2-3B", "Qwen/Qwen2.5-3B"),
     # ("configs/deepspeed/ds2_llama.json", "Phi3-4B", "microsoft/Phi-3-mini-4k-instruct"),  # modeling_phi3.py: get_max_length -> get_max_cache_shape
