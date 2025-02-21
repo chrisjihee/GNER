@@ -16,15 +16,15 @@ from datasets.formatting.formatting import LazyRow
 from datasets.utils.logging import set_verbosity as datasets_set_verbosity
 from typing_extensions import Annotated
 
-import DeepKNLP.gner as gner
+import gner
 import transformers
 import transformers.utils.logging
-from DeepKNLP.arguments import TrainingArgumentsForAccelerator, CustomDataArguments, ExSeq2SeqTrainingArguments
 from chrisbase.data import AppTyper, JobTimer, Counter, NewProjectEnv, find_sublist_range
 from chrisbase.io import LoggingFormat, LoggerWriter, set_verbosity_info, set_verbosity_debug, new_path, convert_all_events_in_dir, set_verbosity_warning
 from chrisbase.time import from_timestamp, now_stamp
 from chrisbase.util import grouped
 from chrisdata.ner import GenNERSampleWrapper, GenNERSampleEntitySpan, GenNERSample
+from gner.arguments import TrainingArgumentsForAccelerator, CustomDataArguments, ExSeq2SeqTrainingArguments
 from progiter import ProgIter
 from transformers import (
     AutoConfig,
@@ -41,7 +41,7 @@ from transformers.utils import is_torch_tf32_available, is_torch_bf16_gpu_availa
 from transformers.utils.logging import set_verbosity as transformers_set_verbosity
 
 # Global settings
-logger: logging.Logger = logging.getLogger("DeepKNLP")
+logger: logging.Logger = logging.getLogger("gner")
 
 
 def update_progress(
@@ -535,13 +535,14 @@ def main(
     set_verbosity_info("c10d-NullHandler-default")
     if accelerator.is_main_process:
         if debugging:
-            set_verbosity_debug("DeepKNLP", "chrisdata")
+            set_verbosity_debug("chrisdata", "gner")
         else:
-            set_verbosity_info("DeepKNLP", "chrisbase")
+            set_verbosity_info("chrisbase", "gner")
 
     # Set random seed
     set_seed(args.train.seed)
-    torch.set_float32_matmul_precision('high')
+    torch.backends.cudnn.deterministic = True
+    torch.set_float32_matmul_precision("medium")
     accelerator.wait_for_everyone()
 
     with JobTimer(f"python {args.env.current_file} {' '.join(args.env.command_args)}",
