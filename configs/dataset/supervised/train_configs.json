@@ -84,12 +84,6 @@
         "over_sampling": false
     },
     {
-        "dataset name": "PolyglotNER",
-        "sampling strategy": "random",
-        "max_num_instances": 10000,
-        "over_sampling": false
-    },
-    {
         "dataset name": "TweetNER7",
         "sampling strategy": "full",
         "max_num_instances": 10000,

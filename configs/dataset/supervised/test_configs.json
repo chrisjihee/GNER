@@ -60,10 +60,6 @@
         "sampling strategy": "full"
     },
     {
-        "dataset name": "PolyglotNER",
-        "sampling strategy": "full"
-    },
-    {
         "dataset name": "TweetNER7",
         "sampling strategy": "full"
     },
