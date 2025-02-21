@@ -16,6 +16,9 @@ logger = logging.getLogger(__name__)
 
 
 class CustomDataArguments(BaseModel):
+    data_dir: str | Path | None = Field(default=None)
+    data_config_dir: str | Path | None = Field(default=None)
+    instruct_file: str | Path | None = Field(default=None)
     train_file: str | Path | None = Field(default=None)
     study_file: str | Path | None = Field(default=None)
     eval_file: str | Path | None = Field(default=None)

@@ -379,6 +379,9 @@ def eval_predictions(dataset, preds, tokenizer, is_encoder_decoder, output_dir=N
 def main(
         # for CustomDataArguments
         pretrained: Annotated[str, typer.Option("--pretrained")] = ...,  # "google/flan-t5-large",
+        data_dir: Annotated[str, typer.Option("--data_dir")] = "data",
+        data_config_dir: Annotated[str, typer.Option("--data_config_dir")] = "configs/dataset/supervised",
+        instruct_file: Annotated[str, typer.Option("--instruct_file")] = "configs/instruction/GNER-paper.json",
         train_file: Annotated[str, typer.Option("--train_file")] = ...,  # "data/gner/each-sampled/crossner_ai-train=100.jsonl",
         eval_file: Annotated[str, typer.Option("--eval_file")] = None,  # "data/gner/each-sampled/crossner_ai-dev=100.jsonl",
         pred_file: Annotated[str, typer.Option("--pred_file")] = None,  # "data/gner/each-sampled/crossner_ai-test=100.jsonl",
@@ -465,6 +468,9 @@ def main(
     args = TrainingArgumentsForAccelerator(
         env=env,
         data=CustomDataArguments(
+            data_dir=data_dir,
+            data_config_dir=data_config_dir,
+            instruct_file=instruct_file,
             train_file=train_file,
             eval_file=eval_file,
             pred_file=pred_file,
@@ -544,6 +550,17 @@ def main(
     torch.backends.cudnn.deterministic = True
     torch.set_float32_matmul_precision("medium")
     accelerator.wait_for_everyone()
+
+    # Load dataset
+    raw_datasets = load_dataset(
+        "gner/gner_dataset.py",
+        data_dir=args.data.data_dir,
+        instruction_file=args.data.instruct_file,
+        data_config_dir=args.data.data_config_dir,
+        add_dataset_name=False,
+        trust_remote_code=True,
+    )
+    raw_datasets.cleanup_cache_files()
 
     with JobTimer(f"python {args.env.current_file} {' '.join(args.env.command_args)}",
                   rt=1, rb=1, rc='=', verbose=verbose, args=args):
