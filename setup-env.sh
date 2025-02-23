@@ -39,6 +39,4 @@ huggingface-cli login
 ln -s ~/.cache/huggingface ./.cache_hf
 
 # 7. Run the training script
-screen -R GNER
-conda activate GNER
-bash scripts/ZSE-T5-Large.sh &> output/ZSE-T5-Large-$(hostname).log
+screen -dmS GNER bash -c /home/dlt/proj/GNER/run.sh
