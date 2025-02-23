@@ -24,9 +24,9 @@ deepspeed --include="localhost:$CUDA_VISIBLE_DEVICES" --master_port $MASTER_PORT
     --data_config_dir $DATA_CONFIG_DIR \
     --train_json_dir $TRAIN_JSON_DIR \
     --output_dir $OUTPUT_DIR \
-    --per_device_train_batch_size 4 \
+    --gradient_accumulation_steps 16 \
+    --per_device_train_batch_size 2 \
     --per_device_eval_batch_size 8 \
-    --gradient_accumulation_steps 8 \
     --learning_rate 5e-05 \
     --num_train_epochs 10 \
     --deepspeed $DEEPSPEED_CONFIG \
