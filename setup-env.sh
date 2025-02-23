@@ -30,8 +30,8 @@ pip list | grep -E "torch|lightn|trans|accel|speed|flash|numpy|piece|chris|prog|
 # 5. Unzip some archived data
 cd data; gzip -d -k pile-ner.json.gz; cd ..
 cd data; gzip -d -k pile-ner.jsonl.gz; cd ..
-mkdir -p output; mkdir -p output-lfs;
-rm -rf output-lfs; ln -s /dlfs/jhryu/GNER-output output-lfs; # for some servers only
+mkdir -p output; mkdir -p output-lfs
+rm -rf output-lfs; ln -s /dlfs/jhryu/GNER-output output-lfs  # for some servers only
 
 # 6. Login to Hugging Face and link the cache
 huggingface-cli whoami
