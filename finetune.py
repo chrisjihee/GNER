@@ -392,11 +392,11 @@ def main(
         progress_seconds: Annotated[float, typer.Option("--progress_seconds")] = 10.0,
         max_source_length: Annotated[int, typer.Option("--max_source_length")] = 640,
         max_target_length: Annotated[int, typer.Option("--max_target_length")] = 640,
-        write_predictions: Annotated[bool, typer.Option("--write_predictions/--no_write_predictions")] = True,
+        max_generation_tokens: Annotated[int, typer.Option("--max_generation_tokens")] = 640,
         ignore_pad_token_for_loss: Annotated[bool, typer.Option("--ignore_pad_token_for_loss/--no_ignore_pad_token_for_loss")] = True,
+        write_predictions: Annotated[bool, typer.Option("--write_predictions/--no_write_predictions")] = True,
         # for Seq2SeqTrainingArguments
         generation_num_beams: Annotated[int, typer.Option("--generation_num_beams")] = 1,
-        generation_max_length: Annotated[int, typer.Option("--generation_max_length")] = 640,
         use_flash_attention: Annotated[bool, typer.Option("--use_flash_attention/--no_use_flash_attention")] = False,
         gradient_checkpointing: Annotated[bool, typer.Option("--gradient_checkpointing/--no_gradient_checkpointing")] = True,
         per_device_train_batch_size: Annotated[int, typer.Option("--per_device_train_batch_size")] = 1,
@@ -482,13 +482,13 @@ def main(
             progress_seconds=progress_seconds,
             max_source_length=max_source_length,
             max_target_length=max_target_length,
-            write_predictions=write_predictions,
+            max_generation_tokens=max_generation_tokens,
             ignore_pad_token_for_loss=ignore_pad_token_for_loss,
+            write_predictions=write_predictions,
         ),
         train=ExSeq2SeqTrainingArguments(
             predict_with_generate=True,
             generation_num_beams=generation_num_beams,
-            generation_max_length=generation_max_length,
             remove_unused_columns=False,
             overwrite_output_dir=True,
             output_dir=str(env.output_dir),
@@ -624,7 +624,6 @@ def main(
                 trust_remote_code=True,
             )
         model.generation_config.pad_token_id = tokenizer.pad_token_id  # https://stackoverflow.com/questions/69609401/suppress-huggingface-logging-warning-setting-pad-token-id-to-eos-token-id
-        model.generation_config.max_new_tokens = args.train.generation_max_length
         accelerator.wait_for_everyone()
         logger.info(f"model type: {type(model)}")
         logger.info(f"model pad_token_id: {model.generation_config.pad_token_id}")
@@ -711,6 +710,7 @@ def main(
             data_collator=data_collator,
             compute_metrics=compute_metrics,
             is_encoder_decoder=is_encoder_decoder,
+            max_generation_tokens=max_generation_tokens,
         )
         trainer.remove_callback(PrinterCallback)
         trainer.add_callback(gner.CustomProgressCallback(
