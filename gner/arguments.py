@@ -2,7 +2,7 @@ import logging
 from dataclasses import dataclass
 from dataclasses import field
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Dict
 
 import datasets
 import pandas as pd
@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 class CustomDataArguments(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
     data_dir: str | Path | None = Field(default=None)
     data_config_dir: str | Path | None = Field(default=None)
     instruct_file: str | Path | None = Field(default=None)
@@ -35,7 +36,7 @@ class CustomDataArguments(BaseModel):
     max_generation_tokens: int = Field(default=1280)
     ignore_pad_token_for_loss: bool = Field(default=True)
     write_predictions: bool = Field(default=False)
-    data_files: dict[datasets.Split, Optional[Path]] = Field(default=None, init=False)
+    data_files: Dict[datasets.Split, Optional[Path]] = Field(default=None, init=False)
 
     @model_validator(mode='after')
     def after(self) -> Self:
@@ -53,11 +54,11 @@ class CustomDataArguments(BaseModel):
         }
         return self
 
-    def data_file(self, split: datasets.Split | str) -> Optional[Path]:
+    def data_file(self, split: datasets.Split) -> Optional[Path]:
         assert split in self.data_files, f"Split {split} not in {self.data_files.keys()}"
         return self.data_files[split]
 
-    def cache_file(self, split: datasets.Split | str, data_size: int, tokenizer_path: str) -> Optional[str]:
+    def cache_file(self, split: datasets.Split, data_size: int, tokenizer_path: str) -> Optional[str]:
         data_file = self.data_file(split)
         if data_file:
             return str(data_file.parent / ".cache" / f"{data_file.stem}={data_size}={tokenizer_path.replace('/', '--')}.tmp")

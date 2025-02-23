@@ -174,7 +174,7 @@ def preprocess_row(
 
 
 def preprocess_dataset(
-        split: str,
+        split: datasets.Split,
         raw_datasets: datasets.DatasetDict,
         is_encoder_decoder: bool,
         max_source_length: int,
@@ -615,7 +615,7 @@ def main(
                     if accelerator.is_main_process:
                         backup_file = f"{args.data.data_dir}/{Path(args.data.data_config_dir).name}-{split}.jsonl"
                         raw_datasets[split].to_json(backup_file, lines=True, force_ascii=False)
-                    logger.info(f'Loaded raw {split} dataset by {Path(args.data.data_config_dir) / f"{split}_configs.json"}: {len(raw_datasets[split])} samples -> {backup_file}')
+                        logger.info(f'Loaded raw {split} dataset by {Path(args.data.data_config_dir) / f"{split}_configs.json"}: {len(raw_datasets[split])} samples -> {backup_file}')
                 else:
                     if args.data.data_file(split):
                         raw_datasets[split] = load_dataset("json", data_files=str(args.data.data_file(split)), split="train")
