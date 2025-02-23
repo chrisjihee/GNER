@@ -15,8 +15,8 @@ source_file = "finetune.py"
 # Training arguments
 experiment_type = "BL"
 dataset_type = "united"
-output_name = "GNER-supervised"
-data_config_dir = "configs/dataset/supervised"
+output_name = "GNER-SFT"
+data_config_dir = "configs/dataset/SFT"
 metric_for_best_model = "eval_average"
 generation_max_length = 640
 save_total_limit = 2
