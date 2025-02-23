@@ -39,4 +39,4 @@ huggingface-cli login
 ln -s ~/.cache/huggingface ./.cache_hf
 
 # 7. Run the training script
-screen -dmS GNER bash -c /home/dlt/proj/GNER/run.sh
+screen -dmS GNER bash -c ~/proj/GNER/run.sh
