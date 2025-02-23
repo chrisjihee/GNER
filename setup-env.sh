@@ -30,6 +30,8 @@ pip list | grep -E "torch|lightn|trans|accel|speed|flash|numpy|piece|chris|prog|
 # 5. Unzip some archived data
 cd data; gzip -d -k pile-ner.json.gz; cd ..
 cd data; gzip -d -k pile-ner.jsonl.gz; cd ..
+mkdir -p output; mkdir -p output-lfs;
+rm -rf output-lfs; ln -s /dlfs/jiheeryu/GNER-output output-lfs;
 
 # 6. Login to Hugging Face and link the cache
 huggingface-cli whoami
@@ -39,4 +41,4 @@ ln -s ~/.cache/huggingface ./.cache_hf
 # 7. Run the training script
 screen -h 5000000 -R GNER
 conda activate GNER
-bash scripts/train_t5_large_task_adaptation.sh
+bash scripts/ZSE-T5-Large.sh &> output/ZSE-T5-Large.log
