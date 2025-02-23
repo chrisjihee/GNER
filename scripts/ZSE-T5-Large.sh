@@ -1,27 +1,27 @@
 set -x
 CUDA_VISIBLE_DEVICES=0,1,2,3
 MASTER_PORT=$(shuf -i25000-30000 -n1)
+RUN_NAME=ZSE-T5-Large
 DATA_DIR=data
+OUTPUT_DIR=output-lfs
+TRAIN_JSON_DIR=data/pile-ner.json
+DATA_CONFIG_DIR=configs/dataset/ZSE
 INSTRUCTION_FILE=configs/instruction/GNER-paper.json
 DEEPSPEED_CONFIG=configs/deepspeed/ds2_t5.json
 MODEL_NAME_OR_PATH=google/flan-t5-large
-OUTPUT_DIR=output/ZSE-T5-Large
-RUN_NAME=ZSE-T5-Large
-DATA_CONFIG_DIR=configs/dataset/ZSE
-TRAIN_JSON_DIR=data/pile-ner.json
 
 deepspeed --include="localhost:$CUDA_VISIBLE_DEVICES" --master_port $MASTER_PORT gner/run.py \
     --do_train \
     --do_predict \
     --predict_with_generate \
-    --model_name_or_path $MODEL_NAME_OR_PATH \
-    --instruction_file $INSTRUCTION_FILE \
-    --data_config_dir $DATA_CONFIG_DIR \
-    --train_json_dir $TRAIN_JSON_DIR \
-    --output_dir $OUTPUT_DIR \
     --run_name $RUN_NAME \
     --data_dir $DATA_DIR \
+    --output_dir $OUTPUT_DIR/$RUN_NAME \
+    --train_json_dir $TRAIN_JSON_DIR \
+    --data_config_dir $DATA_CONFIG_DIR \
+    --instruction_file $INSTRUCTION_FILE \
     --deepspeed $DEEPSPEED_CONFIG \
+    --model_name_or_path $MODEL_NAME_OR_PATH \
     --metric_for_best_model eval_average_f1 \
     --load_best_model_at_end True \
     --greater_is_better True \
