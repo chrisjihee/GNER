@@ -18,7 +18,7 @@ dataset_type = "united"
 output_name = "GNER-SFT"
 data_config_dir = "configs/dataset/SFT"
 metric_for_best_model = "eval_average"
-generation_max_length = 640
+max_generation_tokens = 640
 save_total_limit = 2
 train_epochs = 12
 eval_epochs = 0.5
@@ -63,7 +63,7 @@ for ds_config, run_prefix, pretrained in model_specs:
                 --per_device_eval_batch_size {eval_batch}
                 --per_device_train_batch_size {train_batch}
                 --gradient_accumulation_steps {gradient_steps}
-                --generation_max_length {generation_max_length}
+                --max_generation_tokens {max_generation_tokens}
                 --save_total_limit {save_total_limit}
                 --metric_for_best_model {metric_for_best_model}
                 --{'' if use_flash_attention else 'no_'}use_flash_attention
