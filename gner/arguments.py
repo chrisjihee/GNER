@@ -4,6 +4,7 @@ from dataclasses import field
 from pathlib import Path
 from typing import Optional
 
+import datasets
 import pandas as pd
 from pydantic import BaseModel, Field, model_validator, ConfigDict
 from typing_extensions import Self
@@ -20,7 +21,6 @@ class CustomDataArguments(BaseModel):
     data_config_dir: str | Path | None = Field(default=None)
     instruct_file: str | Path | None = Field(default=None)
     train_file: str | Path | None = Field(default=None)
-    study_file: str | Path | None = Field(default=None)
     eval_file: str | Path | None = Field(default=None)
     pred_file: str | Path | None = Field(default=None)
     pretrained: str | Path = Field(default=None)
@@ -35,51 +35,32 @@ class CustomDataArguments(BaseModel):
     max_generation_tokens: int = Field(default=1280)
     ignore_pad_token_for_loss: bool = Field(default=True)
     write_predictions: bool = Field(default=False)
+    data_files: dict[datasets.Split, Optional[Path]] = Field(default=None, init=False)
 
     @model_validator(mode='after')
     def after(self) -> Self:
-        self.pretrained = Path(self.pretrained) if self.pretrained else None
+        self.data_dir = Path(self.data_dir) if self.data_dir else None
+        self.data_config_dir = Path(self.data_config_dir) if self.data_config_dir else None
+        self.instruct_file = Path(self.instruct_file) if self.instruct_file else None
         self.train_file = Path(self.train_file) if self.train_file else None
-        self.study_file = Path(self.study_file) if self.study_file else None
         self.eval_file = Path(self.eval_file) if self.eval_file else None
         self.pred_file = Path(self.pred_file) if self.pred_file else None
+        self.pretrained = Path(self.pretrained) if self.pretrained else None
+        self.data_files = {
+            datasets.Split.TRAIN: self.train_file,
+            datasets.Split.VALIDATION: self.eval_file,
+            datasets.Split.TEST: self.pred_file,
+        }
         return self
 
-    @property
-    def cache_train_dir(self) -> Optional[Path]:
-        if self.train_file:
-            return self.train_file.parent / ".cache"
+    def data_file(self, split: datasets.Split | str) -> Optional[Path]:
+        assert split in self.data_files, f"Split {split} not in {self.data_files.keys()}"
+        return self.data_files[split]
 
-    @property
-    def cache_study_dir(self) -> Optional[Path]:
-        if self.study_file:
-            return self.study_file.parent / ".cache"
-
-    @property
-    def cache_eval_dir(self) -> Optional[Path]:
-        if self.eval_file:
-            return self.eval_file.parent / ".cache"
-
-    @property
-    def cache_pred_dir(self) -> Optional[Path]:
-        if self.pred_file:
-            return self.pred_file.parent / ".cache"
-
-    def cache_train_path(self, suffix: str) -> Optional[str]:
-        if self.train_file:
-            return str(self.cache_train_dir / f"{self.train_file.stem}={suffix}.tmp")
-
-    def cache_study_path(self, suffix: str) -> Optional[str]:
-        if self.study_file:
-            return str(self.cache_study_dir / f"{self.study_file.stem}={suffix}.tmp")
-
-    def cache_eval_path(self, suffix: str) -> Optional[str]:
-        if self.eval_file:
-            return str(self.cache_eval_dir / f"{self.eval_file.stem}={suffix}.tmp")
-
-    def cache_pred_path(self, suffix: str) -> Optional[str]:
-        if self.pred_file:
-            return str(self.cache_pred_dir / f"{self.pred_file.stem}={suffix}.tmp")
+    def cache_file(self, split: datasets.Split | str, data_size: int, tokenizer_path: str) -> Optional[str]:
+        data_file = self.data_file(split)
+        if data_file:
+            return str(data_file.parent / ".cache" / f"{data_file.stem}={data_size}={tokenizer_path.replace('/', '--')}.tmp")
 
 
 @dataclass
