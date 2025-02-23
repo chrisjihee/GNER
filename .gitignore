@@ -159,10 +159,8 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
 
-# GNER Data and Output file
-output/
-gradio_cached_examples/
-
 # custom
+gradio_cached_examples
+output
 .cache_*
 temp.*
