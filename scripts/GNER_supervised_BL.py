@@ -31,6 +31,13 @@ eval_batch = 16
 
 # Loop through each model and dataset
 for ds_config, run_prefix, pretrained in model_specs:
+    command = "rm -rf .cache_hf/datasets".strip().split()
+    print("*" * 120)
+    print("[COMMAND]", " ".join(command))
+    print("*" * 120)
+    subprocess.run(command)
+    print("\n" * 3)
+
     suffix = f"-{experiment_type}"
     run_version = f"{run_prefix}{suffix}"
     use_flash_attention = pretrained.startswith("microsoft/Phi")
