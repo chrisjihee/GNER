@@ -1,3 +1,4 @@
 pile-ner.json*
-supervised*.json*
+SFT-*.json*
+ZSE-*.json*
 AnatEM/conll
