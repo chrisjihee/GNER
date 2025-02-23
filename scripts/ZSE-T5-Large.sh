@@ -1,17 +1,16 @@
 set -x
-
-port=$(shuf -i25000-30000 -n1)
-
-MODEL_NAME_OR_PATH=google/flan-t5-large
+CUDA_VISIBLE_DEVICES=0,1,2,3
+MASTER_PORT=$(shuf -i25000-30000 -n1)
 DATA_DIR=data
-DATA_CONFIG_DIR=configs/dataset/supervised
 INSTRUCTION_FILE=configs/instruction/GNER-paper.json
-OUTPUT_DIR=output/flan-t5-large-supervised
-DEEPSPEED_CONFIG=configs/deepspeed/ds0_t5.json
+DEEPSPEED_CONFIG=configs/deepspeed/ds2_t5.json
+MODEL_NAME_OR_PATH=google/flan-t5-large
+OUTPUT_DIR=output/ZSE-T5-Large
+RUN_NAME=ZSE-T5-Large
+DATA_CONFIG_DIR=configs/dataset/ZSE
+TRAIN_JSON_DIR=data/pile-ner.json
 
-RUN_NAME=flan-t5-large-experiment
-
-deepspeed --include="localhost:4,5,6,7" --master_port $port gner/run.py \
+deepspeed --include="localhost:$CUDA_VISIBLE_DEVICES" --master_port $MASTER_PORT gner/run.py \
     --do_train \
     --do_predict \
     --predict_with_generate \
@@ -21,8 +20,9 @@ deepspeed --include="localhost:4,5,6,7" --master_port $port gner/run.py \
     --load_best_model_at_end True \
     --metric_for_best_model "eval_average_f1" \
     --greater_is_better True \
-    --data_config_dir $DATA_CONFIG_DIR \
     --instruction_file $INSTRUCTION_FILE \
+    --data_config_dir $DATA_CONFIG_DIR \
+    --train_json_dir $TRAIN_JSON_DIR \
     --output_dir $OUTPUT_DIR \
     --per_device_train_batch_size 4 \
     --per_device_eval_batch_size 8 \
