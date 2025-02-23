@@ -174,9 +174,8 @@ def preprocess_row(
 
 
 def preprocess_dataset(
-        dataset: Optional[datasets.Dataset],
-        file_path: Optional[str],
-        dataset_name: str,
+        split: str,
+        raw_datasets: datasets.DatasetDict,
         is_encoder_decoder: bool,
         max_source_length: int,
         max_target_length: int,
@@ -187,28 +186,23 @@ def preprocess_dataset(
         cache_path_func: Optional[Callable[[str], str]] = None,
         progress_seconds: float = 2.0,
 ) -> Optional[datasets.Dataset]:
-    if dataset is None and file_path is None:
+    if split not in raw_datasets or len(raw_datasets[split]) == 0:
         return None
-
-    # Load the raw dataset
-    if dataset is None or len(dataset) == 0:
-        dataset = load_dataset("json", data_files=str(file_path), split="train")
-        logger.info(f"Loaded raw {dataset_name} (#={len(dataset)}): {file_path}")
 
     # Prepare a progress bar
     with ProgIter(
             time_thresh=progress_seconds,
             verbose=3,
             stream=LoggerWriter(logger),
-            total=len(dataset),
-            desc=f"Preprocess {dataset_name}:"
+            total=len(raw_datasets[split]),
+            desc=f"Preprocess {split} dataset:"
     ) as pbar:
         # Disable the default progress bar in datasets
         datasets.disable_progress_bar()
 
         # Map function over the dataset
         counter = Counter(step=max_workers)
-        dataset = dataset.map(
+        dataset = raw_datasets[split].map(
             batched=False,
             function=preprocess_row,
             with_rank=True,
@@ -223,7 +217,7 @@ def preprocess_dataset(
                 ),
             },
             load_from_cache_file=use_cache_data,
-            cache_file_name=cache_path_func(f"{tokenizer.name_or_path.replace('/', '--')}={len(dataset)}") if cache_path_func else None,
+            cache_file_name=cache_path_func(f"{tokenizer.name_or_path.replace('/', '--')}={len(raw_datasets[split])}") if cache_path_func else None,
             num_proc=max_workers,
         )
 
@@ -234,7 +228,7 @@ def preprocess_dataset(
     if len(dataset) > 0 and "time_stamp" in dataset.column_names and "tokenizer_name" in dataset.column_names:
         timestamp_str = from_timestamp(max(dataset["time_stamp"]))
         tokenizer_name = ', '.join(set(dataset["tokenizer_name"]))
-        logger.info(f"Completed preprocessing for {dataset_name} by {tokenizer_name} at {timestamp_str}")
+        logger.info(f"Completed preprocessing for {split} dataset by {tokenizer_name} at {timestamp_str}")
 
     return dataset
 
@@ -551,28 +545,6 @@ def main(
     torch.set_float32_matmul_precision("medium")
     accelerator.wait_for_everyone()
 
-    # Load dataset according to the data configuration
-    if args.data.data_config_dir:
-        raw_datasets = load_dataset(
-            "gner/gner_dataset.py",
-            data_dir=args.data.data_dir,
-            data_config_dir=args.data.data_config_dir,
-            instruction_file=args.data.instruct_file,
-            add_dataset_name=False,
-            trust_remote_code=True,
-        )
-        raw_datasets.cleanup_cache_files()
-        for split_name, dataset in raw_datasets.items():
-            output_file = f"{args.data.data_dir}/{Path(args.data.data_config_dir).name}-{split_name}.jsonl"
-            dataset.to_json(
-                output_file,
-                lines=True,
-                force_ascii=False
-            )
-            logger.info(f"Loaded raw {split_name} (#={len(dataset)}): {args.data.data_config_dir} -> {output_file}")
-    else:
-        raw_datasets = {}
-
     with JobTimer(f"python {args.env.current_file} {' '.join(args.env.command_args)}",
                   rt=1, rb=1, rc='=', verbose=verbose, args=args):
         # Load pretrained config
@@ -627,11 +599,42 @@ def main(
         if args.train.use_flash_attention:
             logger.info(f"model attn_implementation: {config._attn_implementation} -> {model.config._attn_implementation}")
 
-        # Preprocess training dataset (if do_train)
+        # Load dataset according to the data configuration
+        if args.data.data_config_dir:
+            raw_datasets = load_dataset(
+                "gner/gner_dataset.py",
+                data_dir=args.data.data_dir,
+                data_config_dir=args.data.data_config_dir,
+                instruction_file=args.data.instruct_file,
+                add_dataset_name=False,
+                trust_remote_code=True,
+            )
+            raw_datasets.cleanup_cache_files()
+            if accelerator.is_main_process:
+                for split in raw_datasets:
+                    backup_file = f"{args.data.data_dir}/{Path(args.data.data_config_dir).name}-{split}.jsonl"
+                    raw_datasets[split].to_json(backup_file, lines=True, force_ascii=False)
+                    logger.info(f'Loaded raw {split} dataset (#={len(raw_datasets[split])}): {Path(args.data.data_config_dir)/f"{split}_configs.json"} -> {backup_file}')
+        else:
+            raw_datasets = {}
+        accelerator.wait_for_everyone()
+
+        if (datasets.Split.TRAIN not in raw_datasets or len(raw_datasets[datasets.Split.TRAIN]) == 0) and args.data.train_file:
+            raw_datasets[datasets.Split.TRAIN] = load_dataset("json", data_files=str(args.data.train_file), split="train")
+            logger.info(f"Loaded raw {datasets.Split.TRAIN} dataset (#={len(raw_datasets[datasets.Split.TRAIN])}): {args.data.train_file}")
+
+        if (datasets.Split.VALIDATION not in raw_datasets or len(raw_datasets[datasets.Split.VALIDATION]) == 0) and args.data.eval_file:
+            raw_datasets[datasets.Split.VALIDATION] = load_dataset("json", data_files=str(args.data.eval_file), split="train")
+            logger.info(f"Loaded raw {datasets.Split.VALIDATION} dataset (#={len(raw_datasets[datasets.Split.VALIDATION])}): {args.data.eval_file}")
+
+        if (datasets.Split.TEST not in raw_datasets or len(raw_datasets[datasets.Split.TEST]) == 0) and args.data.pred_file:
+            raw_datasets[datasets.Split.TEST] = load_dataset("json", data_files=str(args.data.pred_file), split="train")
+            logger.info(f"Loaded raw {datasets.Split.TEST} dataset (#={len(raw_datasets[datasets.Split.TEST])}): {args.data.pred_file}")
+
+        # Preprocess training dataset (if dataset is available)
         train_dataset = preprocess_dataset(
-            dataset=raw_datasets[datasets.Split.TRAIN] if datasets.Split.TRAIN in raw_datasets else None,
-            file_path=args.data.train_file if args.train.do_train else None,
-            dataset_name="train_dataset",
+            split=datasets.Split.TRAIN,
+            raw_datasets=raw_datasets,
             is_encoder_decoder=is_encoder_decoder,
             max_source_length=args.data.max_source_length,
             max_target_length=args.data.max_target_length,
@@ -642,14 +645,13 @@ def main(
             cache_path_func=args.data.cache_train_path if args.data.use_cache_data else None,
             progress_seconds=args.data.progress_seconds / 5,
         )
-        args.train.do_train = bool(train_dataset)
+        args.train.do_train = bool(train_dataset) and len(train_dataset) > 0
         accelerator.wait_for_everyone()
 
-        # Preprocess evaluation dataset (if do_eval)
+        # Preprocess evaluation dataset (if dataset is available)
         eval_dataset = preprocess_dataset(
-            dataset=raw_datasets[datasets.Split.VALIDATION] if datasets.Split.VALIDATION in raw_datasets else None,
-            file_path=args.data.eval_file if args.train.do_eval else None,
-            dataset_name="eval_dataset",
+            split=datasets.Split.VALIDATION,
+            raw_datasets=raw_datasets,
             is_encoder_decoder=is_encoder_decoder,
             max_source_length=args.data.max_source_length,
             max_target_length=args.data.max_target_length,
@@ -660,14 +662,13 @@ def main(
             cache_path_func=args.data.cache_eval_path if args.data.use_cache_data else None,
             progress_seconds=args.data.progress_seconds / 5,
         )
-        args.train.do_eval = bool(eval_dataset)
+        args.train.do_eval = bool(eval_dataset) and len(eval_dataset) > 0
         accelerator.wait_for_everyone()
 
-        # Preprocess prediction dataset (if do_predict)
+        # Preprocess prediction dataset (if dataset is available)
         pred_dataset = preprocess_dataset(
-            dataset=raw_datasets[datasets.Split.TEST] if datasets.Split.TEST in raw_datasets else None,
-            file_path=args.data.pred_file if args.train.do_predict else None,
-            dataset_name="pred_dataset",
+            split=datasets.Split.TEST,
+            raw_datasets=raw_datasets,
             is_encoder_decoder=is_encoder_decoder,
             max_source_length=args.data.max_source_length,
             max_target_length=args.data.max_target_length,
@@ -678,7 +679,7 @@ def main(
             cache_path_func=args.data.cache_pred_path if args.data.use_cache_data else None,
             progress_seconds=args.data.progress_seconds / 5,
         )
-        args.train.do_predict = bool(pred_dataset)
+        args.train.do_predict = bool(pred_dataset) and len(pred_dataset) > 0
         accelerator.wait_for_everyone()
 
         # Data collator
