@@ -422,7 +422,7 @@ def main(
         # for ProjectEnv
         run_version: Annotated[str, typer.Option("--run_version")] = None,
         output_name: Annotated[str, typer.Option("--output_name")] = "GNER",
-        output_home: Annotated[str, typer.Option("--output_home")] = "output",
+        output_home: Annotated[str, typer.Option("--output_home")] = "output-lfs",
         output_file: Annotated[str, typer.Option("--output_file")] = "train-metrics.csv",
         logging_file: Annotated[str, typer.Option("--logging_file")] = "train-loggings.out",
         argument_file: Annotated[str, typer.Option("--argument_file")] = "train-arguments.json",
