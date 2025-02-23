@@ -363,7 +363,7 @@ def eval_predictions(dataset, preds, tokenizer, is_encoder_decoder, output_dir=N
         all_examples = merged_examples
         assert len(all_examples) > 0 and len(all_examples) == len(grouped_examples)
 
-    results = gner.compute_metrics(all_examples, tokenizer=tokenizer, detailed=False, average_key="average")
+    results = gner.compute_metrics2(all_examples, tokenizer=tokenizer, detailed=False, average_key="average")
     if write_predictions and output_dir is not None and save_prefix is not None:
         suffix = f"_{save_suffix}" if save_suffix else ""
         file_name = f"{save_prefix}-text_generations{suffix}.jsonl"
