@@ -41,3 +41,4 @@ ln -s ~/.cache/huggingface ./.cache_hf
 # 7. Run the training script
 screen -dmS GNER bash -c ~/proj/GNER/run-ZSE.sh; screen -ls; sleep 3s; tail -f $(ls -t ~/proj/GNER/output/*.out | head -n 1)
 screen -dmS GNER bash -c ~/proj/GNER/run-SFT.sh; screen -ls; sleep 3s; tail -f $(ls -t ~/proj/GNER/output/*.out | head -n 1)
+screen -dmS GNER bash -c ~/proj/GNER/run-SFT-new.sh; screen -ls; sleep 3s; tail -f $(ls -t ~/proj/GNER/output/*.out | head -n 1)
