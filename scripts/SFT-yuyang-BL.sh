@@ -1,14 +1,14 @@
 set -x
-CUDA_VISIBLE_DEVICES=0,1,2,3
+CUDA_VISIBLE_DEVICES=4,5,6,7
 MASTER_PORT=$(shuf -i25000-30000 -n1)
-RUN_NAME=ZSE-T5-Large-$(hostname)
+RUN_NAME=SFT-yuyang-BL-$(hostname)
 DATA_DIR=data
 OUTPUT_DIR=output-lfs
-TRAIN_JSON_DIR=data/pile-ner.json
-DATA_CONFIG_DIR=configs/dataset/ZSE
+DATA_CONFIG_DIR=configs/dataset/SFT
 INSTRUCTION_FILE=configs/instruction/GNER-paper.json
 DEEPSPEED_CONFIG=configs/deepspeed/ds2_t5.json
-MODEL_NAME_OR_PATH=google/flan-t5-large
+MODEL_NAME_OR_PATH=google/flan-t5-base
+
 
 deepspeed --include="localhost:$CUDA_VISIBLE_DEVICES" --master_port $MASTER_PORT gner/run.py \
     --do_train \
@@ -17,7 +17,6 @@ deepspeed --include="localhost:$CUDA_VISIBLE_DEVICES" --master_port $MASTER_PORT
     --run_name $RUN_NAME \
     --data_dir $DATA_DIR \
     --output_dir $OUTPUT_DIR/$RUN_NAME \
-    --train_json_dir $TRAIN_JSON_DIR \
     --data_config_dir $DATA_CONFIG_DIR \
     --instruction_file $INSTRUCTION_FILE \
     --deepspeed $DEEPSPEED_CONFIG \
@@ -25,8 +24,8 @@ deepspeed --include="localhost:$CUDA_VISIBLE_DEVICES" --master_port $MASTER_PORT
     --metric_for_best_model eval_average \
     --load_best_model_at_end True \
     --greater_is_better True \
-    --gradient_accumulation_steps 16 \
-    --per_device_train_batch_size 2 \
+    --gradient_accumulation_steps 8 \
+    --per_device_train_batch_size 4 \
     --per_device_eval_batch_size 8 \
     --preprocessing_num_workers 4 \
     --overwrite_output_dir \

@@ -15,7 +15,7 @@ source_file = "finetune.py"
 # Training arguments
 experiment_type = "BL"
 dataset_type = "united"
-output_name = "GNER-ZSE"
+output_name = "ZSE-jihee-BL"
 data_config_dir = "configs/dataset/ZSE"
 train_file = "data/pile-ner.jsonl"
 metric_for_best_model = "eval_average"
@@ -25,10 +25,10 @@ train_epochs = 10
 eval_epochs = 0.5
 save_epochs = eval_epochs
 learning_rate = 5e-5
-logging_steps = 5
+logging_steps = 10
 gradient_steps = 8
 train_batch = 4
-eval_batch = 16
+eval_batch = 8
 
 # Loop through each model and dataset
 for ds_config, run_prefix, pretrained in model_specs:
