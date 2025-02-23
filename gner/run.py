@@ -444,7 +444,7 @@ def main():
     # and some of the information will also be used in evaluation.
     training_args.remove_unused_columns = False
 
-    def compute_ner_metrics(dataset, preds, save_prefix=None, save_suffix=None):
+    def compute_ner_metrics(dataset, preds, save_prefix=None, save_suffix=None, **kwargs):
         preds = np.where(preds != -100, preds, tokenizer.pad_token_id)
         decoded_preds = tokenizer.batch_decode(preds, skip_special_tokens=True)
         if not is_encoder_decoder:
