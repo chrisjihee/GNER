@@ -7,7 +7,7 @@ bash Miniforge3-$(uname)-$(uname -m).sh
 rm -rf GNER*; git clone https://github.com/chrisjihee/GNER.git; cd GNER*;
 
 # 3. Create a new environment
-conda search conda -c conda-forge
+conda search conda -c conda-forge | grep " 25."
 conda install -n base -c conda-forge conda=25.1.1 -y;
 conda create -n GNER python=3.12 -y; conda activate GNER
 conda install -n GNER cuda-libraries=11.8 cuda-libraries-dev=11.8 cuda-cudart=11.8 cuda-cudart-dev=11.8 \
