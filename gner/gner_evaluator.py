@@ -3,7 +3,7 @@ import json
 import re
 import string
 from collections import defaultdict
-from typing import List
+from typing import List, Dict, Any
 
 from chrisdata.ner import GenNERSampleWrapper
 from transformers import AutoTokenizer
@@ -140,7 +140,7 @@ def hierarchical_matching(raw_words, words, labels, tokenizer=None):
 
 
 # convert the unstructured texts into structured entities
-def extract_predictions(example, tokenizer=None):
+def extract_predictions(example: Dict[str, Any], tokenizer=None):
     pred_words, pred_labels = extract(example['prediction'].strip())
     valid_labels = []
     for label in example['label_list']:
@@ -217,7 +217,7 @@ def parser(words, labels):
 # compute F1 score
 # modified from https://github.com/universal-ner/universal-ner/blob/main/src/eval/evaluate.py
 class NEREvaluator:
-    def evaluate(self, examples: list, tokenizer):
+    def evaluate(self, examples: List[Dict[str, Any]], tokenizer):
         n_correct, n_pos_gold, n_pos_pred = 0, 0, 0
         for example in examples:
             words = example['instance']['words']
@@ -262,7 +262,7 @@ class NEREvaluator:
         }
 
 
-def compute_metrics(examples, tokenizer=None, average_key="average", detailed=False):
+def compute_metrics(examples: List[Dict[str, Any]], tokenizer=None, average_key="average", detailed=False):
     all_examples = defaultdict(list)
     for example in examples:
         all_examples[example['dataset']].append(example)
