@@ -31,7 +31,7 @@ pip list | grep -E "torch|lightn|trans|accel|speed|flash|numpy|piece|chris|prog|
 cd data; gzip -d -k pile-ner.json.gz; cd ..
 cd data; gzip -d -k pile-ner.jsonl.gz; cd ..
 mkdir -p output; mkdir -p output-lfs;
-rm -rf output-lfs; ln -s /dlfs/jiheeryu/GNER-output output-lfs;
+rm -rf output-lfs; ln -s /dlfs/jhryu/GNER-output output-lfs; # for some servers only
 
 # 6. Login to Hugging Face and link the cache
 huggingface-cli whoami
@@ -39,4 +39,4 @@ huggingface-cli login
 ln -s ~/.cache/huggingface ./.cache_hf
 
 # 7. Run the training script
-screen -dmS GNER bash -c ~/proj/GNER/run.sh
+screen -dmS GNER bash -c ~/proj/GNER/run.sh; screen -ls; sleep 3s; tail -f $(ls -t ~/proj/GNER/output/*.out | head -n 1)
