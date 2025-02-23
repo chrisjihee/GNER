@@ -22,7 +22,7 @@ deepspeed --include="localhost:$CUDA_VISIBLE_DEVICES" --master_port $MASTER_PORT
     --instruction_file $INSTRUCTION_FILE \
     --deepspeed $DEEPSPEED_CONFIG \
     --model_name_or_path $MODEL_NAME_OR_PATH \
-    --metric_for_best_model eval_average_f1 \
+    --metric_for_best_model eval_average \
     --load_best_model_at_end True \
     --greater_is_better True \
     --gradient_accumulation_steps 16 \

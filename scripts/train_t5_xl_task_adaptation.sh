@@ -20,7 +20,7 @@ deepspeed --include=="localhost:0,1,2,3,4,5,6,7" --master_port $port gner/run.py
     --data_dir $DATA_DIR \
     --preprocessing_num_workers 4 \
     --load_best_model_at_end True \
-    --metric_for_best_model "eval_average_f1" \
+    --metric_for_best_model "eval_average" \
     --greater_is_better True \
     --train_json_dir $TRAIN_JSON_DIR \
     --data_config_dir $DATA_CONFIG_DIR \
