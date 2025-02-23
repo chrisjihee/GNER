@@ -1,7 +1,7 @@
 set -x
 CUDA_VISIBLE_DEVICES=4,5,6,7
 MASTER_PORT=$(shuf -i25000-30000 -n1)
-RUN_NAME=SFT-T5-Large
+RUN_NAME=SFT-T5-Large-$hostname
 DATA_DIR=data
 OUTPUT_DIR=output-lfs
 DATA_CONFIG_DIR=configs/dataset/SFT

@@ -1,7 +1,7 @@
 set -x
 CUDA_VISIBLE_DEVICES=0,1,2,3
 MASTER_PORT=$(shuf -i25000-30000 -n1)
-RUN_NAME=ZSE-T5-Large
+RUN_NAME=ZSE-T5-Large-$hostname
 DATA_DIR=data
 OUTPUT_DIR=output-lfs
 TRAIN_JSON_DIR=data/pile-ner.json
