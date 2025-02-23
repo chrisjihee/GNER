@@ -32,8 +32,9 @@ class CustomDataArguments(BaseModel):
     progress_seconds: float = Field(default=2.0)
     max_source_length: int = Field(default=512)
     max_target_length: int = Field(default=512)
-    write_predictions: bool = Field(default=False)
+    max_generation_tokens: int = Field(default=1280)
     ignore_pad_token_for_loss: bool = Field(default=True)
+    write_predictions: bool = Field(default=False)
 
     @model_validator(mode='after')
     def after(self) -> Self:

@@ -187,6 +187,7 @@ class CustomProgressCallback(TrainerCallback):
 class GNERTrainer(Seq2SeqTrainer):
 
     def __init__(self, *args, **kwargs):
+        self.max_generation_tokens = kwargs.pop("max_generation_tokens", 1280)
         self.is_encoder_decoder = kwargs.pop("is_encoder_decoder", False)
         self.progress_seconds = kwargs.pop("progress_seconds", 3.0)
         self.prediction_pbar: Optional[ProgIter] = None
@@ -300,7 +301,8 @@ class GNERTrainer(Seq2SeqTrainer):
                     batch_size = observed_batch_size
 
             # Prediction step
-            loss, logits, labels = self.prediction_step(model, inputs, prediction_loss_only, ignore_keys=ignore_keys)
+            # loss, logits, labels = self.prediction_step(model, inputs, prediction_loss_only, ignore_keys=ignore_keys)
+            loss, logits, labels = self.prediction_step(model, inputs, prediction_loss_only, ignore_keys=ignore_keys, max_new_tokens = self.max_generation_tokens)
             main_input_name = getattr(self.model, "main_input_name", "input_ids")
             inputs_decode = self._prepare_input(inputs[main_input_name]) if args.include_inputs_for_metrics else None
 
