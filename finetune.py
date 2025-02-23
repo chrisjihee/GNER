@@ -191,7 +191,7 @@ def preprocess_dataset(
         return None
 
     # Load the raw dataset
-    if dataset is None:
+    if dataset is None or len(dataset) == 0:
         dataset = load_dataset("json", data_files=str(file_path), split="train")
         logger.info(f"Loaded raw {dataset_name} (#={len(dataset)}): {file_path}")
 
