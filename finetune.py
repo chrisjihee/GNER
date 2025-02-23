@@ -180,11 +180,10 @@ def preprocess_dataset(
         max_source_length: int,
         max_target_length: int,
         tokenizer: PreTrainedTokenizerBase,
-        use_cache_data: bool,
-        max_workers: int,
         local_rank: int,
-        cache_path_func: Optional[Callable[[str], str]] = None,
+        max_workers: int,
         progress_seconds: float = 2.0,
+        cache_file: Optional[str] = None,
 ) -> Optional[datasets.Dataset]:
     if split not in raw_datasets or len(raw_datasets[split]) == 0:
         return None
@@ -216,8 +215,8 @@ def preprocess_dataset(
                     *vs, **ws, pbar=pbar if local_rank == 0 else None
                 ),
             },
-            load_from_cache_file=use_cache_data,
-            cache_file_name=cache_path_func(f"{tokenizer.name_or_path.replace('/', '--')}={len(raw_datasets[split])}") if cache_path_func else None,
+            load_from_cache_file=cache_file is not None,
+            cache_file_name=cache_file,
             num_proc=max_workers,
         )
 
@@ -599,7 +598,8 @@ def main(
         if args.train.use_flash_attention:
             logger.info(f"model attn_implementation: {config._attn_implementation} -> {model.config._attn_implementation}")
 
-        # Load dataset according to the data configuration
+        # Load dataset by data configuration or data file
+        raw_datasets = {}
         if args.data.data_config_dir:
             raw_datasets = load_dataset(
                 "gner/gner_dataset.py",
@@ -609,77 +609,45 @@ def main(
                 add_dataset_name=False,
                 trust_remote_code=True,
             )
-            raw_datasets.cleanup_cache_files()
-            if accelerator.is_main_process:
-                for split in raw_datasets:
-                    backup_file = f"{args.data.data_dir}/{Path(args.data.data_config_dir).name}-{split}.jsonl"
-                    raw_datasets[split].to_json(backup_file, lines=True, force_ascii=False)
-                    logger.info(f'Loaded raw {split} dataset (#={len(raw_datasets[split])}): {Path(args.data.data_config_dir)/f"{split}_configs.json"} -> {backup_file}')
-        else:
-            raw_datasets = {}
+            # raw_datasets.cleanup_cache_files()
+            for split in args.data.data_files:
+                if split in raw_datasets and len(raw_datasets[split]) > 0:
+                    if accelerator.is_main_process:
+                        backup_file = f"{args.data.data_dir}/{Path(args.data.data_config_dir).name}-{split}.jsonl"
+                        raw_datasets[split].to_json(backup_file, lines=True, force_ascii=False)
+                    logger.info(f'Loaded raw {split} dataset by {Path(args.data.data_config_dir) / f"{split}_configs.json"}: {len(raw_datasets[split])} samples -> {backup_file}')
+                else:
+                    if args.data.data_file(split):
+                        raw_datasets[split] = load_dataset("json", data_files=str(args.data.data_file(split)), split="train")
+                        logger.info(f"Loaded raw {split} dataset by {args.data.data_file(split)}: {len(raw_datasets[split])} samples")
         accelerator.wait_for_everyone()
 
-        if (datasets.Split.TRAIN not in raw_datasets or len(raw_datasets[datasets.Split.TRAIN]) == 0) and args.data.train_file:
-            raw_datasets[datasets.Split.TRAIN] = load_dataset("json", data_files=str(args.data.train_file), split="train")
-            logger.info(f"Loaded raw {datasets.Split.TRAIN} dataset (#={len(raw_datasets[datasets.Split.TRAIN])}): {args.data.train_file}")
-
-        if (datasets.Split.VALIDATION not in raw_datasets or len(raw_datasets[datasets.Split.VALIDATION]) == 0) and args.data.eval_file:
-            raw_datasets[datasets.Split.VALIDATION] = load_dataset("json", data_files=str(args.data.eval_file), split="train")
-            logger.info(f"Loaded raw {datasets.Split.VALIDATION} dataset (#={len(raw_datasets[datasets.Split.VALIDATION])}): {args.data.eval_file}")
-
-        if (datasets.Split.TEST not in raw_datasets or len(raw_datasets[datasets.Split.TEST]) == 0) and args.data.pred_file:
-            raw_datasets[datasets.Split.TEST] = load_dataset("json", data_files=str(args.data.pred_file), split="train")
-            logger.info(f"Loaded raw {datasets.Split.TEST} dataset (#={len(raw_datasets[datasets.Split.TEST])}): {args.data.pred_file}")
-
-        # Preprocess training dataset (if dataset is available)
-        train_dataset = preprocess_dataset(
-            split=datasets.Split.TRAIN,
-            raw_datasets=raw_datasets,
-            is_encoder_decoder=is_encoder_decoder,
-            max_source_length=args.data.max_source_length,
-            max_target_length=args.data.max_target_length,
-            tokenizer=tokenizer,
-            use_cache_data=args.data.use_cache_data,
-            max_workers=args.env.max_workers,
-            local_rank=args.train.local_rank,
-            cache_path_func=args.data.cache_train_path if args.data.use_cache_data else None,
-            progress_seconds=args.data.progress_seconds / 5,
+        # Preprocess dataset as model inputs
+        tokenized_datasets = {}
+        for split in args.data.data_files:
+            tokenized_datasets[split] = preprocess_dataset(
+                split=split,
+                raw_datasets=raw_datasets,
+                is_encoder_decoder=is_encoder_decoder,
+                max_source_length=args.data.max_source_length,
+                max_target_length=args.data.max_target_length,
+                tokenizer=tokenizer,
+                local_rank=args.train.local_rank,
+                max_workers=args.env.max_workers,
+                progress_seconds=args.data.progress_seconds / 5,
+                cache_file=args.data.cache_file(
+                    split=split,
+                    data_size=len(raw_datasets[split]),
+                    tokenizer_path=tokenizer.name_or_path,
+                ) if args.data.use_cache_data else None,
+            )
+        args.train.do_train, args.train.do_eval, args.train.do_predict = (
+            tokenized_datasets[x] and len(tokenized_datasets[x]) > 0
+            for x in (datasets.Split.TRAIN, datasets.Split.VALIDATION, datasets.Split.TEST)
         )
-        args.train.do_train = bool(train_dataset) and len(train_dataset) > 0
-        accelerator.wait_for_everyone()
-
-        # Preprocess evaluation dataset (if dataset is available)
-        eval_dataset = preprocess_dataset(
-            split=datasets.Split.VALIDATION,
-            raw_datasets=raw_datasets,
-            is_encoder_decoder=is_encoder_decoder,
-            max_source_length=args.data.max_source_length,
-            max_target_length=args.data.max_target_length,
-            tokenizer=tokenizer,
-            use_cache_data=args.data.use_cache_data,
-            max_workers=args.env.max_workers,
-            local_rank=args.train.local_rank,
-            cache_path_func=args.data.cache_eval_path if args.data.use_cache_data else None,
-            progress_seconds=args.data.progress_seconds / 5,
-        )
-        args.train.do_eval = bool(eval_dataset) and len(eval_dataset) > 0
-        accelerator.wait_for_everyone()
-
-        # Preprocess prediction dataset (if dataset is available)
-        pred_dataset = preprocess_dataset(
-            split=datasets.Split.TEST,
-            raw_datasets=raw_datasets,
-            is_encoder_decoder=is_encoder_decoder,
-            max_source_length=args.data.max_source_length,
-            max_target_length=args.data.max_target_length,
-            tokenizer=tokenizer,
-            use_cache_data=args.data.use_cache_data,
-            max_workers=args.env.max_workers,
-            local_rank=args.train.local_rank,
-            cache_path_func=args.data.cache_pred_path if args.data.use_cache_data else None,
-            progress_seconds=args.data.progress_seconds / 5,
-        )
-        args.train.do_predict = bool(pred_dataset) and len(pred_dataset) > 0
+        logger.info(f"args.train.do_train   = {args.train.do_train}")
+        logger.info(f"args.train.do_eval    = {args.train.do_eval}")
+        logger.info(f"args.train.do_predict = {args.train.do_predict}")
         accelerator.wait_for_everyone()
 
         # Data collator
@@ -702,8 +670,8 @@ def main(
         trainer = gner.GNERTrainer(
             args=args.train,
             model=model,
-            train_dataset=train_dataset,
-            eval_dataset=eval_dataset,
+            train_dataset=tokenized_datasets[datasets.Split.TRAIN],
+            eval_dataset=tokenized_datasets[datasets.Split.VALIDATION],
             processing_class=tokenizer,
             data_collator=data_collator,
             compute_metrics=compute_metrics,
@@ -728,7 +696,7 @@ def main(
         ))
         accelerator.wait_for_everyone()
 
-        # Train
+        # do_train
         if args.train.do_train:
             train_result: TrainOutput = trainer.train()
             with patch("builtins.print", side_effect=lambda *xs: logger.info(*xs)):
@@ -736,16 +704,16 @@ def main(
                 trainer.save_metrics("train", train_result.metrics)
             convert_all_events_in_dir(args.train.output_dir)
 
-        # Evaluate
+        # do_eval
         if args.train.do_eval:
-            eval_result: Dict[str, float] = trainer.evaluate(eval_dataset, metric_key_prefix="eval")
+            eval_result: Dict[str, float] = trainer.evaluate(tokenized_datasets[datasets.Split.VALIDATION], metric_key_prefix="eval")
             with patch("builtins.print", side_effect=lambda *xs: logger.info(*xs)):
                 trainer.log_metrics("eval", eval_result)
                 trainer.save_metrics("eval", eval_result)
 
-        # Predict
+        # do_predict
         if args.train.do_predict:
-            pred_result: PredictionOutput = trainer.predict(pred_dataset, metric_key_prefix="pred")
+            pred_result: PredictionOutput = trainer.predict(tokenized_datasets[datasets.Split.TEST], metric_key_prefix="pred")
             with patch("builtins.print", side_effect=lambda *xs: logger.info(*xs)):
                 trainer.log_metrics("pred", pred_result.metrics)
                 trainer.save_metrics("pred", pred_result.metrics)
