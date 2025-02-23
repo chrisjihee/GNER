@@ -24,13 +24,13 @@ deepspeed --include="localhost:$CUDA_VISIBLE_DEVICES" --master_port $MASTER_PORT
     --metric_for_best_model eval_average \
     --load_best_model_at_end True \
     --greater_is_better True \
-    --gradient_accumulation_steps 8 \
-    --per_device_train_batch_size 4 \
+    --gradient_accumulation_steps 4 \
+    --per_device_train_batch_size 8 \
     --per_device_eval_batch_size 8 \
     --preprocessing_num_workers 4 \
     --overwrite_output_dir \
     --overwrite_cache \
-    --num_train_epochs 10 \
+    --num_train_epochs 12 \
     --max_source_length 640 \
     --max_target_length 640 \
     --generation_max_length 640 \
