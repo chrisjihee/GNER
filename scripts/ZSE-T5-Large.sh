@@ -15,31 +15,31 @@ deepspeed --include="localhost:$CUDA_VISIBLE_DEVICES" --master_port $MASTER_PORT
     --do_predict \
     --predict_with_generate \
     --model_name_or_path $MODEL_NAME_OR_PATH \
-    --data_dir $DATA_DIR \
-    --preprocessing_num_workers 4 \
-    --load_best_model_at_end True \
-    --metric_for_best_model "eval_average_f1" \
-    --greater_is_better True \
     --instruction_file $INSTRUCTION_FILE \
     --data_config_dir $DATA_CONFIG_DIR \
     --train_json_dir $TRAIN_JSON_DIR \
     --output_dir $OUTPUT_DIR \
+    --run_name $RUN_NAME \
+    --data_dir $DATA_DIR \
+    --deepspeed $DEEPSPEED_CONFIG \
+    --metric_for_best_model eval_average_f1 \
+    --load_best_model_at_end True \
+    --greater_is_better True \
     --gradient_accumulation_steps 16 \
     --per_device_train_batch_size 2 \
     --per_device_eval_batch_size 8 \
-    --learning_rate 5e-05 \
+    --preprocessing_num_workers 4 \
+    --overwrite_output_dir \
+    --overwrite_cache \
     --num_train_epochs 10 \
-    --deepspeed $DEEPSPEED_CONFIG \
-    --run_name $RUN_NAME \
     --max_source_length 640 \
     --max_target_length 640 \
     --generation_max_length 640 \
-    --overwrite_output_dir \
-    --overwrite_cache \
     --lr_scheduler_type constant \
+    --learning_rate 5e-05 \
     --warmup_steps 0 \
-    --logging_strategy steps \
     --logging_steps 10 \
-    --evaluation_strategy epoch \
+    --logging_strategy steps \
+    --eval_strategy epoch \
     --save_strategy epoch \
     --seed 1234
