@@ -216,7 +216,7 @@ class GNERDataset(datasets.GeneratorBasedBuilder):
             instances, label_list = self._load_dataset(dataset_path, labels_path)
             instances = self._sampling_dataset(instances, sampling_strategy, max_num_instances, over_sampling)
             for idx, instance in enumerate(instances):
-                words, labels = instance["words"], instance["labels"]
+                words, labels = instance["words"], instance["labels"]  # TODO: Normalize labels with BIO format (S->B, E->I)
                 instruction = self._get_instruction()
                 random.shuffle(label_list)
                 instruction += f"\nUse the specific entity tags: {', '.join(label_list)} and O.\n"
