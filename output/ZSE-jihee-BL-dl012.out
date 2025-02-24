@@ -218,13 +218,13 @@
 [02.24 02:43:00] ┇ INFO    ┇           chrisbase.data ┇ -----------------------------------------------------------------------------------------------------------------------------------------
 [02.24 02:43:01] ┇ INFO    ┇                     gner ┇ model type: <class 'transformers.models.t5.modeling_t5.T5ForConditionalGeneration'>
 [02.24 02:43:01] ┇ INFO    ┇                     gner ┇ model pad_token_id: 0
-Generating validation split: 0 examples [00:00, ? examples/s]Generating validation split: 1000 examples [00:00, 9894.47 examples/s]Generating validation split: 1400 examples [00:00, 9530.67 examples/s]
-Generating test split: 0 examples [00:00, ? examples/s]Generating test split: 2356 examples [00:00, 22918.74 examples/s]Generating test split: 5109 examples [00:00, 19525.43 examples/s]Generating test split: 6470 examples [00:00, 18382.72 examples/s]
-Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 10397 examples [00:00, 91411.79 examples/s]Generating train split: 24214 examples [00:00, 116922.45 examples/s]Generating train split: 38101 examples [00:00, 123655.01 examples/s]Generating train split: 51934 examples [00:00, 124061.46 examples/s]Generating train split: 65780 examples [00:00, 122762.11 examples/s]Generating train split: 79652 examples [00:00, 124249.00 examples/s]Generating train split: 93485 examples [00:00, 125500.46 examples/s]Generating train split: 105659 examples [00:00, 121449.64 examples/s]
+Generating validation split: 1400 examples [00:00, 9530.67 examples/s]
+Generating test split: 6470 examples [00:00, 18382.72 examples/s]
+Generating train split: 105659 examples [00:00, 121449.64 examples/s]
 [02.24 02:43:04] ┇ INFO    ┇                     gner ┇ Loaded raw train dataset by data/pile-ner.jsonl: 105659 samples
-Creating json from Arrow format:   0%|          | 0/2 [00:00<?, ?ba/s]Creating json from Arrow format: 100%|██████████| 2/2 [00:00<00:00, 40.45ba/s]
+Creating json from Arrow format: 100%|██████████| 2/2 [00:00<00:00, 40.45ba/s]
 [02.24 02:43:04] ┇ INFO    ┇                     gner ┇ Loaded raw validation dataset by configs/dataset/ZSE/validation_configs.json: 1400 samples -> data/ZSE-validation.jsonl
-Creating json from Arrow format:   0%|          | 0/7 [00:00<?, ?ba/s]Creating json from Arrow format:  86%|████████▌ | 6/7 [00:00<00:00, 51.11ba/s]Creating json from Arrow format: 100%|██████████| 7/7 [00:00<00:00, 51.82ba/s]
+Creating json from Arrow format: 100%|██████████| 7/7 [00:00<00:00, 51.82ba/s]
 [02.24 02:43:04] ┇ INFO    ┇                     gner ┇ Loaded raw test dataset by configs/dataset/ZSE/test_configs.json: 6470 samples -> data/ZSE-test.jsonl
 [02.24 02:43:04] ┇ INFO    ┇                     gner ┇ Preprocess train dataset:   0%|                    |      4/105659 [0:00:00<1:53:56, 15.46Hz]
 [02.24 02:43:06] ┇ INFO    ┇                     gner ┇ Preprocess train dataset:   7%|█▎                  |   7124/105659 [0:00:02<0:00:26, 3769.62Hz]
@@ -2356,7 +2356,3 @@
 ************************************************************************************************************************
 [COMMAND] python -m deepspeed.launcher.runner --include=localhost:0,1,2,3 --master_port=29191 finetune.py --data_config_dir configs/dataset/ZSE --train_file data/pile-ner.jsonl --output_file train-metrics-united-12ep.csv --logging_file train-loggings-united-12ep.out --output_name ZSE-jihee-BL-dl012 --run_version FlanT5-Base-BL --pretrained google/flan-t5-base --trainer_deepspeed configs/deepspeed/ds2_t5.json --num_train_epochs 12 --eval_epochs 0.5 --save_epochs 0.5 --learning_rate 5e-05 --logging_steps 10 --per_device_eval_batch_size 8 --per_device_train_batch_size 8 --gradient_accumulation_steps 4 --max_generation_tokens 640 --save_total_limit 2 --metric_for_best_model eval_average --no_use_flash_attention --no_debugging
 ************************************************************************************************************************
-
-
-
-
