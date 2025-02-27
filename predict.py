@@ -25,7 +25,7 @@ def main(
         eval_file: Annotated[str, typer.Option("--eval_file")] = "data/ZSE-validation.jsonl",  # "data/gner/each-sampled/crossner_ai-dev=100.jsonl",
         max_generation_tokens: Annotated[int, typer.Option("--max_generation_tokens")] = 640,
         generation_by_sample: Annotated[bool, typer.Option("--generation_by_sample")] = False,
-        generation_num_return: Annotated[int, typer.Option("--generation_num_beams")] = 100,
+        generation_num_return: Annotated[int, typer.Option("--generation_num_return")] = 100,
         generation_temperature: Annotated[float, typer.Option("--generation_temperature")] = 2.0,
         generation_top_p: Annotated[float, typer.Option("--generation_top_p")] = 0.9,
         run_version: Annotated[str, typer.Option("--run_version")] = "ZSE-predict",
