@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 import torch
 import typer
@@ -20,21 +21,22 @@ logger: logging.Logger = logging.getLogger("gner")
 
 
 def main(
-        device: Annotated[str, typer.Option("--device")] = "cuda:0",
+        device: Annotated[str, typer.Option("--device")] = ...,
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
-        eval_file: Annotated[str, typer.Option("--eval_file")] = "data/ZSE-validation.jsonl",  # "data/gner/each-sampled/crossner_ai-dev=100.jsonl",
+        input_file: Annotated[str, typer.Option("--input_file")] = ...,  # "data/ZSE-validation.jsonl", "data/ZSE-test.jsonl"
         max_generation_tokens: Annotated[int, typer.Option("--max_generation_tokens")] = 640,
-        generation_by_sample: Annotated[bool, typer.Option("--generation_by_sample")] = False,
-        generation_num_return: Annotated[int, typer.Option("--generation_num_return")] = 100,
-        generation_temperature: Annotated[float, typer.Option("--generation_temperature")] = 2.0,
-        generation_top_p: Annotated[float, typer.Option("--generation_top_p")] = 0.9,
+        generation_by_sample: Annotated[bool, typer.Option("--generation_by_sample/--generation_by_beam")] = ...,
+        generation_num_return: Annotated[int, typer.Option("--num_generation")] = ...,
+        generation_temperature: Annotated[float, typer.Option("--temperature")] = None,
+        generation_top_p: Annotated[float, typer.Option("--top_p")] = None,
         run_version: Annotated[str, typer.Option("--run_version")] = "ZSE-predict",
         output_name: Annotated[str, typer.Option("--output_name")] = "GNER",
         output_home: Annotated[str, typer.Option("--output_home")] = "output",
-        output_file: Annotated[str, typer.Option("--output_file")] = "ZSE-validation-pred.jsonl",
+        output_file: Annotated[str, typer.Option("--output_file")] = "pred.jsonl",
         logging_file: Annotated[str, typer.Option("--logging_file")] = "predict-loggings.out",
         verbose: Annotated[int, typer.Option("--verbose")] = 1,
 ):
+    assert (generation_by_sample and generation_temperature is not None and generation_top_p is not None) or (not generation_by_sample), f"Invalid generation parameters: by_sample={generation_by_sample}, temperature={generation_temperature}, top_p={generation_top_p}"
     stamp = now_stamp()
     env = NewProjectEnv(
         time_stamp=from_timestamp(stamp, fmt='%m%d-%H%M%S'),
@@ -42,7 +44,9 @@ def main(
         output_name=output_name,
         output_home=output_home,
         output_file=new_path(
-            output_file, post=f'by_sample-num={generation_num_return}-temp={generation_temperature}-top_p={generation_top_p}'
+            output_file,
+            pre=Path(input_file).stem,
+            post=f'by_sample-num={generation_num_return}-temp={generation_temperature}-top_p={generation_top_p}'
             if generation_by_sample else f'by_beam-num={generation_num_return}'
         ),
         logging_file=new_path(logging_file, post=from_timestamp(stamp, fmt='%m%d-%H%M%S')),
@@ -52,16 +56,18 @@ def main(
     env.setup_logger(env.logging_level)
 
     with JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=verbose):
-        eval_dataset = load_dataset("json", data_files=str(eval_file), split="train")
+        input_dataset = load_dataset("json", data_files=str(input_file), split="train")
         tokenizer = AutoTokenizer.from_pretrained(pretrained)
         model = AutoModelForSeq2SeqLM.from_pretrained(pretrained, torch_dtype=torch.bfloat16).to(device)
         model.eval()
 
+        logger.info(f"Saving predictions to {(env.output_dir / env.output_file)} for {len(input_dataset)} samples")
         with (
-            ProgIter(eval_dataset, desc=f"Predicting:", stream=LoggerWriter(logger), verbose=2) as progress,
+            ProgIter(input_dataset, desc=f"Predicting:", stream=LoggerWriter(logger), verbose=2) as progress,
             (env.output_dir / env.output_file).open("w") as out,
             torch.no_grad(),
         ):
+            num_example_outputs = 0
             num_prediction_outputs = 0
             for example in progress:
                 example = GenNERSampleWrapper.model_validate(example)
@@ -77,8 +83,10 @@ def main(
                 )
                 example.instance.prediction_outputs = [tokenizer.decode(x, skip_special_tokens=True).strip() for x in model_outputs]
                 num_prediction_outputs += len(example.instance.prediction_outputs)
-                progress.set_extra(f"| #outputs={num_prediction_outputs}")
+                num_example_outputs += 1
+                progress.set_extra(f"| #example={num_example_outputs}, #prediction={num_prediction_outputs}")
                 out.write(example.model_dump_json() + "\n")
+        logger.info(f"Saved predictions to {(env.output_dir / env.output_file)}: #example={num_example_outputs}, #prediction={num_prediction_outputs}")
 
 
 if __name__ == "__main__":
