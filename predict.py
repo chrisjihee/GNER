@@ -20,7 +20,7 @@ logger: logging.Logger = logging.getLogger("gner")
 
 
 def main(
-        device_to_use: Annotated[str, typer.Option("--device")] = "cuda:0",
+        device: Annotated[str, typer.Option("--device")] = "cuda:0",
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
         eval_file: Annotated[str, typer.Option("--eval_file")] = "data/ZSE-validation.jsonl",  # "data/gner/each-sampled/crossner_ai-dev=100.jsonl",
         max_generation_tokens: Annotated[int, typer.Option("--max_generation_tokens")] = 640,
@@ -41,7 +41,10 @@ def main(
         run_version=run_version,
         output_name=output_name,
         output_home=output_home,
-        output_file=new_path(output_file, post=f"{'by_sample' if generation_by_sample else 'by_beam'}-{from_timestamp(stamp, fmt='%m%d-%H%M%S')}"),
+        output_file=new_path(
+            output_file, post=f'by_sample-num={generation_num_return}-temp={generation_temperature}-top_p={generation_top_p}'
+            if generation_by_sample else f'by_beam-num={generation_num_return}'
+        ),
         logging_file=new_path(logging_file, post=from_timestamp(stamp, fmt='%m%d-%H%M%S')),
         logging_level=logging.INFO,
         logging_format=LoggingFormat.CHECK_24,
@@ -51,7 +54,7 @@ def main(
     with JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=verbose):
         eval_dataset = load_dataset("json", data_files=str(eval_file), split="train")
         tokenizer = AutoTokenizer.from_pretrained(pretrained)
-        model = AutoModelForSeq2SeqLM.from_pretrained(pretrained, torch_dtype=torch.bfloat16).to(device_to_use)
+        model = AutoModelForSeq2SeqLM.from_pretrained(pretrained, torch_dtype=torch.bfloat16).to(device)
         model.eval()
 
         with (
@@ -62,7 +65,7 @@ def main(
             num_prediction_outputs = 0
             for example in progress:
                 example = GenNERSampleWrapper.model_validate(example)
-                model_input = tokenizer(example.instance.instruction_inputs, return_tensors="pt").to(device_to_use)
+                model_input = tokenizer(example.instance.instruction_inputs, return_tensors="pt").to(device)
                 model_outputs = model.generate(
                     **model_input,
                     max_new_tokens=max_generation_tokens,
