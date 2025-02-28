@@ -91,10 +91,7 @@ def predict(
         logger.info(f"Saved predictions to {(env.output_dir / env.output_file)}: #example={num_example_outputs}, #prediction={num_prediction_outputs}")
 
 
-class PerformanceMetrics(BaseModel):
-    f1: float = 0.0
-    rec: float = 0.0
-    prec: float = 0.0
+class F1_Metric(BaseModel):
     n_correct: int = 0
     n_pos_gold: int = 0
     n_pos_pred: int = 0
@@ -102,23 +99,26 @@ class PerformanceMetrics(BaseModel):
     def __str__(self):
         return f"F1={self.f1:.4f}, Prec={self.prec:.4f}, Rec={self.rec:.4f}, #correct={self.n_correct}, #pos_gold={self.n_pos_gold}, #pos_pred={self.n_pos_pred}"
 
-    def __add__(self, other: "PerformanceMetrics") -> "PerformanceMetrics":
-        if not isinstance(other, PerformanceMetrics):
+    def __add__(self, other: "F1_Metric") -> "F1_Metric":
+        if not isinstance(other, F1_Metric):
             return NotImplemented
-        return PerformanceMetrics(
-            f1=self.f1 + other.f1,
-            rec=self.rec + other.rec,
-            prec=self.prec + other.prec,
+        return F1_Metric(
             n_correct=self.n_correct + other.n_correct,
             n_pos_gold=self.n_pos_gold + other.n_pos_gold,
             n_pos_pred=self.n_pos_pred + other.n_pos_pred,
         )
 
-    def calc(self):
-        self.prec = self.n_correct / (self.n_pos_pred + 1e-10)
-        self.rec = self.n_correct / (self.n_pos_gold + 1e-10)
-        self.f1 = 2 * self.prec * self.rec / (self.prec + self.rec + 1e-10)
-        return self
+    @property
+    def prec(self):
+        return self.n_correct / (self.n_pos_pred + 1e-10)
+
+    @property
+    def rec(self):
+        return self.n_correct / (self.n_pos_gold + 1e-10)
+
+    @property
+    def f1(self):
+        return 2 * self.prec * self.rec / (self.prec + self.rec + 1e-10)
 
 
 def find_increasing_indices(lst):
