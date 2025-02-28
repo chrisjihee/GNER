@@ -29,8 +29,7 @@ def main(
         generation_num_return: Annotated[int, typer.Option("--num_generation")] = ...,
         generation_temperature: Annotated[float, typer.Option("--temperature")] = None,
         generation_top_p: Annotated[float, typer.Option("--top_p")] = None,
-        run_version: Annotated[str, typer.Option("--run_version")] = "ZSE-predict",
-        output_name: Annotated[str, typer.Option("--output_name")] = "GNER",
+        output_name: Annotated[str, typer.Option("--output_name")] = "ZSE-predict",
         output_home: Annotated[str, typer.Option("--output_home")] = "output",
         output_file: Annotated[str, typer.Option("--output_file")] = "pred.jsonl",
         logging_file: Annotated[str, typer.Option("--logging_file")] = "predict-loggings.out",
@@ -40,7 +39,6 @@ def main(
     stamp = now_stamp()
     env = NewProjectEnv(
         time_stamp=from_timestamp(stamp, fmt='%m%d-%H%M%S'),
-        run_version=run_version,
         output_name=output_name,
         output_home=output_home,
         output_file=new_path(
