@@ -1,3 +1,4 @@
+import re
 import logging
 from collections import defaultdict
 from pathlib import Path
@@ -140,6 +141,7 @@ def find_increasing_indices(lst):
 
 def evaluate(
         predction_file: Annotated[str, typer.Option("--predction_file")] = "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl",  # "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl", "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl"
+        max_examples: Annotated[int, typer.Option("--max_examples")] = -1,
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
         output_home: Annotated[str, typer.Option("--output_home")] = "output",
         output_name: Annotated[str, typer.Option("--output_name")] = "ZSE-predict",
@@ -168,7 +170,8 @@ def evaluate(
         all_examples = defaultdict(list)
         for example in input_dataset:
             example = GenNERSampleWrapper.model_validate(example)
-            all_examples[example.dataset].append(example)
+            if max_examples <= 0 or len(all_examples[example.dataset]) < max_examples:
+                all_examples[example.dataset].append(example)
         max_candidates = max(
             len(example.instance.prediction_outputs)
             for dataset in all_examples
@@ -179,7 +182,7 @@ def evaluate(
         logger.info(f"Evaluating predictions from {predction_file}"
                     f" for {len(all_examples)} dataset ({sum(len(all_examples[d]) for d in all_examples)} samples)")
         all_results = {}
-        for di, dataset in enumerate(all_examples, start=1):
+        for di, dataset in enumerate(sorted(all_examples.keys()), start=1):
             dataset_metrics = [F1_Metric()] * max_candidates
             for example in ProgIter(all_examples[dataset], stream=LoggerWriter(logger), verbose=2, time_thresh=5,
                                     desc=f" - [{di:02d}/{num_dataset:02d}] {dataset:<20s}:"):
@@ -212,16 +215,12 @@ def evaluate(
                 # logger.info(f"{len(example_metrics)}: {len(inc_points)}: {inc_points}: {[f'{x.f1:.4f}' for x in example_metrics]}")
                 for c, example_metric in enumerate(example_metrics):
                     dataset_metrics[c] += example_metric
-            all_results[dataset] = dataset_metrics
+            all_results[re.split("[-_]", dataset)[-1]] = dataset_metrics
 
         all_results["average"] = [F1_Metric()] * max_candidates
         for c in range(max_candidates):
             for d in all_results:
                 all_results["average"][c] += all_results[d][c]
-
-        for dataset in all_results:
-            f1s = [f"{x.f1:.4f}" for x in all_results[dataset]]
-            logger.info(f"[{dataset:<20s}] {' | '.join(f1s)}")
 
         dataset_names = list(all_results.keys())
         candidate_numbers = list(range(1, max_candidates + 1))
@@ -229,7 +228,7 @@ def evaluate(
         df_results = pd.DataFrame(f1_data, index=candidate_numbers)
         df_results.index.name = "candidate"
         df_results.to_csv(env.output_dir / env.output_file)
-        log_table(logger, df_results, tablefmt="tsv", bordered=True)
+        log_table(logger, df_results.map(lambda x: f"{x:.4f}"), tablefmt="orgtbl", border_idx=1)
         logger.info(f"F1 performance results saved to {env.output_dir / env.output_file}")
 
 
