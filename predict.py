@@ -1,3 +1,4 @@
+import datasets
 import logging
 from pathlib import Path
 
@@ -29,8 +30,8 @@ def predict(
         generation_num_return: Annotated[int, typer.Option("--num_generation")] = ...,
         generation_temperature: Annotated[float, typer.Option("--temperature")] = None,
         generation_top_p: Annotated[float, typer.Option("--top_p")] = None,
-        output_name: Annotated[str, typer.Option("--output_name")] = "ZSE-predict",
         output_home: Annotated[str, typer.Option("--output_home")] = "output",
+        output_name: Annotated[str, typer.Option("--output_name")] = "ZSE-predict",
         output_file: Annotated[str, typer.Option("--output_file")] = "pred.jsonl",
         logging_file: Annotated[str, typer.Option("--logging_file")] = "predict-loggings.out",
         verbose: Annotated[int, typer.Option("--verbose")] = 1,
@@ -87,8 +88,42 @@ def predict(
         logger.info(f"Saved predictions to {(env.output_dir / env.output_file)}: #example={num_example_outputs}, #prediction={num_prediction_outputs}")
 
 
-def evaluate():
-    pass
+def evaluate(
+        predction_file: Annotated[str, typer.Option("--predction_file")] = "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl",  # "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl"
+        output_home: Annotated[str, typer.Option("--output_home")] = "output",
+        output_name: Annotated[str, typer.Option("--output_name")] = "ZSE-predict",
+        output_file: Annotated[str, typer.Option("--output_file")] = "eval.jsonl",
+        logging_file: Annotated[str, typer.Option("--logging_file")] = "evaluate-loggings.out",
+        verbose: Annotated[int, typer.Option("--verbose")] = 1,
+):
+    stamp = now_stamp()
+    env = NewProjectEnv(
+        time_stamp=from_timestamp(stamp, fmt='%m%d-%H%M%S'),
+        output_name=output_name,
+        output_home=output_home,
+        output_file=new_path(
+            output_file,
+            pre=Path(predction_file).stem,
+        ),
+        logging_file=new_path(logging_file, post=from_timestamp(stamp, fmt='%m%d-%H%M%S')),
+        logging_level=logging.INFO,
+        logging_format=LoggingFormat.CHECK_24,
+    )
+    env.setup_logger(env.logging_level)
+
+    with JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=verbose):
+        input_dataset = load_dataset("json", data_files=str(predction_file), split=datasets.Split.TRAIN)
+        input_dataset = input_dataset.select(range(1))
+        logger.info(f"Evaluating predictions from {predction_file} for {len(input_dataset)} samples")
+        with (
+            ProgIter(input_dataset, desc=f"Evaluating:", stream=LoggerWriter(logger), verbose=2) as progress,
+            (env.output_dir / env.output_file).open("w") as out,
+        ):
+            num_example_outputs = 0
+            num_prediction_outputs = 0
+            for example in progress:
+                example = GenNERSampleWrapper.model_validate(example)
+                logger.info(f"Example: {example.instance}")
 
 
 if __name__ == "__main__":
