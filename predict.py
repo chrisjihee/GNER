@@ -163,7 +163,6 @@ def evaluate(
     with JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=verbose):
         input_dataset = load_dataset("json", data_files=str(predction_file), split=datasets.Split.TRAIN)
         input_samples = [GenNERSampleWrapper.model_validate(x) for x in input_dataset]
-        # input_samples = input_samples[:100]
         tokenizer = AutoTokenizer.from_pretrained(pretrained)
 
         logger.info(f"Evaluating predictions from {predction_file} for {len(input_samples)} samples")
@@ -208,7 +207,7 @@ def evaluate(
                 # logger.info(f"{len(example_metrics)}: {len(inc_points)}: {inc_points}: {[f'{x.f1:.4f}' for x in example_metrics]}")
                 for c, example_metric in enumerate(example_metrics):
                     dataset_metrics[c] += example_metric
-            for c, example_metric in enumerate(dataset_metrics):
+            for c, example_metric in enumerate(dataset_metrics, start=1):
                 logger.info(f"= Candidate {c}: {example_metric.calc()}")
 
 
