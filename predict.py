@@ -137,7 +137,7 @@ def find_increasing_indices(lst):
 
 
 def evaluate(
-        predction_file: Annotated[str, typer.Option("--predction_file")] = "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl",  # "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl"
+        predction_file: Annotated[str, typer.Option("--predction_file")] = "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl",  # "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl", "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl"
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
         output_home: Annotated[str, typer.Option("--output_home")] = "output",
         output_name: Annotated[str, typer.Option("--output_name")] = "ZSE-predict",
@@ -162,21 +162,21 @@ def evaluate(
 
     with JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=verbose):
         input_dataset = load_dataset("json", data_files=str(predction_file), split=datasets.Split.TRAIN)
-        # input_dataset = input_dataset.select(range(10))
+        input_samples = [GenNERSampleWrapper.model_validate(x) for x in input_dataset]
+        # input_samples = input_samples[:100]
         tokenizer = AutoTokenizer.from_pretrained(pretrained)
 
-        logger.info(f"Evaluating predictions from {predction_file} for {len(input_dataset)} samples")
+        logger.info(f"Evaluating predictions from {predction_file} for {len(input_samples)} samples")
         with (
-            ProgIter(input_dataset, desc=f"Evaluating:", stream=LoggerWriter(logger), verbose=2) as progress,
+            ProgIter(input_samples, desc=f"Evaluating:", stream=LoggerWriter(logger), verbose=2) as progress,
             (env.output_dir / env.output_file).open("w") as out,
         ):
-            num_example_outputs = 0
-            num_prediction_outputs = 0
+            max_candidates = max(len(x.instance.prediction_outputs) for x in input_samples)
+            dataset_metrics = [PerformanceMetrics() for _ in range(max_candidates)]
             for example in progress:
-                example = GenNERSampleWrapper.model_validate(example)
                 assert example.instance.prediction_outputs and len(example.instance.prediction_outputs) > 0, f"Missing prediction outputs for {example.instance.id}"
                 # logger.info(f"Answer: {example.instance.prompt_labels}")
-                achievable_perfs: List[PerformanceMetrics] = []
+                example_metrics: List[PerformanceMetrics] = []
                 for prediction_output in example.instance.prediction_outputs:
                     n_correct, n_pos_gold, n_pos_pred = 0, 0, 0
                     # logger.info(f"= prediction_output: {prediction_output}")
@@ -193,32 +193,23 @@ def evaluate(
                     prec = n_correct / (n_pos_pred + 1e-10)
                     rec = n_correct / (n_pos_gold + 1e-10)
                     f1 = 2 * prec * rec / (prec + rec + 1e-10)
-                    curr_perf = PerformanceMetrics(
-                        f1=f1,
-                        prec=prec,
-                        rec=rec,
-                        n_correct=n_correct,
-                        n_pos_gold=n_pos_gold,
-                        n_pos_pred=n_pos_pred,
+                    curr_metric = PerformanceMetrics(
+                        f1=f1, rec=rec, prec=prec,
+                        n_correct=n_correct, n_pos_gold=n_pos_gold, n_pos_pred=n_pos_pred,
                     )
-                    if not achievable_perfs:
-                        achievable_perf = curr_perf
+                    if not example_metrics:
+                        example_metric = curr_metric
                     else:
-                        prev_perf = achievable_perfs[-1]
-                        achievable_perf = curr_perf if curr_perf.f1 > prev_perf.f1 else prev_perf
-                    achievable_perfs.append(achievable_perf)
+                        prev_metric = example_metrics[-1]
+                        example_metric = curr_metric if curr_metric.f1 > prev_metric.f1 else prev_metric
+                    example_metrics.append(example_metric)
 
-                    # logger.info(f"  - words : {words}")
-                    # logger.info(f"  - labels: {labels}")
-                    # logger.info(f"  - preds : {predictions}")
-                    # logger.info(f"  - gold_tuples: {gold_tuples}")
-                    # logger.info(f"  - pred_tuples: {pred_tuples}")
-                    # logger.info(f"  - achievable: {achievable_perf}")
-                    # logger.info(f"  - currently : {curr_perf}")
-                    # logger.info("")
-
-                inc_points = find_increasing_indices([x.f1 for x in achievable_perfs])
-                logger.info(f"{len(inc_points)}: {inc_points}: {[f'{x.f1:.4f}' for x in achievable_perfs]}")
+                # inc_points = find_increasing_indices([x.f1 for x in example_metrics])
+                # logger.info(f"{len(example_metrics)}: {len(inc_points)}: {inc_points}: {[f'{x.f1:.4f}' for x in example_metrics]}")
+                for c, example_metric in enumerate(example_metrics):
+                    dataset_metrics[c] += example_metric
+            for c, example_metric in enumerate(dataset_metrics):
+                logger.info(f"= Candidate {c}: {example_metric.calc()}")
 
 
 if __name__ == "__main__":
