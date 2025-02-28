@@ -167,8 +167,7 @@ def evaluate(
         all_examples = defaultdict(list)
         for example in input_dataset:
             example = GenNERSampleWrapper.model_validate(example)
-            if len(all_examples[example.dataset]) < 100:
-                all_examples[example.dataset].append(example)
+            all_examples[example.dataset].append(example)
         max_candidates = max(
             len(example.instance.prediction_outputs)
             for dataset in all_examples
@@ -182,7 +181,8 @@ def evaluate(
             all_results = {}
             for di, dataset in enumerate(all_examples, start=1):
                 dataset_metrics = [F1_Metric()] * max_candidates
-                for example in ProgIter(all_examples[dataset], desc=f" - [{di:02d}/{num_dataset:02d}] {dataset:<20s}:", stream=LoggerWriter(logger), verbose=2, time_thresh=3):
+                for example in ProgIter(all_examples[dataset], stream=LoggerWriter(logger), verbose=2, time_thresh=5,
+                                        desc=f" - [{di:02d}/{num_dataset:02d}] {dataset:<20s}:"):
                     example_metrics: List[F1_Metric] = []
                     for prediction_output in example.instance.prediction_outputs:
                         n_correct, n_pos_gold, n_pos_pred = 0, 0, 0
