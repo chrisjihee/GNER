@@ -20,7 +20,7 @@ from transformers import (
 logger: logging.Logger = logging.getLogger("gner")
 
 
-def main(
+def predict(
         device: Annotated[str, typer.Option("--device")] = ...,
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
         input_file: Annotated[str, typer.Option("--input_file")] = ...,  # "data/ZSE-validation.jsonl", "data/ZSE-test.jsonl"
@@ -87,5 +87,12 @@ def main(
         logger.info(f"Saved predictions to {(env.output_dir / env.output_file)}: #example={num_example_outputs}, #prediction={num_prediction_outputs}")
 
 
+def evaluate():
+    pass
+
+
 if __name__ == "__main__":
-    AppTyper.run(main)
+    AppTyper.run(
+        predict,
+        evaluate,
+    )
