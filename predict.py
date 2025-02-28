@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import List
 
 import datasets
+import pandas as pd
 import torch
 import typer
 from datasets import load_dataset
@@ -11,7 +12,7 @@ from pydantic import BaseModel
 from typing_extensions import Annotated
 
 from chrisbase.data import AppTyper, JobTimer, NewProjectEnv
-from chrisbase.io import LoggingFormat, LoggerWriter, new_path
+from chrisbase.io import LoggingFormat, LoggerWriter, new_path, log_table
 from chrisbase.time import from_timestamp, now_stamp
 from chrisdata.ner import GenNERSampleWrapper
 from gner import extract_predictions3, parser
@@ -142,7 +143,7 @@ def evaluate(
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
         output_home: Annotated[str, typer.Option("--output_home")] = "output",
         output_name: Annotated[str, typer.Option("--output_name")] = "ZSE-predict",
-        output_file: Annotated[str, typer.Option("--output_file")] = "eval.jsonl",
+        output_file: Annotated[str, typer.Option("--output_file")] = "eval.csv",
         logging_file: Annotated[str, typer.Option("--logging_file")] = "evaluate-loggings.out",
         verbose: Annotated[int, typer.Option("--verbose")] = 1,
 ):
@@ -177,51 +178,59 @@ def evaluate(
 
         logger.info(f"Evaluating predictions from {predction_file}"
                     f" for {len(all_examples)} dataset ({sum(len(all_examples[d]) for d in all_examples)} samples)")
-        with (env.output_dir / env.output_file).open("w") as out:
-            all_results = {}
-            for di, dataset in enumerate(all_examples, start=1):
-                dataset_metrics = [F1_Metric()] * max_candidates
-                for example in ProgIter(all_examples[dataset], stream=LoggerWriter(logger), verbose=2, time_thresh=5,
-                                        desc=f" - [{di:02d}/{num_dataset:02d}] {dataset:<20s}:"):
-                    example_metrics: List[F1_Metric] = []
-                    for prediction_output in example.instance.prediction_outputs:
-                        n_correct, n_pos_gold, n_pos_pred = 0, 0, 0
-                        words = example.instance.words
-                        labels = example.instance.labels
-                        predictions = extract_predictions3(prediction_output, example=example, tokenizer=tokenizer)
-                        gold_tuples = parser(words, labels)
-                        pred_tuples = parser(words, predictions)
-                        for t in pred_tuples:
-                            if t in gold_tuples:
-                                n_correct += 1
-                            n_pos_pred += 1
-                        n_pos_gold += len(gold_tuples)
-                        curr_metric = F1_Metric(
-                            n_correct=n_correct,
-                            n_pos_gold=n_pos_gold,
-                            n_pos_pred=n_pos_pred,
-                        )
-                        if not example_metrics:
-                            example_metric = curr_metric
-                        else:
-                            prev_metric = example_metrics[-1]
-                            example_metric = curr_metric if curr_metric.f1 > prev_metric.f1 else prev_metric
-                        example_metrics.append(example_metric)
+        all_results = {}
+        for di, dataset in enumerate(all_examples, start=1):
+            dataset_metrics = [F1_Metric()] * max_candidates
+            for example in ProgIter(all_examples[dataset], stream=LoggerWriter(logger), verbose=2, time_thresh=5,
+                                    desc=f" - [{di:02d}/{num_dataset:02d}] {dataset:<20s}:"):
+                example_metrics: List[F1_Metric] = []
+                for prediction_output in example.instance.prediction_outputs:
+                    n_correct, n_pos_gold, n_pos_pred = 0, 0, 0
+                    words = example.instance.words
+                    labels = example.instance.labels
+                    predictions = extract_predictions3(prediction_output, example=example, tokenizer=tokenizer)
+                    gold_tuples = parser(words, labels)
+                    pred_tuples = parser(words, predictions)
+                    for t in pred_tuples:
+                        if t in gold_tuples:
+                            n_correct += 1
+                        n_pos_pred += 1
+                    n_pos_gold += len(gold_tuples)
+                    curr_metric = F1_Metric(
+                        n_correct=n_correct,
+                        n_pos_gold=n_pos_gold,
+                        n_pos_pred=n_pos_pred,
+                    )
+                    if not example_metrics:
+                        example_metric = curr_metric
+                    else:
+                        prev_metric = example_metrics[-1]
+                        example_metric = curr_metric if curr_metric.f1 > prev_metric.f1 else prev_metric
+                    example_metrics.append(example_metric)
 
-                    # inc_points = find_increasing_indices([x.f1 for x in example_metrics])
-                    # logger.info(f"{len(example_metrics)}: {len(inc_points)}: {inc_points}: {[f'{x.f1:.4f}' for x in example_metrics]}")
-                    for c, example_metric in enumerate(example_metrics):
-                        dataset_metrics[c] += example_metric
-                all_results[dataset] = dataset_metrics
+                # inc_points = find_increasing_indices([x.f1 for x in example_metrics])
+                # logger.info(f"{len(example_metrics)}: {len(inc_points)}: {inc_points}: {[f'{x.f1:.4f}' for x in example_metrics]}")
+                for c, example_metric in enumerate(example_metrics):
+                    dataset_metrics[c] += example_metric
+            all_results[dataset] = dataset_metrics
 
-            all_results["average"] = [F1_Metric()] * max_candidates
-            for c in range(max_candidates):
-                for d in all_results:
-                    all_results["average"][c] += all_results[d][c]
+        all_results["average"] = [F1_Metric()] * max_candidates
+        for c in range(max_candidates):
+            for d in all_results:
+                all_results["average"][c] += all_results[d][c]
 
-            for dataset in all_results:
-                f1s = [f"{x.f1:.4f}" for x in all_results[dataset]]
-                logger.info(f"[{dataset:<20s}] {' | '.join(f1s)}")
+        for dataset in all_results:
+            f1s = [f"{x.f1:.4f}" for x in all_results[dataset]]
+            logger.info(f"[{dataset:<20s}] {' | '.join(f1s)}")
+
+        dataset_names = list(all_results.keys())
+        candidate_numbers = list(range(1, max_candidates + 1))
+        f1_data = {dataset: [metric.f1 for metric in all_results[dataset]] for dataset in dataset_names}
+        df_results = pd.DataFrame(f1_data, index=candidate_numbers)
+        df_results.index.name = "candidate"
+        df_results.to_csv(env.output_dir / env.output_file)
+        log_table(logger, df_results, tablefmt="tsv", bordered=True)
+        logger.info(f"F1 performance results saved to {env.output_dir / env.output_file}")
 
 
 if __name__ == "__main__":
