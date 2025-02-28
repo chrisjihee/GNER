@@ -4,7 +4,11 @@ from chrisbase.io import files
 
 source_file = "predict.py"
 
-for predction_file in files("output/ZSE-predict/ZSE-validation-pred-*.jsonl")[:2]:
+for predction_file in (
+        files("output/ZSE-predict/ZSE-validation-pred-*.jsonl") +
+        files("output/ZSE-predict/ZSE-test-pred-*.jsonl") +
+        []
+):
     command = f"""
         python
             {source_file} evaluate
