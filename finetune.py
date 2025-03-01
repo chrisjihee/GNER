@@ -616,7 +616,9 @@ def main(
                         backup_file = f"{args.data.data_dir}/{Path(args.data.data_config_dir).name}-{split}.jsonl"
                         raw_datasets[split].to_json(backup_file, lines=True, force_ascii=False)
                         logger.info(f'Loaded raw {split} dataset by {Path(args.data.data_config_dir) / f"{split}_configs.json"}: {len(raw_datasets[split])} samples -> {backup_file}')
-                else:
+        else:
+            for split in args.data.data_files:
+                if split not in raw_datasets or len(raw_datasets[split]) == 0:
                     if args.data.data_file(split):
                         raw_datasets[split] = load_dataset("json", data_files=str(args.data.data_file(split)), split="train")
                         logger.info(f"Loaded raw {split} dataset by {args.data.data_file(split)}: {len(raw_datasets[split])} samples")

@@ -14,7 +14,7 @@
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/finetune.py" />
-    <option name="PARAMETERS" value="--data_config_dir configs/dataset/supervised --output_file train-metrics-united-10ep.csv --logging_file train-loggings-united-10ep.out --output_name GNER-supervised --run_version FlanT5-Large-BL --pretrained google/flan-t5-large --num_train_epochs 10 --eval_epochs 0.5 --save_epochs 0.5 --learning_rate 5e-05 --logging_steps 5 --per_device_eval_batch_size 16 --per_device_train_batch_size 4 --gradient_accumulation_steps 8 --generation_max_length 640 --save_total_limit 2 --metric_for_best_model eval_average --no_use_flash_attention --no_debugging" />
+    <option name="PARAMETERS" value="--train_file data-WQ=3/pile-ner-WQ=3.jsonl --eval_file data-WQ=3/ZSE-validation-WQ=3.jsonl --pred_file data-WQ=3/ZSE-test-WQ=3.jsonl --output_file train-metrics-12ep.csv --logging_file train-loggings-12ep.out --output_name ZSE-jihee-WQ-lirs-b1 --run_version FlanT5-Base-WQ --pretrained google/flan-t5-base --trainer_deepspeed configs/deepspeed/ds2_t5.json --num_train_epochs 12 --eval_epochs 0.5 --save_epochs 0.5 --learning_rate 5e-05 --logging_steps 10 --per_device_eval_batch_size 8 --per_device_train_batch_size 8 --gradient_accumulation_steps 4 --max_generation_tokens 640 --save_total_limit 2 --metric_for_best_model eval_average --no_use_flash_attention --no_debugging" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />
