@@ -14,7 +14,7 @@ source_file = "finetune.py"
 
 # Experiment configurations
 expr_type = "WQ"
-label_level = 1
+label_level = 5
 
 # Training arguments
 output_name = f"ZSE-jihee-{expr_type}-{hostname}"
