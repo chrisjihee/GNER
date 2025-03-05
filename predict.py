@@ -76,6 +76,7 @@ def predict(
             num_prediction_outputs = 0
             for example in progress:
                 example = GenNERSampleWrapper.model_validate(example)
+                example.id = example.id or example.instance.id
                 model_input = tokenizer(example.instance.instruction_inputs, return_tensors="pt").to(device)
                 model_outputs = model.generate(
                     **model_input,
