@@ -14,7 +14,7 @@
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="deepspeed.launcher.runner" />
-    <option name="PARAMETERS" value="--include=localhost:0 --master_port 25529 run_glue.py --train_file data/glue/stsb/train.json --validation_file data/glue/stsb/validation.json --model_name_or_path google-bert/bert-base-cased --output_dir output/GLUE-STSb/google-bert/bert-base-cased --do_train --do_eval --bf16 True --tf32 True --max_seq_length 256 --per_device_eval_batch_size 4 --per_device_train_batch_size 4 --gradient_accumulation_steps 4 --learning_rate 2e-5 --num_train_epochs 10 --logging_strategy epoch --eval_strategy epoch --save_strategy no --deepspeed configs/deepspeed/ds1_t5.json --overwrite_output_dir --overwrite_cache --cache_dir temp_cache --eval_on_start True" />
+    <option name="PARAMETERS" value="--include=localhost:0 --master_port 25529 run_glue.py --train_file data/glue/stsb/train.json --validation_file data/glue/stsb/validation.json --model_name_or_path google-bert/bert-base-cased --output_dir output/GLUE-STSb/google-bert/bert-base-cased --do_train --do_eval --bf16 True --tf32 True --max_seq_length 256 --per_device_eval_batch_size 4 --per_device_train_batch_size 4 --gradient_accumulation_steps 4 --learning_rate 2e-5 --num_train_epochs 10 --logging_strategy epoch --eval_strategy epoch --save_strategy no --deepspeed configs/deepspeed/ds1_t5.json --overwrite_output_dir --overwrite_cache --cache_dir .cache --eval_on_start True" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="true" />
