@@ -5,8 +5,8 @@ DEEPSPEED_CONFIG="configs/deepspeed/ds1_t5.json"
 DEEPSPEED_PORT=$(shuf -i 25000-30000 -n 1)
 CUDA_DEVICES=0,1
 PROGRAM_SOURCE="run_ner.py"
-OUTPUT_NAME="NER-CONLL"
 DATASET_NAME="conll2003"
+OUTPUT_NAME="NER-CONLL"
 
 MODEL_NAMES=(
   "google-bert/bert-base-cased"
@@ -26,8 +26,8 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
       --include=localhost:$CUDA_DEVICES \
       --master_port $DEEPSPEED_PORT \
     $PROGRAM_SOURCE \
-      --trust_remote_code \
       --dataset_name $DATASET_NAME \
+      --trust_remote_code \
       --model_name_or_path $MODEL_NAME \
       --output_dir output/$OUTPUT_NAME/$MODEL_NAME \
       --do_train \
