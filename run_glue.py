@@ -484,7 +484,7 @@ def main():
             max_eval_samples = min(len(eval_dataset), data_args.max_eval_samples)
             eval_dataset = eval_dataset.select(range(max_eval_samples))
 
-    if training_args.do_predict or data_args.task_name is not None or data_args.test_file is not None:
+    if training_args.do_predict:  # chrisjihee: simple condition
         if "test" not in raw_datasets and "test_matched" not in raw_datasets:
             raise ValueError("--do_predict requires a test dataset")
         predict_dataset = raw_datasets["test_matched" if data_args.task_name == "mnli" else "test"]
@@ -499,11 +499,11 @@ def main():
 
     # Get the metric function
     if data_args.task_name is not None:
-        metric = evaluate.load("glue", data_args.task_name, cache_dir=model_args.cache_dir)
+        metric = evaluate.load("evaluate/glue.py", data_args.task_name, cache_dir=model_args.cache_dir)  # chrisjihee: glue -> evaluate/glue.py
     elif is_regression:
-        metric = evaluate.load("mse", cache_dir=model_args.cache_dir)
+        metric = evaluate.load("evaluate/mse.py", cache_dir=model_args.cache_dir)  # chrisjihee: mse -> evaluate/mse.py
     else:
-        metric = evaluate.load("accuracy", cache_dir=model_args.cache_dir)
+        metric = evaluate.load("evaluate/accuracy.py", cache_dir=model_args.cache_dir)  # chrisjihee: accuracy -> evaluate/accuracy.py
 
     # You can define your custom compute_metrics function. It takes an `EvalPrediction` object (a namedtuple with a
     # predictions and label_ids field) and has to return a dictionary string to float.
