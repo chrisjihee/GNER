@@ -4,9 +4,9 @@ set -x
 DEEPSPEED_CONFIG="configs/deepspeed/ds1_t5.json"
 DEEPSPEED_PORT=$(shuf -i 25000-30000 -n 1)
 CUDA_DEVICES=2,3
-PROGRAM_SOURCE="run_glue.py"
-DATASET_NAME="nyu-mll/glue"
-SUBSET_NAME="stsb"
+SOURCE_FILE="run_glue.py"
+TRAIN_FILE="data/glue/stsb/train.json"
+VALID_FILE="data/glue/stsb/validation.json"
 OUTPUT_NAME="GLUE-STSb"
 
 MODEL_NAMES=(
@@ -26,9 +26,9 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
     deepspeed.launcher.runner \
       --include=localhost:$CUDA_DEVICES \
       --master_port $DEEPSPEED_PORT \
-    $PROGRAM_SOURCE \
-      --dataset_name $DATASET_NAME \
-      --dataset_config_name $SUBSET_NAME \
+    $SOURCE_FILE \
+      --train_file $TRAIN_FILE \
+      --validation_file $VALID_FILE \
       --model_name_or_path $MODEL_NAME \
       --output_dir output/$OUTPUT_NAME/$MODEL_NAME \
       --do_train \
