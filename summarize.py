@@ -135,15 +135,21 @@ def summarize_generation_eval_csv(
         JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=logging_level <= logging.INFO),
     ):
         output_file = Path(input_dirs).with_suffix(".csv")
-        eval_dfs = []
+        interest_columns = ['method', 'candidate', 'average',
+                            'ai', 'literature', 'music', 'politics', 'science', 'movie', 'restaurant']
+
+        all_dfs = []
         for input_dir in dirs(input_dirs):
             logger.info("[input_dir] %s", input_dir)
             for input_file in files(input_dir / csv_filename):
-                eval_df = pd.read_csv(input_file)
-                eval_df["method"] = input_file.stem.split("by_")[-1]
-                print(eval_df)
-                exit(0)
-                eval_dfs.append(eval_df)
+                logger.info("  [input_file] %s", input_file)
+                df = pd.read_csv(input_file)
+                df["method"] = input_file.name.replace("-eval.csv", "").replace("-num=100", "").split("by_")[-1]
+                df = df[df['candidate'].isin([1, 2, 3, 4, 5]) | (df['candidate'] % 10 == 0)]
+                df = df[interest_columns]
+                all_dfs.append(df)
+        all_dfs = pd.concat(all_dfs)
+        all_dfs.to_csv(output_file, index=False)
 
 
 if __name__ == "__main__":
