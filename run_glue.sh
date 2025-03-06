@@ -39,7 +39,7 @@ for MODEL_NAME_OR_PATH in "${MODELS[@]}"; do
     --greater_is_better True \
     --logging_strategy epoch \
     --eval_strategy epoch \
-    --save_strategy no \
+    --save_strategy epoch \
     --deepspeed "$DEEPSPEED_CONFIG" \
     --overwrite_cache \
     --overwrite_output_dir \
