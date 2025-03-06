@@ -31,6 +31,7 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
       --validation_file $VALID_FILE \
       --model_name_or_path $MODEL_NAME \
       --output_dir output/$OUTPUT_NAME/$MODEL_NAME \
+      --cache_dir .cache \
       --do_train \
       --do_eval \
       --bf16 True \
@@ -46,5 +47,6 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
       --save_strategy no \
       --deepspeed $DEEPSPEED_CONFIG \
       --overwrite_output_dir \
-      --overwrite_cache
+      --overwrite_cache \
+      --eval_on_start
 done
