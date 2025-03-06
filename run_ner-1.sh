@@ -3,7 +3,7 @@ set -x
 
 DEEPSPEED_CONFIG="configs/deepspeed/ds1_t5.json"
 DEEPSPEED_PORT=$(shuf -i 25000-30000 -n 1)
-CUDA_DEVICES=0,1
+CUDA_DEVICES=1
 SOURCE_FILE="run_ner.py"
 TRAIN_FILE="data/conll2003/train.json"
 VALID_FILE="data/conll2003/validation.json"
@@ -28,6 +28,7 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
       --master_port $DEEPSPEED_PORT \
     $SOURCE_FILE \
       --dataset_name conll2003 \
+      --trust_remote_code True \
       --model_name_or_path $MODEL_NAME \
       --output_dir output/$OUTPUT_NAME/$MODEL_NAME \
       --cache_dir .cache \

@@ -3,7 +3,7 @@ set -x
 
 DEEPSPEED_CONFIG="configs/deepspeed/ds1_t5.json"
 DEEPSPEED_PORT=$(shuf -i 25000-30000 -n 1)
-CUDA_DEVICES=0,1
+CUDA_DEVICES=0
 SOURCE_FILE="run_ner.py"
 TRAIN_FILE="data/conll2003/train.json"
 VALID_FILE="data/conll2003/validation.json"
