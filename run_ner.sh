@@ -1,20 +1,49 @@
-# Copyright 2020 The HuggingFace Team. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+#!/usr/bin/env bash
+set -x
 
-python3 run_ner.py \
-  --model_name_or_path bert-base-uncased \
-  --dataset_name conll2003 \
-  --output_dir /tmp/test-ner \
-  --do_train \
-  --do_eval
+DEEPSPEED_CONFIG="configs/deepspeed/ds1_t5.json"
+DEEPSPEED_PORT=$(shuf -i 25000-30000 -n 1)
+CUDA_DEVICES=0,1
+PROGRAM_SOURCE="run_ner.py"
+OUTPUT_NAME="NER-CONLL"
+DATASET_NAME="conll2003"
+
+MODEL_NAMES=(
+  "google-bert/bert-base-cased"
+#  "FacebookAI/roberta-base"
+#  "FacebookAI/roberta-large"
+#  "answerdotai/ModernBERT-base"
+#  "answerdotai/ModernBERT-large"
+#  "microsoft/deberta-v3-base"
+#  "microsoft/deberta-v3-large"
+#  "microsoft/deberta-v2-xlarge"
+#  "microsoft/deberta-v2-xxlarge"
+)
+
+for MODEL_NAME in "${MODEL_NAMES[@]}"; do
+  python -m \
+    deepspeed.launcher.runner \
+      --include=localhost:$CUDA_DEVICES \
+      --master_port $DEEPSPEED_PORT \
+    $PROGRAM_SOURCE \
+      --trust_remote_code \
+      --dataset_name $DATASET_NAME \
+      --model_name_or_path $MODEL_NAME \
+      --output_dir output/$OUTPUT_NAME/$MODEL_NAME \
+      --do_train \
+      --do_eval \
+      --bf16 True \
+      --tf32 True \
+      --max_seq_length 256 \
+      --per_device_eval_batch_size 4 \
+      --per_device_train_batch_size 4 \
+      --gradient_accumulation_steps 4 \
+      --learning_rate 2e-5 \
+      --num_train_epochs 10 \
+      --logging_strategy epoch \
+      --eval_strategy epoch \
+      --save_strategy no \
+      --deepspeed $DEEPSPEED_CONFIG \
+      --overwrite_output_dir \
+      --overwrite_cache
+done
