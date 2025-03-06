@@ -14,6 +14,7 @@
 """MSE - Mean Squared Error Metric"""
 
 import datasets
+from scipy.stats import pearsonr, spearmanr
 from sklearn.metrics import mean_squared_error
 
 import evaluate
@@ -115,5 +116,11 @@ class Mse(evaluate.Metric):
         mse = mean_squared_error(
             references, predictions, sample_weight=sample_weight, multioutput=multioutput
         )
+        pearson_corr = float(pearsonr(predictions, references)[0])  # chrisjihee: copy from glue.py
+        spearman_corr = float(spearmanr(predictions, references)[0])  # chrisjihee: copy from glue.py
 
-        return {"mse": mse}
+        return {
+            "mse": mse,
+            "pearson": pearson_corr,
+            "spearmanr": spearman_corr,
+        }
