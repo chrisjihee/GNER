@@ -19,16 +19,18 @@ Fine-tuning the library models for token classification.
 # You can also adapt this script on your own token classification task and datasets. Pointers for this are left as
 # comments.
 
+import json  # chrisjihee
 import logging
 import os
 import sys
 from dataclasses import dataclass, field
+from pathlib import Path  # chrisjihee
 from typing import Optional
 
 import datasets
 import evaluate
 import numpy as np
-from datasets import ClassLabel, load_dataset
+from datasets import ClassLabel, Value, load_dataset  # chrisjihee
 
 import transformers
 from transformers import (
@@ -340,9 +342,20 @@ def main():
 
     # If the labels are of type ClassLabel, they are already integers and we have the map stored somewhere.
     # Otherwise, we have to get the list of labels manually.
-    labels_are_int = isinstance(features[label_column_name].feature, ClassLabel)
-    if labels_are_int:
+    labels_are_class_label = isinstance(features[label_column_name].feature, ClassLabel)  # chrisjihee
+    labels_are_value_int = isinstance(features[label_column_name].feature, Value) and features[label_column_name].feature.dtype.startswith("int")  # chrisjihee
+    labels_are_int = labels_are_class_label or labels_are_value_int  # chrisjihee
+    if labels_are_class_label:
         label_list = features[label_column_name].feature.names
+        label_to_id = {i: i for i in range(len(label_list))}
+    elif labels_are_value_int:  # chrisjihee: in case of labels_are_value_int
+        label_to_id_file = Path(data_args.train_file).parent / "label2id.json" if data_args.train_file is not None else None
+        assert label_to_id_file.exists() and label_to_id_file.is_file(), f"label_to_id_file not found: {label_to_id_file}"
+        with open(label_to_id_file, "r") as f:
+            label_to_id = json.load(f)
+            label_list = [None] * len(label_to_id)
+            for label, idx in label_to_id.items():
+                label_list[idx] = label
         label_to_id = {i: i for i in range(len(label_list))}
     else:
         label_list = get_label_list(raw_datasets["train"][label_column_name])
