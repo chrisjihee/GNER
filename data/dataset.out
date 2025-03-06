@@ -1,181 +1,181 @@
 /raid/chrisjihee/miniforge3/envs/GNER/bin/python /raid/chrisjihee/proj/GNER/chrisdata/src/chrisdata/dataset.py
-[03.07 02:44:40] ┇ INFO    ┇             __main__ ┇ ========================================================================================================================
-[03.07 02:44:40] ┇ INFO    ┇             __main__ ┇ [HF dataset] https://huggingface.co/datasets/e9t/nsmc => data/nsmc
-[03.07 02:44:42] ┇ INFO    ┇             __main__ ┇   * splits
-[03.07 02:44:42] ┇ INFO    ┇             __main__ ┇     - train     : id, document, label => (150,000 samples)
-[03.07 02:44:42] ┇ INFO    ┇             __main__ ┇     - test      : id, document, label => ( 50,000 samples)
-[03.07 02:44:42] ┇ INFO    ┇             __main__ ┇   * [train] features
-[03.07 02:44:42] ┇ INFO    ┇             __main__ ┇     - id        : Value(dtype='string', id=None)
-[03.07 02:44:42] ┇ INFO    ┇             __main__ ┇     - document  : Value(dtype='string', id=None)
-[03.07 02:44:42] ┇ INFO    ┇             __main__ ┇     - label     : ClassLabel(names=['negative', 'positive'], id=None)
-[03.07 02:44:43] ┇ INFO    ┇             __main__ ┇     => Saved train to data/nsmc/train.jsonl
-[03.07 02:44:43] ┇ INFO    ┇             __main__ ┇   * [test] features
-[03.07 02:44:43] ┇ INFO    ┇             __main__ ┇     - id        : Value(dtype='string', id=None)
-[03.07 02:44:43] ┇ INFO    ┇             __main__ ┇     - document  : Value(dtype='string', id=None)
-[03.07 02:44:43] ┇ INFO    ┇             __main__ ┇     - label     : ClassLabel(names=['negative', 'positive'], id=None)
-[03.07 02:44:43] ┇ INFO    ┇             __main__ ┇     => Saved test to data/nsmc/test.jsonl
-[03.07 02:44:43] ┇ INFO    ┇             __main__ ┇   * Split validation not found in dataset nsmc
-[03.07 02:44:43] ┇ INFO    ┇             __main__ ┇ ------------------------------------------------------------------------------------------------------------------------
-[03.07 02:44:43] ┇ INFO    ┇             __main__ ┇ ========================================================================================================================
-[03.07 02:44:43] ┇ INFO    ┇             __main__ ┇ [HF dataset] https://huggingface.co/datasets/klue/klue => data/klue/ynat
-[03.07 02:44:47] ┇ INFO    ┇             __main__ ┇   * splits
-[03.07 02:44:47] ┇ INFO    ┇             __main__ ┇     - train     : guid, title, label, url, date => ( 45,678 samples)
-[03.07 02:44:47] ┇ INFO    ┇             __main__ ┇     - validation: guid, title, label, url, date => (  9,107 samples)
-[03.07 02:44:47] ┇ INFO    ┇             __main__ ┇   * [train] features
-[03.07 02:44:47] ┇ INFO    ┇             __main__ ┇     - guid      : Value(dtype='string', id=None)
-[03.07 02:44:47] ┇ INFO    ┇             __main__ ┇     - title     : Value(dtype='string', id=None)
-[03.07 02:44:47] ┇ INFO    ┇             __main__ ┇     - label     : ClassLabel(names=['IT과학', '경제', '사회', '생활문화', '세계', '스포츠', '정치'], id=None)
-[03.07 02:44:47] ┇ INFO    ┇             __main__ ┇     - url       : Value(dtype='string', id=None)
-[03.07 02:44:47] ┇ INFO    ┇             __main__ ┇     - date      : Value(dtype='string', id=None)
-[03.07 02:44:47] ┇ INFO    ┇             __main__ ┇     => Saved train to data/klue/ynat/train.jsonl
-[03.07 02:44:47] ┇ INFO    ┇             __main__ ┇   * Split test not found in dataset klue/ynat
-[03.07 02:44:47] ┇ INFO    ┇             __main__ ┇   * [validation] features
-[03.07 02:44:47] ┇ INFO    ┇             __main__ ┇     - guid      : Value(dtype='string', id=None)
-[03.07 02:44:47] ┇ INFO    ┇             __main__ ┇     - title     : Value(dtype='string', id=None)
-[03.07 02:44:47] ┇ INFO    ┇             __main__ ┇     - label     : ClassLabel(names=['IT과학', '경제', '사회', '생활문화', '세계', '스포츠', '정치'], id=None)
-[03.07 02:44:47] ┇ INFO    ┇             __main__ ┇     - url       : Value(dtype='string', id=None)
-[03.07 02:44:47] ┇ INFO    ┇             __main__ ┇     - date      : Value(dtype='string', id=None)
-[03.07 02:44:47] ┇ INFO    ┇             __main__ ┇     => Saved validation to data/klue/ynat/validation.jsonl
-[03.07 02:44:47] ┇ INFO    ┇             __main__ ┇ ------------------------------------------------------------------------------------------------------------------------
-[03.07 02:44:47] ┇ INFO    ┇             __main__ ┇ ========================================================================================================================
-[03.07 02:44:47] ┇ INFO    ┇             __main__ ┇ [HF dataset] https://huggingface.co/datasets/klue/klue => data/klue/nli
-[03.07 02:44:50] ┇ INFO    ┇             __main__ ┇   * splits
-[03.07 02:44:50] ┇ INFO    ┇             __main__ ┇     - train     : guid, source, premise, hypothesis, label => ( 24,998 samples)
-[03.07 02:44:50] ┇ INFO    ┇             __main__ ┇     - validation: guid, source, premise, hypothesis, label => (  3,000 samples)
-[03.07 02:44:50] ┇ INFO    ┇             __main__ ┇   * [train] features
-[03.07 02:44:50] ┇ INFO    ┇             __main__ ┇     - guid      : Value(dtype='string', id=None)
-[03.07 02:44:50] ┇ INFO    ┇             __main__ ┇     - source    : Value(dtype='string', id=None)
-[03.07 02:44:50] ┇ INFO    ┇             __main__ ┇     - premise   : Value(dtype='string', id=None)
-[03.07 02:44:50] ┇ INFO    ┇             __main__ ┇     - hypothesis: Value(dtype='string', id=None)
-[03.07 02:44:50] ┇ INFO    ┇             __main__ ┇     - label     : ClassLabel(names=['entailment', 'neutral', 'contradiction'], id=None)
-[03.07 02:44:50] ┇ INFO    ┇             __main__ ┇     => Saved train to data/klue/nli/train.jsonl
-[03.07 02:44:50] ┇ INFO    ┇             __main__ ┇   * Split test not found in dataset klue/nli
-[03.07 02:44:50] ┇ INFO    ┇             __main__ ┇   * [validation] features
-[03.07 02:44:50] ┇ INFO    ┇             __main__ ┇     - guid      : Value(dtype='string', id=None)
-[03.07 02:44:50] ┇ INFO    ┇             __main__ ┇     - source    : Value(dtype='string', id=None)
-[03.07 02:44:50] ┇ INFO    ┇             __main__ ┇     - premise   : Value(dtype='string', id=None)
-[03.07 02:44:50] ┇ INFO    ┇             __main__ ┇     - hypothesis: Value(dtype='string', id=None)
-[03.07 02:44:50] ┇ INFO    ┇             __main__ ┇     - label     : ClassLabel(names=['entailment', 'neutral', 'contradiction'], id=None)
-[03.07 02:44:50] ┇ INFO    ┇             __main__ ┇     => Saved validation to data/klue/nli/validation.jsonl
-[03.07 02:44:50] ┇ INFO    ┇             __main__ ┇ ------------------------------------------------------------------------------------------------------------------------
-[03.07 02:44:50] ┇ INFO    ┇             __main__ ┇ ========================================================================================================================
-[03.07 02:44:50] ┇ INFO    ┇             __main__ ┇ [HF dataset] https://huggingface.co/datasets/klue/klue => data/klue/sts
-[03.07 02:44:53] ┇ INFO    ┇             __main__ ┇   * splits
-[03.07 02:44:53] ┇ INFO    ┇             __main__ ┇     - train     : guid, source, sentence1, sentence2, labels => ( 11,668 samples)
-[03.07 02:44:53] ┇ INFO    ┇             __main__ ┇     - validation: guid, source, sentence1, sentence2, labels => (    519 samples)
-[03.07 02:44:53] ┇ INFO    ┇             __main__ ┇   * [train] features
-[03.07 02:44:53] ┇ INFO    ┇             __main__ ┇     - guid      : Value(dtype='string', id=None)
-[03.07 02:44:53] ┇ INFO    ┇             __main__ ┇     - source    : Value(dtype='string', id=None)
-[03.07 02:44:53] ┇ INFO    ┇             __main__ ┇     - sentence1 : Value(dtype='string', id=None)
-[03.07 02:44:53] ┇ INFO    ┇             __main__ ┇     - sentence2 : Value(dtype='string', id=None)
-[03.07 02:44:53] ┇ INFO    ┇             __main__ ┇     - labels    : {'label': Value(dtype='float64', id=None), 'real-label': Value(dtype='float64', id=None), 'binary-label': ClassLabel(names=['negative', 'positive'], id=None)}
-[03.07 02:44:53] ┇ INFO    ┇             __main__ ┇     => Saved train to data/klue/sts/train.jsonl
-[03.07 02:44:53] ┇ INFO    ┇             __main__ ┇   * Split test not found in dataset klue/sts
-[03.07 02:44:53] ┇ INFO    ┇             __main__ ┇   * [validation] features
-[03.07 02:44:53] ┇ INFO    ┇             __main__ ┇     - guid      : Value(dtype='string', id=None)
-[03.07 02:44:53] ┇ INFO    ┇             __main__ ┇     - source    : Value(dtype='string', id=None)
-[03.07 02:44:53] ┇ INFO    ┇             __main__ ┇     - sentence1 : Value(dtype='string', id=None)
-[03.07 02:44:53] ┇ INFO    ┇             __main__ ┇     - sentence2 : Value(dtype='string', id=None)
-[03.07 02:44:53] ┇ INFO    ┇             __main__ ┇     - labels    : {'label': Value(dtype='float64', id=None), 'real-label': Value(dtype='float64', id=None), 'binary-label': ClassLabel(names=['negative', 'positive'], id=None)}
-[03.07 02:44:53] ┇ INFO    ┇             __main__ ┇     => Saved validation to data/klue/sts/validation.jsonl
-[03.07 02:44:53] ┇ INFO    ┇             __main__ ┇ ------------------------------------------------------------------------------------------------------------------------
-[03.07 02:44:53] ┇ INFO    ┇             __main__ ┇ ========================================================================================================================
-[03.07 02:44:53] ┇ INFO    ┇             __main__ ┇ [HF dataset] https://huggingface.co/datasets/klue/klue => data/klue/ner
-[03.07 02:44:55] ┇ INFO    ┇             __main__ ┇   * splits
-[03.07 02:44:55] ┇ INFO    ┇             __main__ ┇     - train     : sentence, tokens, ner_tags => ( 21,008 samples)
-[03.07 02:44:55] ┇ INFO    ┇             __main__ ┇     - validation: sentence, tokens, ner_tags => (  5,000 samples)
-[03.07 02:44:55] ┇ INFO    ┇             __main__ ┇   * [train] features
-[03.07 02:44:55] ┇ INFO    ┇             __main__ ┇     - sentence  : Value(dtype='string', id=None)
-[03.07 02:44:55] ┇ INFO    ┇             __main__ ┇     - tokens    : Sequence(feature=Value(dtype='string', id=None), length=-1, id=None)
-[03.07 02:44:55] ┇ INFO    ┇             __main__ ┇     - ner_tags  : Sequence(feature=ClassLabel(names=['B-DT', 'I-DT', 'B-LC', 'I-LC', 'B-OG', 'I-OG', 'B-PS', 'I-PS', 'B-QT', 'I-QT', 'B-TI', 'I-TI', 'O'], id=None), length=-1, id=None)
-[03.07 02:44:56] ┇ INFO    ┇             __main__ ┇     => Saved train to data/klue/ner/train.jsonl
-[03.07 02:44:56] ┇ INFO    ┇             __main__ ┇   * Split test not found in dataset klue/ner
-[03.07 02:44:56] ┇ INFO    ┇             __main__ ┇   * [validation] features
-[03.07 02:44:56] ┇ INFO    ┇             __main__ ┇     - sentence  : Value(dtype='string', id=None)
-[03.07 02:44:56] ┇ INFO    ┇             __main__ ┇     - tokens    : Sequence(feature=Value(dtype='string', id=None), length=-1, id=None)
-[03.07 02:44:56] ┇ INFO    ┇             __main__ ┇     - ner_tags  : Sequence(feature=ClassLabel(names=['B-DT', 'I-DT', 'B-LC', 'I-LC', 'B-OG', 'I-OG', 'B-PS', 'I-PS', 'B-QT', 'I-QT', 'B-TI', 'I-TI', 'O'], id=None), length=-1, id=None)
-[03.07 02:44:56] ┇ INFO    ┇             __main__ ┇     => Saved validation to data/klue/ner/validation.jsonl
-[03.07 02:44:56] ┇ INFO    ┇             __main__ ┇ ------------------------------------------------------------------------------------------------------------------------
-[03.07 02:44:56] ┇ INFO    ┇             __main__ ┇ ========================================================================================================================
-[03.07 02:44:56] ┇ INFO    ┇             __main__ ┇ [HF dataset] https://huggingface.co/datasets/nlp-kmu/kor_ner => data/kmou_ner
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇   * splits
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇     - train     : text, annot_text, tokens, pos_tags, ner_tags => (  2,928 samples)
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇     - test      : text, annot_text, tokens, pos_tags, ner_tags => (    366 samples)
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇     - validation: text, annot_text, tokens, pos_tags, ner_tags => (    366 samples)
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇   * [train] features
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇     - text      : Value(dtype='string', id=None)
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇     - annot_text: Value(dtype='string', id=None)
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇     - tokens    : Sequence(feature=Value(dtype='string', id=None), length=-1, id=None)
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇     - pos_tags  : Sequence(feature=ClassLabel(names=['SO', 'SS', 'VV', 'XR', 'VCP', 'JC', 'VCN', 'JKB', 'MM', 'SP', 'XSN', 'SL', 'NNP', 'NP', 'EP', 'JKQ', 'IC', 'XSA', 'EC', 'EF', 'SE', 'XPN', 'ETN', 'SH', 'XSV', 'MAG', 'SW', 'ETM', 'JKO', 'NNB', 'MAJ', 'NNG', 'JKV', 'JKC', 'VA', 'NR', 'JKG', 'VX', 'SF', 'JX', 'JKS', 'SN'], id=None), length=-1, id=None)
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇     - ner_tags  : Sequence(feature=ClassLabel(names=['I', 'O', 'B_OG', 'B_TI', 'B_LC', 'B_DT', 'B_PS'], id=None), length=-1, id=None)
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇     => Saved train to data/kmou_ner/train.jsonl
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇   * [test] features
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇     - text      : Value(dtype='string', id=None)
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇     - annot_text: Value(dtype='string', id=None)
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇     - tokens    : Sequence(feature=Value(dtype='string', id=None), length=-1, id=None)
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇     - pos_tags  : Sequence(feature=ClassLabel(names=['SO', 'SS', 'VV', 'XR', 'VCP', 'JC', 'VCN', 'JKB', 'MM', 'SP', 'XSN', 'SL', 'NNP', 'NP', 'EP', 'JKQ', 'IC', 'XSA', 'EC', 'EF', 'SE', 'XPN', 'ETN', 'SH', 'XSV', 'MAG', 'SW', 'ETM', 'JKO', 'NNB', 'MAJ', 'NNG', 'JKV', 'JKC', 'VA', 'NR', 'JKG', 'VX', 'SF', 'JX', 'JKS', 'SN'], id=None), length=-1, id=None)
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇     - ner_tags  : Sequence(feature=ClassLabel(names=['I', 'O', 'B_OG', 'B_TI', 'B_LC', 'B_DT', 'B_PS'], id=None), length=-1, id=None)
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇     => Saved test to data/kmou_ner/test.jsonl
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇   * [validation] features
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇     - text      : Value(dtype='string', id=None)
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇     - annot_text: Value(dtype='string', id=None)
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇     - tokens    : Sequence(feature=Value(dtype='string', id=None), length=-1, id=None)
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇     - pos_tags  : Sequence(feature=ClassLabel(names=['SO', 'SS', 'VV', 'XR', 'VCP', 'JC', 'VCN', 'JKB', 'MM', 'SP', 'XSN', 'SL', 'NNP', 'NP', 'EP', 'JKQ', 'IC', 'XSA', 'EC', 'EF', 'SE', 'XPN', 'ETN', 'SH', 'XSV', 'MAG', 'SW', 'ETM', 'JKO', 'NNB', 'MAJ', 'NNG', 'JKV', 'JKC', 'VA', 'NR', 'JKG', 'VX', 'SF', 'JX', 'JKS', 'SN'], id=None), length=-1, id=None)
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇     - ner_tags  : Sequence(feature=ClassLabel(names=['I', 'O', 'B_OG', 'B_TI', 'B_LC', 'B_DT', 'B_PS'], id=None), length=-1, id=None)
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇     => Saved validation to data/kmou_ner/validation.jsonl
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇ ------------------------------------------------------------------------------------------------------------------------
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇ ========================================================================================================================
-[03.07 02:44:57] ┇ INFO    ┇             __main__ ┇ [HF dataset] https://huggingface.co/datasets/glue => data/glue/stsb
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇   * splits
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇     - train     : sentence1, sentence2, label, idx => (  5,749 samples)
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇     - validation: sentence1, sentence2, label, idx => (  1,500 samples)
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇     - test      : sentence1, sentence2, label, idx => (  1,379 samples)
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇   * [train] features
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇     - sentence1 : Value(dtype='string', id=None)
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇     - sentence2 : Value(dtype='string', id=None)
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇     - label     : Value(dtype='float32', id=None)
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇     - idx       : Value(dtype='int32', id=None)
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇     => Saved train to data/glue/stsb/train.jsonl
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇   * [test] features
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇     - sentence1 : Value(dtype='string', id=None)
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇     - sentence2 : Value(dtype='string', id=None)
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇     - label     : Value(dtype='float32', id=None)
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇     - idx       : Value(dtype='int32', id=None)
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇     => Saved test to data/glue/stsb/test.jsonl
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇   * [validation] features
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇     - sentence1 : Value(dtype='string', id=None)
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇     - sentence2 : Value(dtype='string', id=None)
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇     - label     : Value(dtype='float32', id=None)
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇     - idx       : Value(dtype='int32', id=None)
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇     => Saved validation to data/glue/stsb/validation.jsonl
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇ ------------------------------------------------------------------------------------------------------------------------
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇ ========================================================================================================================
-[03.07 02:45:04] ┇ INFO    ┇             __main__ ┇ [HF dataset] https://huggingface.co/datasets/conll2003 => data/conll2003
-[03.07 02:45:06] ┇ INFO    ┇             __main__ ┇   * splits
-[03.07 02:45:06] ┇ INFO    ┇             __main__ ┇     - train     : id, tokens, pos_tags, chunk_tags, ner_tags => ( 14,041 samples)
-[03.07 02:45:06] ┇ INFO    ┇             __main__ ┇     - validation: id, tokens, pos_tags, chunk_tags, ner_tags => (  3,250 samples)
-[03.07 02:45:06] ┇ INFO    ┇             __main__ ┇     - test      : id, tokens, pos_tags, chunk_tags, ner_tags => (  3,453 samples)
-[03.07 02:45:06] ┇ INFO    ┇             __main__ ┇   * [train] features
-[03.07 02:45:06] ┇ INFO    ┇             __main__ ┇     - id        : Value(dtype='string', id=None)
-[03.07 02:45:06] ┇ INFO    ┇             __main__ ┇     - tokens    : Sequence(feature=Value(dtype='string', id=None), length=-1, id=None)
-[03.07 02:45:06] ┇ INFO    ┇             __main__ ┇     - pos_tags  : Sequence(feature=ClassLabel(names=['"', "''", '#', '$', '(', ')', ',', '.', ':', '``', 'CC', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS', 'MD', 'NN', 'NNP', 'NNPS', 'NNS', 'NN|SYM', 'PDT', 'POS', 'PRP', 'PRP$', 'RB', 'RBR', 'RBS', 'RP', 'SYM', 'TO', 'UH', 'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB'], id=None), length=-1, id=None)
-[03.07 02:45:06] ┇ INFO    ┇             __main__ ┇     - chunk_tags: Sequence(feature=ClassLabel(names=['O', 'B-ADJP', 'I-ADJP', 'B-ADVP', 'I-ADVP', 'B-CONJP', 'I-CONJP', 'B-INTJ', 'I-INTJ', 'B-LST', 'I-LST', 'B-NP', 'I-NP', 'B-PP', 'I-PP', 'B-PRT', 'I-PRT', 'B-SBAR', 'I-SBAR', 'B-UCP', 'I-UCP', 'B-VP', 'I-VP'], id=None), length=-1, id=None)
-[03.07 02:45:06] ┇ INFO    ┇             __main__ ┇     - ner_tags  : Sequence(feature=ClassLabel(names=['O', 'B-PER', 'I-PER', 'B-ORG', 'I-ORG', 'B-LOC', 'I-LOC', 'B-MISC', 'I-MISC'], id=None), length=-1, id=None)
-[03.07 02:45:07] ┇ INFO    ┇             __main__ ┇     => Saved train to data/conll2003/train.jsonl
-[03.07 02:45:07] ┇ INFO    ┇             __main__ ┇   * [test] features
-[03.07 02:45:07] ┇ INFO    ┇             __main__ ┇     - id        : Value(dtype='string', id=None)
-[03.07 02:45:07] ┇ INFO    ┇             __main__ ┇     - tokens    : Sequence(feature=Value(dtype='string', id=None), length=-1, id=None)
-[03.07 02:45:07] ┇ INFO    ┇             __main__ ┇     - pos_tags  : Sequence(feature=ClassLabel(names=['"', "''", '#', '$', '(', ')', ',', '.', ':', '``', 'CC', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS', 'MD', 'NN', 'NNP', 'NNPS', 'NNS', 'NN|SYM', 'PDT', 'POS', 'PRP', 'PRP$', 'RB', 'RBR', 'RBS', 'RP', 'SYM', 'TO', 'UH', 'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB'], id=None), length=-1, id=None)
-[03.07 02:45:07] ┇ INFO    ┇             __main__ ┇     - chunk_tags: Sequence(feature=ClassLabel(names=['O', 'B-ADJP', 'I-ADJP', 'B-ADVP', 'I-ADVP', 'B-CONJP', 'I-CONJP', 'B-INTJ', 'I-INTJ', 'B-LST', 'I-LST', 'B-NP', 'I-NP', 'B-PP', 'I-PP', 'B-PRT', 'I-PRT', 'B-SBAR', 'I-SBAR', 'B-UCP', 'I-UCP', 'B-VP', 'I-VP'], id=None), length=-1, id=None)
-[03.07 02:45:07] ┇ INFO    ┇             __main__ ┇     - ner_tags  : Sequence(feature=ClassLabel(names=['O', 'B-PER', 'I-PER', 'B-ORG', 'I-ORG', 'B-LOC', 'I-LOC', 'B-MISC', 'I-MISC'], id=None), length=-1, id=None)
-[03.07 02:45:07] ┇ INFO    ┇             __main__ ┇     => Saved test to data/conll2003/test.jsonl
-[03.07 02:45:07] ┇ INFO    ┇             __main__ ┇   * [validation] features
-[03.07 02:45:07] ┇ INFO    ┇             __main__ ┇     - id        : Value(dtype='string', id=None)
-[03.07 02:45:07] ┇ INFO    ┇             __main__ ┇     - tokens    : Sequence(feature=Value(dtype='string', id=None), length=-1, id=None)
-[03.07 02:45:07] ┇ INFO    ┇             __main__ ┇     - pos_tags  : Sequence(feature=ClassLabel(names=['"', "''", '#', '$', '(', ')', ',', '.', ':', '``', 'CC', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS', 'MD', 'NN', 'NNP', 'NNPS', 'NNS', 'NN|SYM', 'PDT', 'POS', 'PRP', 'PRP$', 'RB', 'RBR', 'RBS', 'RP', 'SYM', 'TO', 'UH', 'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB'], id=None), length=-1, id=None)
-[03.07 02:45:07] ┇ INFO    ┇             __main__ ┇     - chunk_tags: Sequence(feature=ClassLabel(names=['O', 'B-ADJP', 'I-ADJP', 'B-ADVP', 'I-ADVP', 'B-CONJP', 'I-CONJP', 'B-INTJ', 'I-INTJ', 'B-LST', 'I-LST', 'B-NP', 'I-NP', 'B-PP', 'I-PP', 'B-PRT', 'I-PRT', 'B-SBAR', 'I-SBAR', 'B-UCP', 'I-UCP', 'B-VP', 'I-VP'], id=None), length=-1, id=None)
-[03.07 02:45:07] ┇ INFO    ┇             __main__ ┇     - ner_tags  : Sequence(feature=ClassLabel(names=['O', 'B-PER', 'I-PER', 'B-ORG', 'I-ORG', 'B-LOC', 'I-LOC', 'B-MISC', 'I-MISC'], id=None), length=-1, id=None)
-[03.07 02:45:07] ┇ INFO    ┇             __main__ ┇     => Saved validation to data/conll2003/validation.jsonl
-[03.07 02:45:07] ┇ INFO    ┇             __main__ ┇ ------------------------------------------------------------------------------------------------------------------------
+[03.07 02:52:48] ┇ INFO    ┇             __main__ ┇ ========================================================================================================================
+[03.07 02:52:48] ┇ INFO    ┇             __main__ ┇ [HF dataset] https://huggingface.co/datasets/e9t/nsmc => data/nsmc
+[03.07 02:52:50] ┇ INFO    ┇             __main__ ┇   * splits
+[03.07 02:52:50] ┇ INFO    ┇             __main__ ┇     - train     : id, document, label => (150,000 samples)
+[03.07 02:52:50] ┇ INFO    ┇             __main__ ┇     - test      : id, document, label => ( 50,000 samples)
+[03.07 02:52:50] ┇ INFO    ┇             __main__ ┇   * [train] features
+[03.07 02:52:50] ┇ INFO    ┇             __main__ ┇     - id        : Value(dtype='string', id=None)
+[03.07 02:52:50] ┇ INFO    ┇             __main__ ┇     - document  : Value(dtype='string', id=None)
+[03.07 02:52:50] ┇ INFO    ┇             __main__ ┇     - label     : ClassLabel(names=['negative', 'positive'], id=None)
+[03.07 02:52:50] ┇ INFO    ┇             __main__ ┇     => Saved train to data/nsmc/train.json
+[03.07 02:52:50] ┇ INFO    ┇             __main__ ┇   * [test] features
+[03.07 02:52:50] ┇ INFO    ┇             __main__ ┇     - id        : Value(dtype='string', id=None)
+[03.07 02:52:50] ┇ INFO    ┇             __main__ ┇     - document  : Value(dtype='string', id=None)
+[03.07 02:52:50] ┇ INFO    ┇             __main__ ┇     - label     : ClassLabel(names=['negative', 'positive'], id=None)
+[03.07 02:52:51] ┇ INFO    ┇             __main__ ┇     => Saved test to data/nsmc/test.json
+[03.07 02:52:51] ┇ INFO    ┇             __main__ ┇   * Split validation not found in dataset nsmc
+[03.07 02:52:51] ┇ INFO    ┇             __main__ ┇ ------------------------------------------------------------------------------------------------------------------------
+[03.07 02:52:51] ┇ INFO    ┇             __main__ ┇ ========================================================================================================================
+[03.07 02:52:51] ┇ INFO    ┇             __main__ ┇ [HF dataset] https://huggingface.co/datasets/klue/klue => data/klue/ynat
+[03.07 02:52:55] ┇ INFO    ┇             __main__ ┇   * splits
+[03.07 02:52:55] ┇ INFO    ┇             __main__ ┇     - train     : guid, title, label, url, date => ( 45,678 samples)
+[03.07 02:52:55] ┇ INFO    ┇             __main__ ┇     - validation: guid, title, label, url, date => (  9,107 samples)
+[03.07 02:52:55] ┇ INFO    ┇             __main__ ┇   * [train] features
+[03.07 02:52:55] ┇ INFO    ┇             __main__ ┇     - guid      : Value(dtype='string', id=None)
+[03.07 02:52:55] ┇ INFO    ┇             __main__ ┇     - title     : Value(dtype='string', id=None)
+[03.07 02:52:55] ┇ INFO    ┇             __main__ ┇     - label     : ClassLabel(names=['IT과학', '경제', '사회', '생활문화', '세계', '스포츠', '정치'], id=None)
+[03.07 02:52:55] ┇ INFO    ┇             __main__ ┇     - url       : Value(dtype='string', id=None)
+[03.07 02:52:55] ┇ INFO    ┇             __main__ ┇     - date      : Value(dtype='string', id=None)
+[03.07 02:52:55] ┇ INFO    ┇             __main__ ┇     => Saved train to data/klue/ynat/train.json
+[03.07 02:52:55] ┇ INFO    ┇             __main__ ┇   * Split test not found in dataset klue/ynat
+[03.07 02:52:55] ┇ INFO    ┇             __main__ ┇   * [validation] features
+[03.07 02:52:55] ┇ INFO    ┇             __main__ ┇     - guid      : Value(dtype='string', id=None)
+[03.07 02:52:55] ┇ INFO    ┇             __main__ ┇     - title     : Value(dtype='string', id=None)
+[03.07 02:52:55] ┇ INFO    ┇             __main__ ┇     - label     : ClassLabel(names=['IT과학', '경제', '사회', '생활문화', '세계', '스포츠', '정치'], id=None)
+[03.07 02:52:55] ┇ INFO    ┇             __main__ ┇     - url       : Value(dtype='string', id=None)
+[03.07 02:52:55] ┇ INFO    ┇             __main__ ┇     - date      : Value(dtype='string', id=None)
+[03.07 02:52:55] ┇ INFO    ┇             __main__ ┇     => Saved validation to data/klue/ynat/validation.json
+[03.07 02:52:55] ┇ INFO    ┇             __main__ ┇ ------------------------------------------------------------------------------------------------------------------------
+[03.07 02:52:55] ┇ INFO    ┇             __main__ ┇ ========================================================================================================================
+[03.07 02:52:55] ┇ INFO    ┇             __main__ ┇ [HF dataset] https://huggingface.co/datasets/klue/klue => data/klue/nli
+[03.07 02:52:57] ┇ INFO    ┇             __main__ ┇   * splits
+[03.07 02:52:57] ┇ INFO    ┇             __main__ ┇     - train     : guid, source, premise, hypothesis, label => ( 24,998 samples)
+[03.07 02:52:57] ┇ INFO    ┇             __main__ ┇     - validation: guid, source, premise, hypothesis, label => (  3,000 samples)
+[03.07 02:52:57] ┇ INFO    ┇             __main__ ┇   * [train] features
+[03.07 02:52:57] ┇ INFO    ┇             __main__ ┇     - guid      : Value(dtype='string', id=None)
+[03.07 02:52:57] ┇ INFO    ┇             __main__ ┇     - source    : Value(dtype='string', id=None)
+[03.07 02:52:57] ┇ INFO    ┇             __main__ ┇     - premise   : Value(dtype='string', id=None)
+[03.07 02:52:57] ┇ INFO    ┇             __main__ ┇     - hypothesis: Value(dtype='string', id=None)
+[03.07 02:52:57] ┇ INFO    ┇             __main__ ┇     - label     : ClassLabel(names=['entailment', 'neutral', 'contradiction'], id=None)
+[03.07 02:52:58] ┇ INFO    ┇             __main__ ┇     => Saved train to data/klue/nli/train.json
+[03.07 02:52:58] ┇ INFO    ┇             __main__ ┇   * Split test not found in dataset klue/nli
+[03.07 02:52:58] ┇ INFO    ┇             __main__ ┇   * [validation] features
+[03.07 02:52:58] ┇ INFO    ┇             __main__ ┇     - guid      : Value(dtype='string', id=None)
+[03.07 02:52:58] ┇ INFO    ┇             __main__ ┇     - source    : Value(dtype='string', id=None)
+[03.07 02:52:58] ┇ INFO    ┇             __main__ ┇     - premise   : Value(dtype='string', id=None)
+[03.07 02:52:58] ┇ INFO    ┇             __main__ ┇     - hypothesis: Value(dtype='string', id=None)
+[03.07 02:52:58] ┇ INFO    ┇             __main__ ┇     - label     : ClassLabel(names=['entailment', 'neutral', 'contradiction'], id=None)
+[03.07 02:52:58] ┇ INFO    ┇             __main__ ┇     => Saved validation to data/klue/nli/validation.json
+[03.07 02:52:58] ┇ INFO    ┇             __main__ ┇ ------------------------------------------------------------------------------------------------------------------------
+[03.07 02:52:58] ┇ INFO    ┇             __main__ ┇ ========================================================================================================================
+[03.07 02:52:58] ┇ INFO    ┇             __main__ ┇ [HF dataset] https://huggingface.co/datasets/klue/klue => data/klue/sts
+[03.07 02:53:00] ┇ INFO    ┇             __main__ ┇   * splits
+[03.07 02:53:00] ┇ INFO    ┇             __main__ ┇     - train     : guid, source, sentence1, sentence2, labels => ( 11,668 samples)
+[03.07 02:53:00] ┇ INFO    ┇             __main__ ┇     - validation: guid, source, sentence1, sentence2, labels => (    519 samples)
+[03.07 02:53:00] ┇ INFO    ┇             __main__ ┇   * [train] features
+[03.07 02:53:00] ┇ INFO    ┇             __main__ ┇     - guid      : Value(dtype='string', id=None)
+[03.07 02:53:00] ┇ INFO    ┇             __main__ ┇     - source    : Value(dtype='string', id=None)
+[03.07 02:53:00] ┇ INFO    ┇             __main__ ┇     - sentence1 : Value(dtype='string', id=None)
+[03.07 02:53:00] ┇ INFO    ┇             __main__ ┇     - sentence2 : Value(dtype='string', id=None)
+[03.07 02:53:00] ┇ INFO    ┇             __main__ ┇     - labels    : {'label': Value(dtype='float64', id=None), 'real-label': Value(dtype='float64', id=None), 'binary-label': ClassLabel(names=['negative', 'positive'], id=None)}
+[03.07 02:53:00] ┇ INFO    ┇             __main__ ┇     => Saved train to data/klue/sts/train.json
+[03.07 02:53:00] ┇ INFO    ┇             __main__ ┇   * Split test not found in dataset klue/sts
+[03.07 02:53:00] ┇ INFO    ┇             __main__ ┇   * [validation] features
+[03.07 02:53:00] ┇ INFO    ┇             __main__ ┇     - guid      : Value(dtype='string', id=None)
+[03.07 02:53:00] ┇ INFO    ┇             __main__ ┇     - source    : Value(dtype='string', id=None)
+[03.07 02:53:00] ┇ INFO    ┇             __main__ ┇     - sentence1 : Value(dtype='string', id=None)
+[03.07 02:53:00] ┇ INFO    ┇             __main__ ┇     - sentence2 : Value(dtype='string', id=None)
+[03.07 02:53:00] ┇ INFO    ┇             __main__ ┇     - labels    : {'label': Value(dtype='float64', id=None), 'real-label': Value(dtype='float64', id=None), 'binary-label': ClassLabel(names=['negative', 'positive'], id=None)}
+[03.07 02:53:00] ┇ INFO    ┇             __main__ ┇     => Saved validation to data/klue/sts/validation.json
+[03.07 02:53:00] ┇ INFO    ┇             __main__ ┇ ------------------------------------------------------------------------------------------------------------------------
+[03.07 02:53:00] ┇ INFO    ┇             __main__ ┇ ========================================================================================================================
+[03.07 02:53:00] ┇ INFO    ┇             __main__ ┇ [HF dataset] https://huggingface.co/datasets/klue/klue => data/klue/ner
+[03.07 02:53:02] ┇ INFO    ┇             __main__ ┇   * splits
+[03.07 02:53:02] ┇ INFO    ┇             __main__ ┇     - train     : sentence, tokens, ner_tags => ( 21,008 samples)
+[03.07 02:53:02] ┇ INFO    ┇             __main__ ┇     - validation: sentence, tokens, ner_tags => (  5,000 samples)
+[03.07 02:53:02] ┇ INFO    ┇             __main__ ┇   * [train] features
+[03.07 02:53:02] ┇ INFO    ┇             __main__ ┇     - sentence  : Value(dtype='string', id=None)
+[03.07 02:53:02] ┇ INFO    ┇             __main__ ┇     - tokens    : Sequence(feature=Value(dtype='string', id=None), length=-1, id=None)
+[03.07 02:53:02] ┇ INFO    ┇             __main__ ┇     - ner_tags  : Sequence(feature=ClassLabel(names=['B-DT', 'I-DT', 'B-LC', 'I-LC', 'B-OG', 'I-OG', 'B-PS', 'I-PS', 'B-QT', 'I-QT', 'B-TI', 'I-TI', 'O'], id=None), length=-1, id=None)
+[03.07 02:53:03] ┇ INFO    ┇             __main__ ┇     => Saved train to data/klue/ner/train.json
+[03.07 02:53:03] ┇ INFO    ┇             __main__ ┇   * Split test not found in dataset klue/ner
+[03.07 02:53:03] ┇ INFO    ┇             __main__ ┇   * [validation] features
+[03.07 02:53:03] ┇ INFO    ┇             __main__ ┇     - sentence  : Value(dtype='string', id=None)
+[03.07 02:53:03] ┇ INFO    ┇             __main__ ┇     - tokens    : Sequence(feature=Value(dtype='string', id=None), length=-1, id=None)
+[03.07 02:53:03] ┇ INFO    ┇             __main__ ┇     - ner_tags  : Sequence(feature=ClassLabel(names=['B-DT', 'I-DT', 'B-LC', 'I-LC', 'B-OG', 'I-OG', 'B-PS', 'I-PS', 'B-QT', 'I-QT', 'B-TI', 'I-TI', 'O'], id=None), length=-1, id=None)
+[03.07 02:53:03] ┇ INFO    ┇             __main__ ┇     => Saved validation to data/klue/ner/validation.json
+[03.07 02:53:03] ┇ INFO    ┇             __main__ ┇ ------------------------------------------------------------------------------------------------------------------------
+[03.07 02:53:03] ┇ INFO    ┇             __main__ ┇ ========================================================================================================================
+[03.07 02:53:03] ┇ INFO    ┇             __main__ ┇ [HF dataset] https://huggingface.co/datasets/nlp-kmu/kor_ner => data/kmou_ner
+[03.07 02:53:04] ┇ INFO    ┇             __main__ ┇   * splits
+[03.07 02:53:04] ┇ INFO    ┇             __main__ ┇     - train     : text, annot_text, tokens, pos_tags, ner_tags => (  2,928 samples)
+[03.07 02:53:04] ┇ INFO    ┇             __main__ ┇     - test      : text, annot_text, tokens, pos_tags, ner_tags => (    366 samples)
+[03.07 02:53:04] ┇ INFO    ┇             __main__ ┇     - validation: text, annot_text, tokens, pos_tags, ner_tags => (    366 samples)
+[03.07 02:53:04] ┇ INFO    ┇             __main__ ┇   * [train] features
+[03.07 02:53:04] ┇ INFO    ┇             __main__ ┇     - text      : Value(dtype='string', id=None)
+[03.07 02:53:04] ┇ INFO    ┇             __main__ ┇     - annot_text: Value(dtype='string', id=None)
+[03.07 02:53:04] ┇ INFO    ┇             __main__ ┇     - tokens    : Sequence(feature=Value(dtype='string', id=None), length=-1, id=None)
+[03.07 02:53:04] ┇ INFO    ┇             __main__ ┇     - pos_tags  : Sequence(feature=ClassLabel(names=['SO', 'SS', 'VV', 'XR', 'VCP', 'JC', 'VCN', 'JKB', 'MM', 'SP', 'XSN', 'SL', 'NNP', 'NP', 'EP', 'JKQ', 'IC', 'XSA', 'EC', 'EF', 'SE', 'XPN', 'ETN', 'SH', 'XSV', 'MAG', 'SW', 'ETM', 'JKO', 'NNB', 'MAJ', 'NNG', 'JKV', 'JKC', 'VA', 'NR', 'JKG', 'VX', 'SF', 'JX', 'JKS', 'SN'], id=None), length=-1, id=None)
+[03.07 02:53:04] ┇ INFO    ┇             __main__ ┇     - ner_tags  : Sequence(feature=ClassLabel(names=['I', 'O', 'B_OG', 'B_TI', 'B_LC', 'B_DT', 'B_PS'], id=None), length=-1, id=None)
+[03.07 02:53:05] ┇ INFO    ┇             __main__ ┇     => Saved train to data/kmou_ner/train.json
+[03.07 02:53:05] ┇ INFO    ┇             __main__ ┇   * [test] features
+[03.07 02:53:05] ┇ INFO    ┇             __main__ ┇     - text      : Value(dtype='string', id=None)
+[03.07 02:53:05] ┇ INFO    ┇             __main__ ┇     - annot_text: Value(dtype='string', id=None)
+[03.07 02:53:05] ┇ INFO    ┇             __main__ ┇     - tokens    : Sequence(feature=Value(dtype='string', id=None), length=-1, id=None)
+[03.07 02:53:05] ┇ INFO    ┇             __main__ ┇     - pos_tags  : Sequence(feature=ClassLabel(names=['SO', 'SS', 'VV', 'XR', 'VCP', 'JC', 'VCN', 'JKB', 'MM', 'SP', 'XSN', 'SL', 'NNP', 'NP', 'EP', 'JKQ', 'IC', 'XSA', 'EC', 'EF', 'SE', 'XPN', 'ETN', 'SH', 'XSV', 'MAG', 'SW', 'ETM', 'JKO', 'NNB', 'MAJ', 'NNG', 'JKV', 'JKC', 'VA', 'NR', 'JKG', 'VX', 'SF', 'JX', 'JKS', 'SN'], id=None), length=-1, id=None)
+[03.07 02:53:05] ┇ INFO    ┇             __main__ ┇     - ner_tags  : Sequence(feature=ClassLabel(names=['I', 'O', 'B_OG', 'B_TI', 'B_LC', 'B_DT', 'B_PS'], id=None), length=-1, id=None)
+[03.07 02:53:05] ┇ INFO    ┇             __main__ ┇     => Saved test to data/kmou_ner/test.json
+[03.07 02:53:05] ┇ INFO    ┇             __main__ ┇   * [validation] features
+[03.07 02:53:05] ┇ INFO    ┇             __main__ ┇     - text      : Value(dtype='string', id=None)
+[03.07 02:53:05] ┇ INFO    ┇             __main__ ┇     - annot_text: Value(dtype='string', id=None)
+[03.07 02:53:05] ┇ INFO    ┇             __main__ ┇     - tokens    : Sequence(feature=Value(dtype='string', id=None), length=-1, id=None)
+[03.07 02:53:05] ┇ INFO    ┇             __main__ ┇     - pos_tags  : Sequence(feature=ClassLabel(names=['SO', 'SS', 'VV', 'XR', 'VCP', 'JC', 'VCN', 'JKB', 'MM', 'SP', 'XSN', 'SL', 'NNP', 'NP', 'EP', 'JKQ', 'IC', 'XSA', 'EC', 'EF', 'SE', 'XPN', 'ETN', 'SH', 'XSV', 'MAG', 'SW', 'ETM', 'JKO', 'NNB', 'MAJ', 'NNG', 'JKV', 'JKC', 'VA', 'NR', 'JKG', 'VX', 'SF', 'JX', 'JKS', 'SN'], id=None), length=-1, id=None)
+[03.07 02:53:05] ┇ INFO    ┇             __main__ ┇     - ner_tags  : Sequence(feature=ClassLabel(names=['I', 'O', 'B_OG', 'B_TI', 'B_LC', 'B_DT', 'B_PS'], id=None), length=-1, id=None)
+[03.07 02:53:05] ┇ INFO    ┇             __main__ ┇     => Saved validation to data/kmou_ner/validation.json
+[03.07 02:53:05] ┇ INFO    ┇             __main__ ┇ ------------------------------------------------------------------------------------------------------------------------
+[03.07 02:53:05] ┇ INFO    ┇             __main__ ┇ ========================================================================================================================
+[03.07 02:53:05] ┇ INFO    ┇             __main__ ┇ [HF dataset] https://huggingface.co/datasets/glue => data/glue/stsb
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇   * splits
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇     - train     : sentence1, sentence2, label, idx => (  5,749 samples)
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇     - validation: sentence1, sentence2, label, idx => (  1,500 samples)
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇     - test      : sentence1, sentence2, label, idx => (  1,379 samples)
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇   * [train] features
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇     - sentence1 : Value(dtype='string', id=None)
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇     - sentence2 : Value(dtype='string', id=None)
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇     - label     : Value(dtype='float32', id=None)
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇     - idx       : Value(dtype='int32', id=None)
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇     => Saved train to data/glue/stsb/train.json
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇   * [test] features
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇     - sentence1 : Value(dtype='string', id=None)
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇     - sentence2 : Value(dtype='string', id=None)
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇     - label     : Value(dtype='float32', id=None)
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇     - idx       : Value(dtype='int32', id=None)
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇     => Saved test to data/glue/stsb/test.json
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇   * [validation] features
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇     - sentence1 : Value(dtype='string', id=None)
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇     - sentence2 : Value(dtype='string', id=None)
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇     - label     : Value(dtype='float32', id=None)
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇     - idx       : Value(dtype='int32', id=None)
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇     => Saved validation to data/glue/stsb/validation.json
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇ ------------------------------------------------------------------------------------------------------------------------
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇ ========================================================================================================================
+[03.07 02:53:11] ┇ INFO    ┇             __main__ ┇ [HF dataset] https://huggingface.co/datasets/conll2003 => data/conll2003
+[03.07 02:53:13] ┇ INFO    ┇             __main__ ┇   * splits
+[03.07 02:53:13] ┇ INFO    ┇             __main__ ┇     - train     : id, tokens, pos_tags, chunk_tags, ner_tags => ( 14,041 samples)
+[03.07 02:53:13] ┇ INFO    ┇             __main__ ┇     - validation: id, tokens, pos_tags, chunk_tags, ner_tags => (  3,250 samples)
+[03.07 02:53:13] ┇ INFO    ┇             __main__ ┇     - test      : id, tokens, pos_tags, chunk_tags, ner_tags => (  3,453 samples)
+[03.07 02:53:13] ┇ INFO    ┇             __main__ ┇   * [train] features
+[03.07 02:53:13] ┇ INFO    ┇             __main__ ┇     - id        : Value(dtype='string', id=None)
+[03.07 02:53:13] ┇ INFO    ┇             __main__ ┇     - tokens    : Sequence(feature=Value(dtype='string', id=None), length=-1, id=None)
+[03.07 02:53:13] ┇ INFO    ┇             __main__ ┇     - pos_tags  : Sequence(feature=ClassLabel(names=['"', "''", '#', '$', '(', ')', ',', '.', ':', '``', 'CC', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS', 'MD', 'NN', 'NNP', 'NNPS', 'NNS', 'NN|SYM', 'PDT', 'POS', 'PRP', 'PRP$', 'RB', 'RBR', 'RBS', 'RP', 'SYM', 'TO', 'UH', 'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB'], id=None), length=-1, id=None)
+[03.07 02:53:13] ┇ INFO    ┇             __main__ ┇     - chunk_tags: Sequence(feature=ClassLabel(names=['O', 'B-ADJP', 'I-ADJP', 'B-ADVP', 'I-ADVP', 'B-CONJP', 'I-CONJP', 'B-INTJ', 'I-INTJ', 'B-LST', 'I-LST', 'B-NP', 'I-NP', 'B-PP', 'I-PP', 'B-PRT', 'I-PRT', 'B-SBAR', 'I-SBAR', 'B-UCP', 'I-UCP', 'B-VP', 'I-VP'], id=None), length=-1, id=None)
+[03.07 02:53:13] ┇ INFO    ┇             __main__ ┇     - ner_tags  : Sequence(feature=ClassLabel(names=['O', 'B-PER', 'I-PER', 'B-ORG', 'I-ORG', 'B-LOC', 'I-LOC', 'B-MISC', 'I-MISC'], id=None), length=-1, id=None)
+[03.07 02:53:13] ┇ INFO    ┇             __main__ ┇     => Saved train to data/conll2003/train.json
+[03.07 02:53:13] ┇ INFO    ┇             __main__ ┇   * [test] features
+[03.07 02:53:13] ┇ INFO    ┇             __main__ ┇     - id        : Value(dtype='string', id=None)
+[03.07 02:53:13] ┇ INFO    ┇             __main__ ┇     - tokens    : Sequence(feature=Value(dtype='string', id=None), length=-1, id=None)
+[03.07 02:53:13] ┇ INFO    ┇             __main__ ┇     - pos_tags  : Sequence(feature=ClassLabel(names=['"', "''", '#', '$', '(', ')', ',', '.', ':', '``', 'CC', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS', 'MD', 'NN', 'NNP', 'NNPS', 'NNS', 'NN|SYM', 'PDT', 'POS', 'PRP', 'PRP$', 'RB', 'RBR', 'RBS', 'RP', 'SYM', 'TO', 'UH', 'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB'], id=None), length=-1, id=None)
+[03.07 02:53:13] ┇ INFO    ┇             __main__ ┇     - chunk_tags: Sequence(feature=ClassLabel(names=['O', 'B-ADJP', 'I-ADJP', 'B-ADVP', 'I-ADVP', 'B-CONJP', 'I-CONJP', 'B-INTJ', 'I-INTJ', 'B-LST', 'I-LST', 'B-NP', 'I-NP', 'B-PP', 'I-PP', 'B-PRT', 'I-PRT', 'B-SBAR', 'I-SBAR', 'B-UCP', 'I-UCP', 'B-VP', 'I-VP'], id=None), length=-1, id=None)
+[03.07 02:53:13] ┇ INFO    ┇             __main__ ┇     - ner_tags  : Sequence(feature=ClassLabel(names=['O', 'B-PER', 'I-PER', 'B-ORG', 'I-ORG', 'B-LOC', 'I-LOC', 'B-MISC', 'I-MISC'], id=None), length=-1, id=None)
+[03.07 02:53:14] ┇ INFO    ┇             __main__ ┇     => Saved test to data/conll2003/test.json
+[03.07 02:53:14] ┇ INFO    ┇             __main__ ┇   * [validation] features
+[03.07 02:53:14] ┇ INFO    ┇             __main__ ┇     - id        : Value(dtype='string', id=None)
+[03.07 02:53:14] ┇ INFO    ┇             __main__ ┇     - tokens    : Sequence(feature=Value(dtype='string', id=None), length=-1, id=None)
+[03.07 02:53:14] ┇ INFO    ┇             __main__ ┇     - pos_tags  : Sequence(feature=ClassLabel(names=['"', "''", '#', '$', '(', ')', ',', '.', ':', '``', 'CC', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS', 'MD', 'NN', 'NNP', 'NNPS', 'NNS', 'NN|SYM', 'PDT', 'POS', 'PRP', 'PRP$', 'RB', 'RBR', 'RBS', 'RP', 'SYM', 'TO', 'UH', 'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB'], id=None), length=-1, id=None)
+[03.07 02:53:14] ┇ INFO    ┇             __main__ ┇     - chunk_tags: Sequence(feature=ClassLabel(names=['O', 'B-ADJP', 'I-ADJP', 'B-ADVP', 'I-ADVP', 'B-CONJP', 'I-CONJP', 'B-INTJ', 'I-INTJ', 'B-LST', 'I-LST', 'B-NP', 'I-NP', 'B-PP', 'I-PP', 'B-PRT', 'I-PRT', 'B-SBAR', 'I-SBAR', 'B-UCP', 'I-UCP', 'B-VP', 'I-VP'], id=None), length=-1, id=None)
+[03.07 02:53:14] ┇ INFO    ┇             __main__ ┇     - ner_tags  : Sequence(feature=ClassLabel(names=['O', 'B-PER', 'I-PER', 'B-ORG', 'I-ORG', 'B-LOC', 'I-LOC', 'B-MISC', 'I-MISC'], id=None), length=-1, id=None)
+[03.07 02:53:14] ┇ INFO    ┇             __main__ ┇     => Saved validation to data/conll2003/validation.json
+[03.07 02:53:14] ┇ INFO    ┇             __main__ ┇ ------------------------------------------------------------------------------------------------------------------------
 
 Process finished with exit code 0
