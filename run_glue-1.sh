@@ -9,15 +9,15 @@ OUTPUT_NAME="GLUE-STSb"
 TASK_NAME="stsb"
 
 MODEL_NAMES=(
-  "google-bert/bert-base-cased"
+#  "google-bert/bert-base-cased"
   "FacebookAI/roberta-base"
   "FacebookAI/roberta-large"
   "answerdotai/ModernBERT-base"
   "answerdotai/ModernBERT-large"
   "microsoft/deberta-v3-base"
   "microsoft/deberta-v3-large"
-  "microsoft/deberta-v2-xlarge"
-  "microsoft/deberta-v2-xxlarge"
+#  "microsoft/deberta-v2-xlarge"
+#  "microsoft/deberta-v2-xxlarge"
 )
 
 for MODEL_NAME in "${MODEL_NAMES[@]}"; do
