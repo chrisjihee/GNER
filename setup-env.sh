@@ -12,8 +12,8 @@ conda install -n base -c conda-forge conda=25.1.1 -y;
 conda create -n GNER python=3.12 -y; conda activate GNER
 conda install -n GNER cuda-libraries=11.8 cuda-libraries-dev=11.8 cuda-cudart=11.8 cuda-cudart-dev=11.8 \
                       cuda-nvrtc=11.8 cuda-nvrtc-dev=11.8 cuda-driver-dev=11.8 \
-                      cuda-nvcc=11.8 cuda-cccl=11.8 cuda-runtime=11.8 cudatoolkit-dev=11 \
-                      libcusparse=11 libcusparse-dev=11 libcublas=11 libcublas-dev=11 \
+                      cuda-nvcc=11.8 cuda-cccl=11.8 cuda-runtime=11.8 \
+                      cudatoolkit-dev=11 libcusparse=11 libcusparse-dev=11 libcublas=11 libcublas-dev=11 \
                       -c nvidia -c pytorch -y
 pip list; echo ==========; conda --version; echo ==========; conda list
 
