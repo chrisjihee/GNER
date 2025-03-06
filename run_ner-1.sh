@@ -27,8 +27,7 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
       --include=localhost:$CUDA_DEVICES \
       --master_port $DEEPSPEED_PORT \
     $SOURCE_FILE \
-      --train_file $TRAIN_FILE \
-      --validation_file $VALID_FILE \
+      --dataset_name conll2003 \
       --model_name_or_path $MODEL_NAME \
       --output_dir output/$OUTPUT_NAME/$MODEL_NAME \
       --cache_dir .cache \
