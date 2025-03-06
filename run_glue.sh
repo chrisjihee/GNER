@@ -1,29 +1,28 @@
 #!/usr/bin/env bash
 set -x
 
-CUDA_DEVICES=0
-PROGRAM_SOURCE="run_glue.py"
+DEEPSPEED_CONFIG="configs/deepspeed/ds1_t5.json"
 DEEPSPEED_PORT=$(shuf -i 25000-30000 -n 1)
-DEEPSPEED_CONFIG="configs/deepspeed/ds0_t5.json"
+CUDA_DEVICES=6,7
+PROGRAM_SOURCE="run_glue.py"
+OUTPUT_NAME="GLUE-STSb"
+TASK_NAME="stsb"
 
-MODELS=(
+MODEL_NAMES=(
   "google-bert/bert-base-cased"
-  "google-bert/bert-large-cased"
-  "FacebookAI/roberta-base"
-  "FacebookAI/roberta-large"
-  "FacebookAI/xlm-roberta-base"
-  "FacebookAI/xlm-roberta-large"
-  "microsoft/deberta-v3-base"
-  "microsoft/deberta-v3-large"
-  "answerdotai/ModernBERT-base"
-  "answerdotai/ModernBERT-large"
+#  "FacebookAI/roberta-base"
+#  "FacebookAI/roberta-large"
+#  "answerdotai/ModernBERT-base"
+#  "answerdotai/ModernBERT-large"
+#  "microsoft/deberta-v3-base"
+#  "microsoft/deberta-v3-large"
+#  "microsoft/deberta-v2-xlarge"
+#  "microsoft/deberta-v2-xxlarge"
 )
 
-for MODEL_NAME_OR_PATH in "${MODELS[@]}"; do
-  MODEL_OUT_DIR=$(echo "$MODEL_NAME_OR_PATH" | tr '/' '-')
-
-  python -m deepspeed.launcher.runner --include="localhost:$CUDA_DEVICES" --master_port "$DEEPSPEED_PORT" "$PROGRAM_SOURCE" \
-    --model_name_or_path "$MODEL_NAME_OR_PATH" \
+for MODEL_NAME in "${MODEL_NAMES[@]}"; do
+  python -m deepspeed.launcher.runner --include=localhost:$CUDA_DEVICES --master_port $DEEPSPEED_PORT $PROGRAM_SOURCE \
+    --model_name_or_path $MODEL_NAME \
     --task_name stsb \
     --do_train \
     --do_eval \
@@ -31,17 +30,15 @@ for MODEL_NAME_OR_PATH in "${MODELS[@]}"; do
     --tf32 True \
     --max_seq_length 256 \
     --per_device_eval_batch_size 4 \
-    --per_device_train_batch_size 32 \
+    --per_device_train_batch_size 4 \
+    --gradient_accumulation_steps 4 \
     --learning_rate 2e-5 \
-    --num_train_epochs 5 \
-    --metric_for_best_model "eval_combined_score" \
-    --load_best_model_at_end True \
-    --greater_is_better True \
+    --num_train_epochs 10 \
     --logging_strategy epoch \
     --eval_strategy epoch \
-    --save_strategy epoch \
-    --deepspeed "$DEEPSPEED_CONFIG" \
-    --overwrite_cache \
+    --save_strategy no \
+    --deepspeed $DEEPSPEED_CONFIG \
+    --output_dir output/$OUTPUT_NAME/$MODEL_NAME_OR_PATH \
     --overwrite_output_dir \
-    --output_dir "output/stsb/$MODEL_OUT_DIR"
+    --overwrite_cache
 done
