@@ -47,6 +47,5 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
       --save_strategy no \
       --deepspeed $DEEPSPEED_CONFIG \
       --overwrite_output_dir \
-      --overwrite_cache \
-      --eval_on_start
+      --overwrite_cache
 done
