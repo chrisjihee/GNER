@@ -24,7 +24,7 @@ rm -rf transformers; git clone https://github.com/chrisjihee/transformers.git; p
 rm -rf chrisbase;    git clone https://github.com/chrisjihee/chrisbase.git;    pip install -U -e chrisbase
 rm -rf chrisdata;    git clone https://github.com/chrisjihee/chrisdata.git;    pip install -U -e chrisdata
 rm -rf progiter;     git clone https://github.com/chrisjihee/progiter.git;     pip install -U -e progiter
-pip list | grep -E "torch|lightn|trans|accel|speed|flash|numpy|piece|eval|chris|prog|pydantic" > dep_versions.txt
+pip list | grep -E "torch|transformer|lightning |accelerate|deepspeed|flash_attn|numpy|sentencepiece|eval|chris|prog|pydantic" > dep_versions.txt
 
 # 5. Unzip some archived data
 cd data; gzip -d -k pile-ner.json.gz; cd ..

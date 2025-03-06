@@ -1,0 +1,18 @@
+accelerate               1.4.0
+chrisbase                0.5.8       /raid/chrisjihee/proj/GNER/chrisbase
+chrisdata                0.5.0       /raid/chrisjihee/proj/GNER/chrisdata
+deepspeed                0.16.4
+evaluate                 0.4.3
+flash_attn               2.7.4.post1
+lightning                2.5.0.post0
+numpy                    2.2.3
+progiter                 2.0.0.post1 /raid/chrisjihee/proj/GNER/progiter
+pure_eval                0.2.3
+pydantic                 2.10.6
+pydantic_core            2.27.2
+pytorch-lightning        2.5.0.post0
+sentencepiece            0.2.0
+seqeval                  1.2.2
+torch                    2.6.0+cu118
+torchmetrics             1.6.2
+transformers             4.50.0.dev0 /raid/chrisjihee/proj/GNER/transformers
