@@ -3,21 +3,21 @@ set -x
 
 DEEPSPEED_CONFIG="configs/deepspeed/ds1_t5.json"
 DEEPSPEED_PORT=$(shuf -i 25000-30000 -n 1)
-CUDA_DEVICES=6,7
+CUDA_DEVICES=0,1
 PROGRAM_SOURCE="run_glue.py"
 OUTPUT_NAME="GLUE-STSb"
 TASK_NAME="stsb"
 
 MODEL_NAMES=(
   "google-bert/bert-base-cased"
-#  "FacebookAI/roberta-base"
-#  "FacebookAI/roberta-large"
-#  "answerdotai/ModernBERT-base"
-#  "answerdotai/ModernBERT-large"
-#  "microsoft/deberta-v3-base"
-#  "microsoft/deberta-v3-large"
-#  "microsoft/deberta-v2-xlarge"
-#  "microsoft/deberta-v2-xxlarge"
+  "FacebookAI/roberta-base"
+  "FacebookAI/roberta-large"
+  "answerdotai/ModernBERT-base"
+  "answerdotai/ModernBERT-large"
+  "microsoft/deberta-v3-base"
+  "microsoft/deberta-v3-large"
+  "microsoft/deberta-v2-xlarge"
+  "microsoft/deberta-v2-xxlarge"
 )
 
 for MODEL_NAME in "${MODEL_NAMES[@]}"; do
