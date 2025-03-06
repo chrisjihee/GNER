@@ -1,3 +1,4 @@
+import json
 import logging
 from pathlib import Path
 
@@ -6,7 +7,7 @@ import typer
 from typing_extensions import Annotated
 
 from chrisbase.data import AppTyper, JobTimer, NewProjectEnv
-from chrisbase.io import files, dirs, make_dir
+from chrisbase.io import files, dirs, merge_dicts, pop_keys
 from chrisbase.util import grouped
 
 # Global settings
@@ -92,6 +93,35 @@ def compare(
             best_df = best_df[new_columns]
             best_df.sort_values(by="experiment_id", inplace=True)
             best_df.to_csv(output_file, index=False)
+
+
+@main.command("summarize_trainer_state_json")
+def summarize_trainer_state_json(
+        input_dirs: Annotated[str, typer.Argument()] = ...,  # "output/stsb/*"
+        json_filename: Annotated[str, typer.Option("--json_filename")] = "trainer_state.json",
+        logging_level: Annotated[int, typer.Option("--logging_level")] = logging.INFO,
+):
+    env = NewProjectEnv(logging_level=logging_level)
+    with (
+        JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=logging_level <= logging.INFO),
+    ):
+        output_file = Path(input_dirs).parent.with_suffix(".csv")
+        interest_columns = ['model', 'epoch', 'eval_combined_score', 'eval_pearson', 'eval_spearmanr', 'eval_loss',
+                            'loss', 'train_loss', 'grad_norm', 'eval_runtime', 'train_runtime']
+
+        model_dfs = []
+        for input_dir in dirs(input_dirs):
+            logger.info("[input_dir] %s", input_dir)
+            for input_file in files(input_dir / json_filename):
+                trainer_state = json.load(input_file.open())
+                log_history = trainer_state.get("log_history", [])
+
+                metrics_per_step = {k: pop_keys(merge_dicts(*vs), keys=["step"]) for k, vs in grouped(log_history, itemgetter="step")}
+                model_df = pd.DataFrame(metrics_per_step).transpose()
+                model_df["model"] = input_dir.name
+                model_dfs.append(model_df[interest_columns])
+        all_model_df = pd.concat(model_dfs)
+        all_model_df.to_csv(output_file, index=False)
 
 
 if __name__ == "__main__":
