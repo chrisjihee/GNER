@@ -6,7 +6,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python run_glue.py \
   --do_eval \
   --bf16 \
   --bf16_full_eval \
-  --max_seq_length 128 \
+  --max_seq_length 256 \
   --per_device_eval_batch_size 4 \
   --per_device_train_batch_size 4 \
   --learning_rate 2e-5 \
