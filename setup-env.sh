@@ -15,7 +15,7 @@ conda install -n GNER cuda-libraries=11.8 cuda-libraries-dev=11.8 cuda-cudart=11
                       cuda-nvcc=11.8 cuda-cccl=11.8 cuda-runtime=11.8 \
                       cudatoolkit=11 cudatoolkit-dev=11 libcusparse=11 libcusparse-dev=11 libcublas=11 libcublas-dev=11 \
                       -c nvidia -c pytorch -y
-pip list; echo ==========; conda --version; echo ==========; conda list
+pip list; echo ==========; conda --version; echo ==========; conda list > cuda_version.txt
 
 # 4. Install the required packages
 pip install -r requirements.txt
