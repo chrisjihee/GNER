@@ -21,24 +21,28 @@ MODEL_NAMES=(
 )
 
 for MODEL_NAME in "${MODEL_NAMES[@]}"; do
-  python -m deepspeed.launcher.runner --include=localhost:$CUDA_DEVICES --master_port $DEEPSPEED_PORT $PROGRAM_SOURCE \
-    --model_name_or_path $MODEL_NAME \
-    --task_name stsb \
-    --do_train \
-    --do_eval \
-    --bf16 True \
-    --tf32 True \
-    --max_seq_length 256 \
-    --per_device_eval_batch_size 4 \
-    --per_device_train_batch_size 4 \
-    --gradient_accumulation_steps 4 \
-    --learning_rate 2e-5 \
-    --num_train_epochs 10 \
-    --logging_strategy epoch \
-    --eval_strategy epoch \
-    --save_strategy no \
-    --deepspeed $DEEPSPEED_CONFIG \
-    --output_dir output/$OUTPUT_NAME/$MODEL_NAME_OR_PATH \
-    --overwrite_output_dir \
-    --overwrite_cache
+  python -m \
+    deepspeed.launcher.runner \
+      --include=localhost:$CUDA_DEVICES \
+      --master_port $DEEPSPEED_PORT \
+    $PROGRAM_SOURCE \
+      --task_name stsb \
+      --model_name_or_path $MODEL_NAME \
+      --output_dir output/$OUTPUT_NAME/$MODEL_NAME \
+      --do_train \
+      --do_eval \
+      --bf16 True \
+      --tf32 True \
+      --max_seq_length 256 \
+      --per_device_eval_batch_size 4 \
+      --per_device_train_batch_size 4 \
+      --gradient_accumulation_steps 4 \
+      --learning_rate 2e-5 \
+      --num_train_epochs 10 \
+      --logging_strategy epoch \
+      --eval_strategy epoch \
+      --save_strategy no \
+      --deepspeed $DEEPSPEED_CONFIG \
+      --overwrite_output_dir \
+      --overwrite_cache
 done
