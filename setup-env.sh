@@ -37,7 +37,7 @@ rm -rf output-lfs; ln -s /dlfs/jhryu/GNER-output output-lfs  # for some servers 
 huggingface-cli whoami
 huggingface-cli login
 ln -s ~/.cache/huggingface ./.cache_hf
-mkdir -p .cache; cd .cache; ln -s ~/.cache/huggingface/hub .; cd ..
+ln -s ~/.cache/huggingface/hub ./.cache
 
 # 7. Run the training script
 screen -dmS GNER bash -c ~/proj/GNER/run-SFT-jihee.sh; screen -ls; sleep 3s; tail -f $(ls -t ~/proj/GNER/output/*.out | head -n 1)
