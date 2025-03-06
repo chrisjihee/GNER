@@ -124,5 +124,27 @@ def summarize_trainer_state_json(
         all_model_df.to_csv(output_file, index=False)
 
 
+@main.command("summarize_generation_eval_csv")
+def summarize_generation_eval_csv(
+        input_dirs: Annotated[str, typer.Argument()] = "output/ZSE-predict",  # "output/ZSE-predict"
+        csv_filename: Annotated[str, typer.Option("--csv_filename")] = ...,  # "ZSE-test-*-eval.csv", "ZSE-validation-*-eval.csv"
+        logging_level: Annotated[int, typer.Option("--logging_level")] = logging.INFO,
+):
+    env = NewProjectEnv(logging_level=logging_level)
+    with (
+        JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=logging_level <= logging.INFO),
+    ):
+        output_file = Path(input_dirs).with_suffix(".csv")
+        eval_dfs = []
+        for input_dir in dirs(input_dirs):
+            logger.info("[input_dir] %s", input_dir)
+            for input_file in files(input_dir / csv_filename):
+                eval_df = pd.read_csv(input_file)
+                eval_df["method"] = input_file.stem.split("by_")[-1]
+                print(eval_df)
+                exit(0)
+                eval_dfs.append(eval_df)
+
+
 if __name__ == "__main__":
     main()
