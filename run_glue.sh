@@ -34,6 +34,9 @@ for MODEL_NAME_OR_PATH in "${MODELS[@]}"; do
     --per_device_train_batch_size 32 \
     --learning_rate 2e-5 \
     --num_train_epochs 5 \
+    --metric_for_best_model "eval_combined_score" \
+    --load_best_model_at_end True \
+    --greater_is_better True \
     --logging_strategy epoch \
     --eval_strategy epoch \
     --save_strategy no \
