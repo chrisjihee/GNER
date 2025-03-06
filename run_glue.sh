@@ -33,7 +33,7 @@ for MODEL_NAME_OR_PATH in "${MODELS[@]}"; do
     --per_device_eval_batch_size 4 \
     --per_device_train_batch_size 32 \
     --learning_rate 2e-5 \
-    --num_train_epochs 3 \
+    --num_train_epochs 5 \
     --logging_strategy epoch \
     --eval_strategy epoch \
     --save_strategy no \
