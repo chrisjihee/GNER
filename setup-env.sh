@@ -10,10 +10,10 @@ rm -rf GNER*; git clone https://github.com/chrisjihee/GNER.git; cd GNER*;
 conda search conda -c conda-forge | grep " 25."
 conda install -n base -c conda-forge conda=25.1.1 -y;
 conda create -n GNER python=3.12 -y; conda activate GNER
-conda install -n GNER cuda-libraries=11.8 cuda-libraries-dev=11.8 cuda-cudart=11.8 cuda-cudart-dev=11.8 \
-                      cuda-nvrtc=11.8 cuda-nvrtc-dev=11.8 cuda-driver-dev=11.8 \
-                      cuda-nvcc=11.8 cuda-cccl=11.8 cuda-runtime=11.8 \
-                      cudatoolkit=11 cudatoolkit-dev=11 libcusparse=11 libcusparse-dev=11 libcublas=11 libcublas-dev=11 \
+conda install -n GNER cuda-libraries=11.7 cuda-libraries-dev=11.7 cudatoolkit=11.7 cudatoolkit-dev=11.7 \
+                      cuda-cudart=11.7 cuda-cudart-dev=11.7 cuda-nvrtc=11.7 cuda-nvrtc-dev=11.7 \
+                      cuda-driver-dev=11.7 cuda-nvcc=11.7 cuda-cccl=11.7 cuda-runtime=11.7 \
+                      libcusparse=11 libcusparse-dev=11 libcublas=11 libcublas-dev=11 \
                       -c nvidia -c pytorch -y
 pip list; echo ==========; conda --version; echo ==========; conda list > cuda_version.txt
 
