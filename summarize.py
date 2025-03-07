@@ -97,7 +97,7 @@ def compare(
 
 @main.command("summarize_trainer_state_json")
 def summarize_trainer_state_json(
-        input_dirs: Annotated[str, typer.Argument()] = ...,  # "output/stsb/*"
+        input_dirs: Annotated[str, typer.Argument()] = ...,  # "output/GLUE-STSb/**", "output/NER-CONLL/**"
         json_filename: Annotated[str, typer.Option("--json_filename")] = "trainer_state.json",
         logging_level: Annotated[int, typer.Option("--logging_level")] = logging.INFO,
 ):
@@ -106,13 +106,15 @@ def summarize_trainer_state_json(
         JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=logging_level <= logging.INFO),
     ):
         output_file = Path(input_dirs).parent.with_suffix(".csv")
-        interest_columns = ['model', 'epoch', 'eval_combined_score', 'eval_pearson', 'eval_spearmanr', 'eval_loss',
+        # interest_columns = ['model', 'epoch', 'eval_mse', 'eval_pearson', 'eval_spearmanr', 'eval_loss',
+        #                     'loss', 'train_loss', 'grad_norm', 'eval_runtime', 'train_runtime']
+        interest_columns = ['model', 'epoch', 'eval_accuracy', 'eval_f1', 'eval_precision', 'eval_recall', 'eval_loss',
                             'loss', 'train_loss', 'grad_norm', 'eval_runtime', 'train_runtime']
 
         model_dfs = []
         for input_dir in dirs(input_dirs):
-            logger.info("[input_dir] %s", input_dir)
             for input_file in files(input_dir / json_filename):
+                logger.info("[input_file] %s", input_file)
                 trainer_state = json.load(input_file.open())
                 log_history = trainer_state.get("log_history", [])
 
