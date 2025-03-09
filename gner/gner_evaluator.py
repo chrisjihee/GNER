@@ -5,6 +5,7 @@ import string
 from collections import defaultdict
 from typing import List, Dict, Any
 
+from chrisdata.metric import F1
 from chrisdata.ner import GenNERSampleWrapper
 from transformers import AutoTokenizer
 
@@ -274,6 +275,24 @@ class NEREvaluator:
             'rec': rec,
             'f1': f1,
         }
+
+    def evaluate_prediction(self, prediction_output: str, example: GenNERSampleWrapper, tokenizer) -> F1:
+        n_correct, n_pos_gold, n_pos_pred = 0, 0, 0
+        words = example.instance.words
+        labels = example.instance.labels
+        predictions = extract_predictions3(prediction_output, example=example, tokenizer=tokenizer)
+        gold_tuples = parser(words, labels)
+        pred_tuples = parser(words, predictions)
+        for t in pred_tuples:
+            if t in gold_tuples:
+                n_correct += 1
+            n_pos_pred += 1
+        n_pos_gold += len(gold_tuples)
+        return F1(
+            n_correct=n_correct,
+            n_pos_gold=n_pos_gold,
+            n_pos_pred=n_pos_pred,
+        )
 
 
 def compute_metrics(examples: List[Dict[str, Any]], tokenizer=None, average_key="average", detailed=False):
