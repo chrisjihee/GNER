@@ -1,5 +1,5 @@
-import re
 import logging
+import re
 from collections import defaultdict
 from pathlib import Path
 from typing import List
@@ -9,14 +9,14 @@ import pandas as pd
 import torch
 import typer
 from datasets import load_dataset
-from pydantic import BaseModel
 from typing_extensions import Annotated
 
 from chrisbase.data import AppTyper, JobTimer, NewProjectEnv
 from chrisbase.io import LoggingFormat, LoggerWriter, new_path, log_table
 from chrisbase.time import from_timestamp, now_stamp
+from chrisdata.metric import F1
 from chrisdata.ner import GenNERSampleWrapper
-from gner import extract_predictions3, parser
+from gner import NEREvaluator
 from progiter import ProgIter
 from transformers import (
     AutoTokenizer,
@@ -95,36 +95,6 @@ def predict(
         logger.info(f"Saved predictions to {(env.output_dir / env.output_file)}: #example={num_example_outputs}, #prediction={num_prediction_outputs}")
 
 
-class F1_Metric(BaseModel):
-    n_correct: int = 0
-    n_pos_gold: int = 0
-    n_pos_pred: int = 0
-
-    def __str__(self):
-        return f"F1={self.f1:.4f}, Prec={self.prec:.4f}, Rec={self.rec:.4f}, #correct={self.n_correct}, #pos_gold={self.n_pos_gold}, #pos_pred={self.n_pos_pred}"
-
-    def __add__(self, other: "F1_Metric") -> "F1_Metric":
-        if not isinstance(other, F1_Metric):
-            return NotImplemented
-        return F1_Metric(
-            n_correct=self.n_correct + other.n_correct,
-            n_pos_gold=self.n_pos_gold + other.n_pos_gold,
-            n_pos_pred=self.n_pos_pred + other.n_pos_pred,
-        )
-
-    @property
-    def prec(self):
-        return self.n_correct / (self.n_pos_pred + 1e-10)
-
-    @property
-    def rec(self):
-        return self.n_correct / (self.n_pos_gold + 1e-10)
-
-    @property
-    def f1(self):
-        return 2 * self.prec * self.rec / (self.prec + self.rec + 1e-10)
-
-
 def find_increasing_indices(lst):
     if not lst:
         return []
@@ -171,6 +141,7 @@ def evaluate(
         all_examples = defaultdict(list)
         for example in input_dataset:
             example = GenNERSampleWrapper.model_validate(example)
+            example.id = example.id or example.instance.id
             if max_examples <= 0 or len(all_examples[example.dataset]) < max_examples:
                 all_examples[example.dataset].append(example)
         max_candidates = max(
@@ -184,41 +155,26 @@ def evaluate(
                     f" for {len(all_examples)} dataset ({sum(len(all_examples[d]) for d in all_examples)} samples)")
         all_results = {}
         for di, dataset in enumerate(sorted(all_examples.keys()), start=1):
-            dataset_metrics = [F1_Metric()] * max_candidates
+            dataset_metrics = [F1()] * max_candidates
             for example in ProgIter(all_examples[dataset], stream=LoggerWriter(logger), verbose=2, time_thresh=5,
                                     desc=f" - [{di:02d}/{num_dataset:02d}] {dataset:<20s}:"):
-                example_metrics: List[F1_Metric] = []
+                candiates_best: List[F1] = []
                 for prediction_output in example.instance.prediction_outputs:
-                    n_correct, n_pos_gold, n_pos_pred = 0, 0, 0
-                    words = example.instance.words
-                    labels = example.instance.labels
-                    predictions = extract_predictions3(prediction_output, example=example, tokenizer=tokenizer)
-                    gold_tuples = parser(words, labels)
-                    pred_tuples = parser(words, predictions)
-                    for t in pred_tuples:
-                        if t in gold_tuples:
-                            n_correct += 1
-                        n_pos_pred += 1
-                    n_pos_gold += len(gold_tuples)
-                    curr_metric = F1_Metric(
-                        n_correct=n_correct,
-                        n_pos_gold=n_pos_gold,
-                        n_pos_pred=n_pos_pred,
-                    )
-                    if not example_metrics:
-                        example_metric = curr_metric
+                    example_f1 = NEREvaluator().evaluate_prediction(prediction_output, example, tokenizer)
+                    if not candiates_best:
+                        best_curr = example_f1
                     else:
-                        prev_metric = example_metrics[-1]
-                        example_metric = curr_metric if curr_metric.f1 > prev_metric.f1 else prev_metric
-                    example_metrics.append(example_metric)
+                        best_prev = candiates_best[-1]
+                        best_curr = example_f1 if example_f1.f1 > best_prev.f1 else best_prev
+                    candiates_best.append(best_curr)
 
-                # inc_points = find_increasing_indices([x.f1 for x in example_metrics])
-                # logger.info(f"{len(example_metrics)}: {len(inc_points)}: {inc_points}: {[f'{x.f1:.4f}' for x in example_metrics]}")
-                for c, example_metric in enumerate(example_metrics):
+                inc_points = find_increasing_indices([x.f1 for x in candiates_best])
+                logger.info(f"{len(candiates_best)}: {len(inc_points)}: {inc_points}: {[f'{x.f1:.4f}' for x in candiates_best]}")
+                for c, example_metric in enumerate(candiates_best):
                     dataset_metrics[c] += example_metric
             all_results[re.split("[-_]", dataset)[-1]] = dataset_metrics
 
-        all_results["average"] = [F1_Metric()] * max_candidates
+        all_results["average"] = [F1()] * max_candidates
         for c in range(max_candidates):
             for d in all_results:
                 all_results["average"][c] += all_results[d][c]
