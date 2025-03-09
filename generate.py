@@ -1,7 +1,6 @@
 import logging
 import re
 from collections import defaultdict
-from operator import attrgetter
 from pathlib import Path
 from typing import List, Optional
 
@@ -145,6 +144,7 @@ class PredictionQuality(BaseModel):
 def convert_to_qe_data(
         predction_file: Annotated[str, typer.Option("--predction_file")] = "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl",  # "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl", "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl"
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
+        num_candidates: Annotated[int, typer.Option("--num_candidates")] = 10,
         num_val: Annotated[int, typer.Option("--num_validation")] = 10,
         weight_f1: Annotated[float, typer.Option("--weight_f1")] = 0.7,
         weight_nd: Annotated[float, typer.Option("--weight_nd")] = 0.3,
@@ -199,31 +199,32 @@ def convert_to_qe_data(
                 for example in ProgIter(examples[sub], stream=LoggerWriter(logger), verbose=2, time_thresh=5,
                                         desc=f" - [{i:02d}/{len(examples):02d}] ({split:<5s}) {sub:<20s}:"):
                     reference = GenNERSample.get_prompt_labels(example.instance.words, example.instance.labels)
+                    candiates = sorted(set(example.instance.prediction_outputs[: num_candidates]))
                     # print(f"prompt_labels: {reference}")
-                    scored_predictions = [
+                    scored_candidates = [
                         PredictionQuality(
-                            prediction=prediction,
-                            norm_dist=normalized_edit_distance(prediction, reference),
-                            f1_score=NEREvaluator().evaluate_prediction(prediction, example, tokenizer).f1
+                            prediction=candidate,
+                            norm_dist=normalized_edit_distance(candidate, reference),
+                            f1_score=NEREvaluator().evaluate_prediction(candidate, example, tokenizer).f1
                         ).calc_quality(weight_f1=weight_f1, weight_nd=weight_nd, pow_weight=pow_weight, max_score=max_score)
-                        for prediction in sorted(set(example.instance.prediction_outputs))
+                        for candidate in candiates
                     ]
-                    # for j, x in enumerate(sorted(scored_predictions, key=attrgetter('quality'), reverse=True), start=1):
+                    # for j, x in enumerate(sorted(scored_candidates, key=attrgetter('quality'), reverse=True), start=1):
                     #     print(f"{j:02d}: {x}")
 
-                    for scored_prediction in scored_predictions:
+                    for scored_candidate in scored_candidates:
                         converted_dataset[split].append(
                             RegressionSample(
-                                sentence1=scored_prediction.prediction,
+                                sentence1=scored_candidate.prediction,
                                 sentence2=' '.join(example.instance.words),
-                                label=scored_prediction.quality,
+                                label=scored_candidate.quality,
                                 idx=idx,
                             )
                         )
                         idx += 1
 
         for split in converted_dataset:
-            output_file = new_path(env.output_file, post=split)
+            output_file = new_path(env.output_file, post=f"num={num_candidates}-{split}")
             with Path(env.output_dir / output_file).open("w") as out:
                 for example in converted_dataset[split]:
                     out.write(example.model_dump_json() + "\n")
