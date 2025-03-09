@@ -5,7 +5,7 @@ import string
 from collections import defaultdict
 from typing import List, Dict, Any
 
-from chrisdata.metric import F1
+from chrisdata.learn import F1
 from chrisdata.ner import GenNERSampleWrapper
 from transformers import AutoTokenizer
 

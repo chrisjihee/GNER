@@ -18,7 +18,7 @@ from typing_extensions import Annotated
 from chrisbase.data import AppTyper, JobTimer, NewProjectEnv
 from chrisbase.io import LoggingFormat, LoggerWriter, new_path, log_table
 from chrisbase.time import from_timestamp, now_stamp
-from chrisdata.metric import F1
+from chrisdata.learn import F1, RegressionSample
 from chrisdata.ner import GenNERSampleWrapper, GenNERSample
 from gner import NEREvaluator
 from progiter import ProgIter
@@ -173,28 +173,33 @@ def convert_to_qe_data(
     with (JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=verbose)):
         tokenizer = AutoTokenizer.from_pretrained(pretrained)
         input_dataset = load_dataset("json", data_files=str(predction_file), split=datasets.Split.TRAIN)
-        all_examples = defaultdict(list)
+        raw_examples = defaultdict(list)
         val_examples = defaultdict(list)
         train_examples = defaultdict(list)
         for example in input_dataset:
             example = GenNERSampleWrapper.model_validate(example)
             example.id = example.id or example.instance.id
-            all_examples[example.dataset].append(example)
-        for sub in all_examples:
-            val_size = min(num_val, len(all_examples[sub]))
-            train_set, val_set = train_test_split(all_examples[sub], test_size=val_size, random_state=env.random_seed)
+            raw_examples[example.dataset].append(example)
+        for sub in raw_examples:
+            val_size = min(num_val, len(raw_examples[sub]))
+            train_set, val_set = train_test_split(raw_examples[sub], test_size=val_size, random_state=env.random_seed)
             train_examples[sub] = sorted(train_set, key=lambda x: int(x.id))
             val_examples[sub] = sorted(val_set, key=lambda x: int(x.id))
 
         logger.info(f"Converting the generated predictions into QE data"
-                    f" for {len(all_examples)} dataset ({sum(len(all_examples[d]) for d in all_examples)} samples)")
-        qe_dataset = defaultdict(list)
-        for split, examples in [("train", train_examples), ("val", val_examples)]:
+                    f" for {len(raw_examples)} dataset ({sum(len(raw_examples[d]) for d in raw_examples)} samples)")
+
+        converted_dataset = defaultdict(list)
+        for split, examples in {
+            "train": train_examples,
+            "val": val_examples,
+        }.items():
+            idx = 0
             for i, sub in enumerate(sorted(examples.keys()), start=1):
                 for example in ProgIter(examples[sub], stream=LoggerWriter(logger), verbose=2, time_thresh=5,
                                         desc=f" - [{i:02d}/{len(examples):02d}] ({split:<5s}) {sub:<20s}:"):
                     reference = GenNERSample.get_prompt_labels(example.instance.words, example.instance.labels)
-                    print(f"prompt_labels: {reference}")
+                    # print(f"prompt_labels: {reference}")
                     scored_predictions = [
                         PredictionQuality(
                             prediction=prediction,
@@ -203,11 +208,26 @@ def convert_to_qe_data(
                         ).calc_quality(weight_f1=weight_f1, weight_nd=weight_nd, pow_weight=pow_weight, max_score=max_score)
                         for prediction in sorted(set(example.instance.prediction_outputs))
                     ]
+                    # for j, x in enumerate(sorted(scored_predictions, key=attrgetter('quality'), reverse=True), start=1):
+                    #     print(f"{j:02d}: {x}")
 
-                    for j, x in enumerate(sorted(scored_predictions, key=attrgetter('quality'), reverse=True), start=1):
-                        print(f"{j:02d}: {x}")
+                    for scored_prediction in scored_predictions:
+                        converted_dataset[split].append(
+                            RegressionSample(
+                                sentence1=scored_prediction.prediction,
+                                sentence2=' '.join(example.instance.words),
+                                label=scored_prediction.quality,
+                                idx=idx,
+                            )
+                        )
+                        idx += 1
 
-                    exit(0)
+        for split in converted_dataset:
+            output_file = new_path(env.output_file, post=split)
+            with Path(env.output_dir / output_file).open("w") as out:
+                for example in converted_dataset[split]:
+                    out.write(example.model_dump_json() + "\n")
+            logger.info(f"QE data[{split}] saved to {env.output_dir / output_file}")
 
 
 @main.command("check_possibility")
