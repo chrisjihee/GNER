@@ -9,6 +9,7 @@ import pandas as pd
 import torch
 import typer
 from datasets import load_dataset
+from sklearn.model_selection import train_test_split
 from typing_extensions import Annotated
 
 from chrisbase.data import AppTyper, JobTimer, NewProjectEnv
@@ -25,9 +26,11 @@ from transformers import (
 
 # Global settings
 logger: logging.Logger = logging.getLogger("gner")
+main = AppTyper()
 
 
-def predict(
+@main.command("generate_prediction")
+def generate_prediction(
         device: Annotated[str, typer.Option("--device")] = ...,
         input_file: Annotated[str, typer.Option("--input_file")] = ...,  # "data/ZSE-validation.jsonl", "data/ZSE-test.jsonl"
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
@@ -39,7 +42,7 @@ def predict(
         output_home: Annotated[str, typer.Option("--output_home")] = "output",
         output_name: Annotated[str, typer.Option("--output_name")] = "ZSE-predict",
         output_file: Annotated[str, typer.Option("--output_file")] = "pred.jsonl",
-        logging_file: Annotated[str, typer.Option("--logging_file")] = "predict-loggings.out",
+        logging_file: Annotated[str, typer.Option("--logging_file")] = "generate_prediction.out",
         verbose: Annotated[int, typer.Option("--verbose")] = 1,
 ):
     assert (generation_by_sample and generation_temperature is not None and generation_top_p is not None) or (not generation_by_sample), f"Invalid generation parameters: by_sample={generation_by_sample}, temperature={generation_temperature}, top_p={generation_top_p}"
@@ -110,14 +113,60 @@ def find_increasing_indices(lst):
     return indices
 
 
-def evaluate(
+@main.command("convert_to_qe_data")
+def convert_to_qe_data(
         predction_file: Annotated[str, typer.Option("--predction_file")] = "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl",  # "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl", "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl"
-        max_examples: Annotated[int, typer.Option("--max_examples")] = -1,
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
+        num_val: Annotated[int, typer.Option("--num_validation")] = 10,
+        output_home: Annotated[str, typer.Option("--output_home")] = "data",
+        output_name: Annotated[str, typer.Option("--output_name")] = "NER-QE",
+        output_file: Annotated[str, typer.Option("--output_file")] = "ZSE-validation-pred-by_beam.json",
+        logging_file: Annotated[str, typer.Option("--logging_file")] = "convert_to_QE_data.out",
+        random_seed: Annotated[int, typer.Option("--random_seed")] = 7,
+        verbose: Annotated[int, typer.Option("--verbose")] = 1,
+):
+    stamp = now_stamp()
+    env = NewProjectEnv(
+        time_stamp=from_timestamp(stamp, fmt='%m%d-%H%M%S'),
+        random_seed=random_seed,
+        output_name=output_name,
+        output_home=output_home,
+        output_file=output_file,
+        logging_file=new_path(logging_file, post=from_timestamp(stamp, fmt='%m%d-%H%M%S')),
+        logging_level=logging.INFO,
+        logging_format=LoggingFormat.CHECK_24,
+    )
+    env.setup_logger(env.logging_level)
+
+    with (JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=verbose)):
+        tokenizer = AutoTokenizer.from_pretrained(pretrained)
+        input_dataset = load_dataset("json", data_files=str(predction_file), split=datasets.Split.TRAIN)
+        all_examples = defaultdict(list)
+        val_examples = defaultdict(list)
+        train_examples = defaultdict(list)
+        for example in input_dataset:
+            example = GenNERSampleWrapper.model_validate(example)
+            example.id = example.id or example.instance.id
+            all_examples[example.dataset].append(example)
+        for dataset in all_examples:
+            val_size = min(num_val, len(all_examples[dataset]))
+            train_set, val_set = train_test_split(all_examples[dataset], test_size=val_size, random_state=env.random_seed)
+            train_examples[dataset] = sorted(train_set, key=lambda x: int(x.id))
+            val_examples[dataset] = sorted(val_set, key=lambda x: int(x.id))
+
+        logger.info(f"Converting the generated predictions into QE data"
+                    f" for {len(all_examples)} dataset ({sum(len(all_examples[d]) for d in all_examples)} samples)")
+
+
+@main.command("check_possibility")
+def check_possibility(
+        predction_file: Annotated[str, typer.Option("--predction_file")] = "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl",  # "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl", "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl"
+        pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
+        max_examples: Annotated[int, typer.Option("--max_examples")] = -1,
         output_home: Annotated[str, typer.Option("--output_home")] = "output",
         output_name: Annotated[str, typer.Option("--output_name")] = "ZSE-predict",
         output_file: Annotated[str, typer.Option("--output_file")] = "eval.csv",
-        logging_file: Annotated[str, typer.Option("--logging_file")] = "evaluate-loggings.out",
+        logging_file: Annotated[str, typer.Option("--logging_file")] = "check_possibility.out",
         verbose: Annotated[int, typer.Option("--verbose")] = 1,
 ):
     stamp = now_stamp()
@@ -151,7 +200,7 @@ def evaluate(
         )
         num_dataset = len(all_examples)
 
-        logger.info(f"Evaluating predictions from {predction_file}"
+        logger.info(f"Checking the possibility of predictions from {predction_file}"
                     f" for {len(all_examples)} dataset ({sum(len(all_examples[d]) for d in all_examples)} samples)")
         all_results = {}
         for di, dataset in enumerate(sorted(all_examples.keys()), start=1):
@@ -168,8 +217,8 @@ def evaluate(
                         best_curr = example_f1 if example_f1.f1 > best_prev.f1 else best_prev
                     candiates_best.append(best_curr)
 
-                inc_points = find_increasing_indices([x.f1 for x in candiates_best])
-                logger.info(f"{len(candiates_best)}: {len(inc_points)}: {inc_points}: {[f'{x.f1:.4f}' for x in candiates_best]}")
+                # inc_points = find_increasing_indices([x.f1 for x in candiates_best])
+                # logger.info(f"{len(candiates_best)}: {len(inc_points)}: {inc_points}: {[f'{x.f1:.4f}' for x in candiates_best]}")
                 for c, example_metric in enumerate(candiates_best):
                     dataset_metrics[c] += example_metric
             all_results[re.split("[-_]", dataset)[-1]] = dataset_metrics
@@ -190,7 +239,4 @@ def evaluate(
 
 
 if __name__ == "__main__":
-    AppTyper.run(
-        predict,
-        evaluate,
-    )
+    main()
