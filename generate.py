@@ -1,14 +1,17 @@
 import logging
 import re
 from collections import defaultdict
+from operator import attrgetter
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 import datasets
 import pandas as pd
 import torch
 import typer
 from datasets import load_dataset
+from nltk.metrics.distance import edit_distance
+from pydantic import BaseModel
 from sklearn.model_selection import train_test_split
 from typing_extensions import Annotated
 
@@ -16,7 +19,7 @@ from chrisbase.data import AppTyper, JobTimer, NewProjectEnv
 from chrisbase.io import LoggingFormat, LoggerWriter, new_path, log_table
 from chrisbase.time import from_timestamp, now_stamp
 from chrisdata.metric import F1
-from chrisdata.ner import GenNERSampleWrapper
+from chrisdata.ner import GenNERSampleWrapper, GenNERSample
 from gner import NEREvaluator
 from progiter import ProgIter
 from transformers import (
@@ -113,13 +116,42 @@ def find_increasing_indices(lst):
     return indices
 
 
+def normalized_edit_distance(hyp_text: str, ref_text: str) -> float:
+    dist = edit_distance(ref_text, hyp_text)
+    max_len = max(len(ref_text), len(hyp_text))
+    norm_dist = dist / max_len if max_len else 0.0
+    return norm_dist
+
+
+class PredictionQuality(BaseModel):
+    prediction: str
+    norm_dist: float
+    f1_score: float
+    quality: Optional[float] = None
+
+    def calc_quality(self, weight_f1: float = 0.7, weight_nd: float = 0.3, pow_weight: float = 2.0, max_score: float = 5.0):
+        qe_score = sum([
+            weight_f1 * self.f1_score,
+            weight_nd * (1.0 - self.norm_dist),
+        ])
+        self.quality = round(pow(qe_score, pow_weight) * max_score, 2)
+        return self
+
+    def __str__(self):
+        return f"Q={self.quality:.2f}, F1={self.f1_score:.4f}, ND={self.norm_dist:.4f}, pred={self.prediction}"
+
+
 @main.command("convert_to_qe_data")
 def convert_to_qe_data(
         predction_file: Annotated[str, typer.Option("--predction_file")] = "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl",  # "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl", "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl"
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
         num_val: Annotated[int, typer.Option("--num_validation")] = 10,
+        weight_f1: Annotated[float, typer.Option("--weight_f1")] = 0.7,
+        weight_nd: Annotated[float, typer.Option("--weight_nd")] = 0.3,
+        pow_weight: Annotated[float, typer.Option("--pow_weight")] = 2.0,
+        max_score: Annotated[float, typer.Option("--max_score")] = 5.0,
         output_home: Annotated[str, typer.Option("--output_home")] = "data",
-        output_name: Annotated[str, typer.Option("--output_name")] = "NER-QE",
+        output_name: Annotated[str, typer.Option("--output_name")] = "GNER-QE",
         output_file: Annotated[str, typer.Option("--output_file")] = "ZSE-validation-pred-by_beam.json",
         logging_file: Annotated[str, typer.Option("--logging_file")] = "convert_to_QE_data.out",
         random_seed: Annotated[int, typer.Option("--random_seed")] = 7,
@@ -148,14 +180,34 @@ def convert_to_qe_data(
             example = GenNERSampleWrapper.model_validate(example)
             example.id = example.id or example.instance.id
             all_examples[example.dataset].append(example)
-        for dataset in all_examples:
-            val_size = min(num_val, len(all_examples[dataset]))
-            train_set, val_set = train_test_split(all_examples[dataset], test_size=val_size, random_state=env.random_seed)
-            train_examples[dataset] = sorted(train_set, key=lambda x: int(x.id))
-            val_examples[dataset] = sorted(val_set, key=lambda x: int(x.id))
+        for sub in all_examples:
+            val_size = min(num_val, len(all_examples[sub]))
+            train_set, val_set = train_test_split(all_examples[sub], test_size=val_size, random_state=env.random_seed)
+            train_examples[sub] = sorted(train_set, key=lambda x: int(x.id))
+            val_examples[sub] = sorted(val_set, key=lambda x: int(x.id))
 
         logger.info(f"Converting the generated predictions into QE data"
                     f" for {len(all_examples)} dataset ({sum(len(all_examples[d]) for d in all_examples)} samples)")
+        qe_dataset = defaultdict(list)
+        for split, examples in [("train", train_examples), ("val", val_examples)]:
+            for i, sub in enumerate(sorted(examples.keys()), start=1):
+                for example in ProgIter(examples[sub], stream=LoggerWriter(logger), verbose=2, time_thresh=5,
+                                        desc=f" - [{i:02d}/{len(examples):02d}] ({split:<5s}) {sub:<20s}:"):
+                    reference = GenNERSample.get_prompt_labels(example.instance.words, example.instance.labels)
+                    print(f"prompt_labels: {reference}")
+                    scored_predictions = [
+                        PredictionQuality(
+                            prediction=prediction,
+                            norm_dist=normalized_edit_distance(prediction, reference),
+                            f1_score=NEREvaluator().evaluate_prediction(prediction, example, tokenizer).f1
+                        ).calc_quality(weight_f1=weight_f1, weight_nd=weight_nd, pow_weight=pow_weight, max_score=max_score)
+                        for prediction in sorted(set(example.instance.prediction_outputs))
+                    ]
+
+                    for j, x in enumerate(sorted(scored_predictions, key=attrgetter('quality'), reverse=True), start=1):
+                        print(f"{j:02d}: {x}")
+
+                    exit(0)
 
 
 @main.command("check_possibility")
