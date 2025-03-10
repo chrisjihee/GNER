@@ -5,8 +5,8 @@ DEEPSPEED_CONFIG="configs/deepspeed/ds1_t5.json"
 DEEPSPEED_PORT=$(shuf -i 25000-30000 -n 1)
 CUDA_DEVICES=2,3
 SOURCE_FILE="run_glue.py"
-TRAIN_FILE="data/GNER-QE/ZSE-validation-pred-by_beam-num=10-train.json"
-VALID_FILE="data/GNER-QE/ZSE-validation-pred-by_beam-num=10-val.json"
+TRAIN_FILE="data/GNER-QE/ZSE-validation-pred-by_beam-num=20-train.json"
+VALID_FILE="data/GNER-QE/ZSE-validation-pred-by_beam-num=20-val.json"
 OUTPUT_NAME="GNER-QE"
 
 MODEL_NAMES=(
@@ -30,7 +30,7 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
       --train_file $TRAIN_FILE \
       --validation_file $VALID_FILE \
       --model_name_or_path $MODEL_NAME \
-      --output_dir output/$OUTPUT_NAME/$MODEL_NAME-512 \
+      --output_dir output/$OUTPUT_NAME/$MODEL_NAME-num=20 \
       --cache_dir .cache \
       --do_train \
       --do_eval \
@@ -41,7 +41,7 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
       --per_device_train_batch_size 4 \
       --gradient_accumulation_steps 4 \
       --learning_rate 2e-5 \
-      --num_train_epochs 10 \
+      --num_train_epochs 40 \
       --logging_strategy epoch \
       --eval_strategy epoch \
       --save_strategy epoch \
