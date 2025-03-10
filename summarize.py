@@ -97,7 +97,8 @@ def compare(
 
 @main.command("summarize_trainer_state_json")
 def summarize_trainer_state_json(
-        input_dirs: Annotated[str, typer.Argument()] = ...,  # "output/GLUE-STSb/**", "output/NER-CONLL/**"
+        input_dirs: Annotated[str, typer.Argument()] = ...,  # "output/GLUE-STSb/**", "output/NER-CONLL/**", "output/GNER-QE/**"
+        task_type: Annotated[str, typer.Argument()] = "regression",  # "classification"
         json_filename: Annotated[str, typer.Option("--json_filename")] = "trainer_state.json",
         logging_level: Annotated[int, typer.Option("--logging_level")] = logging.INFO,
 ):
@@ -106,14 +107,17 @@ def summarize_trainer_state_json(
         JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=logging_level <= logging.INFO),
     ):
         output_file = Path(input_dirs).parent.with_suffix(".csv")
-        # interest_columns = ['model', 'epoch', 'eval_mse', 'eval_pearson', 'eval_spearmanr', 'eval_loss',
-        #                     'loss', 'train_loss', 'grad_norm', 'eval_runtime', 'train_runtime']
-        interest_columns = ['model', 'epoch', 'eval_accuracy', 'eval_f1', 'eval_precision', 'eval_recall', 'eval_loss',
-                            'loss', 'train_loss', 'grad_norm', 'eval_runtime', 'train_runtime']
+        common_columns1 = ['model', 'epoch']
+        common_columns2 = ['eval_loss', 'loss', 'train_loss', 'grad_norm', 'eval_runtime', 'train_runtime']
+        if task_type == "regression":
+            interest_columns = common_columns1 + ['eval_mse', 'eval_pearson', 'eval_spearmanr'] + common_columns2
+        else:
+            interest_columns = common_columns1 + ['eval_accuracy', 'eval_f1'] + common_columns2
+        logger.info(f"Interest Columns: {interest_columns}")
 
         model_dfs = []
         for input_dir in dirs(input_dirs):
-            for input_file in files(input_dir / json_filename):
+            for input_file in [x for x in files(input_dir / json_filename) if "checkpoint-" not in x.parent.name]:
                 logger.info("[input_file] %s", input_file)
                 trainer_state = json.load(input_file.open())
                 log_history = trainer_state.get("log_history", [])
@@ -124,6 +128,7 @@ def summarize_trainer_state_json(
                 model_dfs.append(model_df[interest_columns])
         all_model_df = pd.concat(model_dfs)
         all_model_df.to_csv(output_file, index=False)
+        logger.info("Summary is saved to %s", output_file)
 
 
 @main.command("summarize_generation_eval_csv")
