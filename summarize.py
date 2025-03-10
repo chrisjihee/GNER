@@ -110,7 +110,7 @@ def summarize_trainer_state_json(
         common_columns1 = ['model', 'epoch']
         common_columns2 = ['eval_loss', 'loss', 'train_loss', 'grad_norm', 'eval_runtime', 'train_runtime']
         if task_type == "regression":
-            interest_columns = common_columns1 + ['eval_mse', 'eval_pearson', 'eval_spearmanr'] + common_columns2
+            interest_columns = common_columns1 + ['eval_pearson', 'eval_spearmanr'] + common_columns2
         else:
             interest_columns = common_columns1 + ['eval_accuracy', 'eval_f1'] + common_columns2
         logger.info(f"Interest Columns: {', '.join(interest_columns)}")
