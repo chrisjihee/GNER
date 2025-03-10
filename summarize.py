@@ -113,11 +113,11 @@ def summarize_trainer_state_json(
             interest_columns = common_columns1 + ['eval_mse', 'eval_pearson', 'eval_spearmanr'] + common_columns2
         else:
             interest_columns = common_columns1 + ['eval_accuracy', 'eval_f1'] + common_columns2
-        logger.info(f"Interest Columns: {interest_columns}")
+        logger.info(f"Interest Columns: {', '.join(interest_columns)}")
 
         model_dfs = []
         for input_dir in dirs(input_dirs):
-            for input_file in [x for x in files(input_dir / json_filename) if "checkpoint-" not in x.parent.name]:
+            for input_file in [x for x in files(input_dir / json_filename) if not x.parent.name.startswith("checkpoint-")]:
                 logger.info("[input_file] %s", input_file)
                 trainer_state = json.load(input_file.open())
                 log_history = trainer_state.get("log_history", [])
