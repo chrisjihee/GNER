@@ -22,6 +22,7 @@ import random
 import sys
 from dataclasses import dataclass, field
 from typing import Optional
+from pathlib import Path  # chrisjihee
 
 import datasets
 import evaluate
@@ -590,6 +591,7 @@ def main():
 
     if training_args.do_predict:
         logger.info("*** Predict ***")
+        data_args.task_name = data_args.task_name or Path(data_args.test_file).stem  # chrisjihee: in case of undefined task_name
 
         # Loop to handle MNLI double evaluation (matched, mis-matched)
         tasks = [data_args.task_name]
