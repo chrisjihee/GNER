@@ -16,11 +16,13 @@ TEST_FILES=(
 )
 
 MODEL_NAMES=(
-  "output/GNER-QE/google-bert/bert-base-cased-num=30/checkpoint-29448"
-  "output/GNER-QE/google-bert/bert-base-cased-num=30/checkpoint-26994"
-  "output/GNER-QE/google-bert/bert-base-cased-num=40/checkpoint-62092"
-  "output/GNER-QE/google-bert/bert-base-cased-num=20/checkpoint-27880"
-  "output/GNER-QE/FacebookAI/roberta-large-num=10/checkpoint-15244"
+  "output/GNER-QE/FacebookAI/roberta-large-num=20/checkpoint-27060"     # 0.8264
+  "output/GNER-QE/FacebookAI/roberta-large-num=20/checkpoint-32800"     # 0.8215
+  "output/GNER-QE/FacebookAI/roberta-large-num=10/checkpoint-15244"     # 0.7711
+  "output/GNER-QE/google-bert/bert-base-cased-num=30/checkpoint-29448"  # 0.8081
+  "output/GNER-QE/google-bert/bert-base-cased-num=30/checkpoint-26994"  # 0.8000
+  "output/GNER-QE/google-bert/bert-base-cased-num=40/checkpoint-62092"  # 0.8008
+  "output/GNER-QE/google-bert/bert-base-cased-num=20/checkpoint-31160"  # 0.7879
 )
 
 for MODEL_NAME in "${MODEL_NAMES[@]}"; do
