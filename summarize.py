@@ -107,12 +107,12 @@ def summarize_trainer_state_json(
         JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=logging_level <= logging.INFO),
     ):
         output_file = Path(input_dirs).parent.with_suffix(".csv")
-        common_columns1 = ['model', 'epoch']
-        common_columns2 = ['eval_loss', 'loss', 'train_loss', 'grad_norm', 'eval_runtime', 'train_runtime']
+        common_columns1 = ["model", "step", "epoch"]
+        common_columns2 = ["eval_loss", "train_loss", "eval_runtime", "train_runtime"]
         if task_type == "regression":
-            interest_columns = common_columns1 + ['eval_pearson', 'eval_spearmanr'] + common_columns2
+            interest_columns = common_columns1 + ["eval_pearson", "eval_spearmanr"] + common_columns2
         else:
-            interest_columns = common_columns1 + ['eval_accuracy', 'eval_f1'] + common_columns2
+            interest_columns = common_columns1 + ["eval_accuracy", "eval_f1"] + common_columns2
         logger.info(f"Interest Columns: {', '.join(interest_columns)}")
 
         model_dfs = []
@@ -122,7 +122,7 @@ def summarize_trainer_state_json(
                 trainer_state = json.load(input_file.open())
                 log_history = trainer_state.get("log_history", [])
 
-                metrics_per_step = {k: pop_keys(merge_dicts(*vs), keys=["step"]) for k, vs in grouped(log_history, itemgetter="step")}
+                metrics_per_step = {k: merge_dicts(*vs) for k, vs in grouped(log_history, itemgetter="step")}
                 model_df = pd.DataFrame(metrics_per_step).transpose()
                 model_df["model"] = input_dir.name
                 model_dfs.append(model_df[interest_columns])
