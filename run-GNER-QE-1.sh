@@ -30,18 +30,18 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
       --train_file $TRAIN_FILE \
       --validation_file $VALID_FILE \
       --model_name_or_path $MODEL_NAME \
-      --output_dir output/$OUTPUT_NAME/$MODEL_NAME-256 \
+      --output_dir output/$OUTPUT_NAME/$MODEL_NAME-num=10 \
       --cache_dir .cache \
       --do_train \
       --do_eval \
       --bf16 True \
       --tf32 True \
-      --max_seq_length 256 \
+      --max_seq_length 512 \
       --per_device_eval_batch_size 4 \
       --per_device_train_batch_size 4 \
       --gradient_accumulation_steps 4 \
       --learning_rate 2e-5 \
-      --num_train_epochs 10 \
+      --num_train_epochs 40 \
       --logging_strategy epoch \
       --eval_strategy epoch \
       --save_strategy epoch \
