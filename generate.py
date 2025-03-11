@@ -150,7 +150,7 @@ def convert_to_qe_data(
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
         num_candidates: Annotated[int, typer.Option("--num_candidates")] = 10,
         no_train_split: Annotated[bool, typer.Option("--no_train_split")] = True,
-        test_count: Annotated[int, typer.Option("--test_count")] = 10,
+        test_count: Annotated[int, typer.Option("--test_count")] = 200,
         test_ratio: Annotated[float, typer.Option("--test_ratio")] = 1.0,
         test_split: Annotated[str, typer.Option("--test_split")] = "test",
         weight_f1: Annotated[float, typer.Option("--weight_f1")] = 0.7,
