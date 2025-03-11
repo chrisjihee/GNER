@@ -36,7 +36,7 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
         --validation_file $VALID_FILE \
         --test_file $TEST_FILE \
         --model_name_or_path $MODEL_NAME \
-        --output_dir $MODEL_NAME-pred \
+        --output_dir $MODEL_NAME/pred \
         --cache_dir .cache \
         --do_predict \
         --bf16 True \
