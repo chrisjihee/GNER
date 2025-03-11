@@ -125,7 +125,7 @@ def summarize_trainer_state_json(
                 metrics_per_step = {k: merge_dicts(*vs) for k, vs in grouped(log_history, itemgetter="step")}
                 model_df = pd.DataFrame(metrics_per_step).transpose()
                 model_df["model"] = input_dir.name
-                model_dfs.append(model_df[interest_columns])
+                model_dfs.append(model_df[[x for x in interest_columns if x in model_df.columns]])
         all_model_df = pd.concat(model_dfs)
         all_model_df.to_csv(output_file, index=False)
         logger.info("Summary is saved to %s", output_file)
