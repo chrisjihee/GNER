@@ -238,6 +238,7 @@ def rerank_predict_results(
         generation_file: Annotated[str, typer.Option("--generation_file")] = "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl",  # "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl", "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl"
         regression_input_files: Annotated[str, typer.Option("--regression_input_files")] = "data/GNER-QE/ZSE-validation-pred-by_beam-num=*-val.json",
         regression_output_files: Annotated[str, typer.Option("--regression_output_files")] = "output/GNER-QE/**/checkpoint-*-pred/predict_results_*",
+        pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
         logging_file: Annotated[str, typer.Option("--logging_file")] = "check_possibility.out",
         verbose: Annotated[int, typer.Option("--verbose")] = 1,
 ):
@@ -251,37 +252,48 @@ def rerank_predict_results(
     env.setup_logger(env.logging_level)
 
     with (JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=verbose)):
+        tokenizer = AutoTokenizer.from_pretrained(pretrained)
         gner_data = defaultdict(GenNERSampleWrapper)
         with Path(generation_file).open() as generation_data:
             for line in generation_data:
                 example = GenNERSampleWrapper.model_validate_json(line)
-                example.instance.prediction_outputs = []
+                # example.instance.prediction_outputs = []
                 gner_data[' '.join(example.instance.words)] = example
         logger.info(f"Loaded {len(gner_data)} samples from {generation_file}")
 
-        # regression_outputs = {k: list(vs) for k, vs in grouped(files(regression_output_files), key=lambda x: x.parent)}
-        # regression_inputs = {k: list(vs)[0] for k, vs in grouped(files(regression_input_files), key=lambda x: x.stem)}
-        # # print(regression_inputs)
-        # for checkpoint in regression_outputs:
-        #     for regression_output_file in regression_outputs[checkpoint]:
-        #         regression_input_name = regression_output_file.stem.split("predict_results_")[-1]
-        #         regression_input_file = regression_inputs[regression_input_name]
-        #         regression_input_samples = []
-        #         with Path(regression_input_file).open() as regression_input:
-        #             for line in regression_input:
-        #                 regression_input_samples.append(RegressionSample.model_validate_json(line))
-        #
-        #         regression_output_labels = pd.read_csv(regression_output_file, delimiter="\t")['prediction'].tolist()
-        #         assert len(regression_input_samples) == len(regression_output_labels), f"Length mismatch: input({len(regression_input_samples)}) != output({len(regression_output_labels)})"
-        #         for input_sample, output_label in zip(regression_input_samples, regression_output_labels):
-        #             input_sample.label = output_label
-        #         reranked_samples = {k: sorted(vs, key=attrgetter('label'), reverse=True) for k, vs in grouped(regression_input_samples, attrgetter='sentence2')}
-        #         for k, vs in reranked_samples.items():
-        #             print(f"{k}: {len(vs)}")
-        #             for v in vs:
-        #                 print(f"  {v.label:.2f}: {v.sentence1}")
-        #             print()
-        #         exit(1)
+        regression_inputs = {k: list(vs)[0] for k, vs in grouped(files(regression_input_files), key=lambda x: x.stem)}
+        for k, regression_input_file in regression_inputs.items():
+            regression_input_samples = []
+            with Path(regression_input_file).open() as regression_input:
+                for line in regression_input:
+                    regression_input_samples.append(RegressionSample.model_validate_json(line))
+            regression_inputs[k] = regression_input_samples
+        logger.info(f"Loaded {sum([len(x) for x in regression_inputs.values()])} regression input samples: {len(regression_inputs)} regression inputs")
+
+        regression_outputs = {k: list(vs) for k, vs in grouped(files(regression_output_files), key=lambda x: x.parent)}
+        logger.info(f"Merging and reranking {sum([len(x) for x in regression_outputs.values()])} outputs: {len(regression_outputs)} regression models * {len(regression_inputs)} regression inputs")
+        for model in regression_outputs:
+            logger.info(f"[model] {model}")
+            for regression_output_file in regression_outputs[model]:
+                logger.info(f"- [regression_output_file] {regression_output_file}")
+                regression_input_name = regression_output_file.stem.split("predict_results_")[-1]
+                regression_input_samples = regression_inputs[regression_input_name]
+                regression_output_labels = pd.read_csv(regression_output_file, delimiter="\t")['prediction'].tolist()
+                assert len(regression_input_samples) == len(regression_output_labels), f"Length mismatch: input({len(regression_input_samples)}) != output({len(regression_output_labels)})"
+                for input_sample, output_label in zip(regression_input_samples, regression_output_labels):
+                    input_sample.label = output_label
+                reranked_samples = {k: sorted(vs, key=attrgetter('label'), reverse=True) for k, vs in grouped(regression_input_samples, attrgetter='sentence2')}
+                for input_sentence, regression_samples in reranked_samples.items():
+                    example = gner_data[input_sentence]
+                    reranked = [x.sentence1 for x in regression_samples]
+                    previous = example.instance.prediction_outputs
+                    for reranked_sample, previous_sample in zip(reranked, previous[:len(reranked)]):
+                        previous_f1 = NEREvaluator().evaluate_prediction(previous_sample, example, tokenizer)
+                        reranked_f1 = NEREvaluator().evaluate_prediction(reranked_sample, example, tokenizer)
+                        logger.info(f"{previous_f1} -> {reranked_f1}")
+                    logger.info("--------------------")
+                logger.info(len(reranked_samples))
+                exit(1)
 
 
 @main.command("check_possibility")
