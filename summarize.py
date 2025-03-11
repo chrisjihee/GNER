@@ -158,7 +158,8 @@ def summarize_check_possibility_csv(
         input_dir = Path(input_dir)
         output_file = input_dir.with_suffix(".csv")
         interest_columns = ['method1', 'method2', 'method3', 'candidate', 'average',
-                            'ai', 'literature', 'music', 'politics', 'science', 'movie', 'restaurant']
+                            'ai', 'literature', 'music', 'politics', 'science', 'movie', 'restaurant',
+                            'eval_loss', 'eval_pearson', 'eval_spearmanr']
 
         all_dfs = []
         logger.info("[input_dir] %s", input_dir)
@@ -169,8 +170,8 @@ def summarize_check_possibility_csv(
             df["method2"] = input_file.parent.name
             df["method3"] = input_file.name.replace("-eval.csv", "").replace("-num=100", "").split("by_")[-1]
             df = df[df['candidate'].isin([1, 2, 3, 4, 5]) | (df['candidate'] % 10 == 0)]
-            df = df[interest_columns]
-            all_dfs.append(df)
+            final_columns = [x for x in interest_columns if x in df.columns]
+            all_dfs.append(df[final_columns])
         all_dfs = pd.concat(all_dfs)
         all_dfs.to_csv(output_file, index=False)
 
