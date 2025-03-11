@@ -1,6 +1,7 @@
 import logging
 import re
 from collections import defaultdict
+from operator import attrgetter
 from pathlib import Path
 from typing import List, Optional
 
@@ -15,8 +16,9 @@ from sklearn.model_selection import train_test_split
 from typing_extensions import Annotated
 
 from chrisbase.data import AppTyper, JobTimer, NewProjectEnv
-from chrisbase.io import LoggingFormat, LoggerWriter, new_path, log_table
+from chrisbase.io import LoggingFormat, LoggerWriter, new_path, log_table, files
 from chrisbase.time import from_timestamp, now_stamp
+from chrisbase.util import grouped
 from chrisdata.learn import F1, RegressionSample
 from chrisdata.ner import GenNERSampleWrapper, GenNERSample
 from gner import NEREvaluator
@@ -142,7 +144,7 @@ class PredictionQuality(BaseModel):
 
 @main.command("convert_to_qe_data")
 def convert_to_qe_data(
-        predction_file: Annotated[str, typer.Option("--predction_file")] = "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl",  # "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl", "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl"
+        generation_file: Annotated[str, typer.Option("--generation_file")] = "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl",  # "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl", "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl"
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
         num_candidates: Annotated[int, typer.Option("--num_candidates")] = 10,
         num_val: Annotated[int, typer.Option("--num_validation")] = 10,
@@ -153,7 +155,7 @@ def convert_to_qe_data(
         output_home: Annotated[str, typer.Option("--output_home")] = "data",
         output_name: Annotated[str, typer.Option("--output_name")] = "GNER-QE",
         output_file: Annotated[str, typer.Option("--output_file")] = "ZSE-validation-pred-by_beam.json",
-        logging_file: Annotated[str, typer.Option("--logging_file")] = "convert_to_QE_data.out",
+        logging_file: Annotated[str, typer.Option("--logging_file")] = "convert_to_qe_data.out",
         random_seed: Annotated[int, typer.Option("--random_seed")] = 7,
         verbose: Annotated[int, typer.Option("--verbose")] = 1,
 ):
@@ -172,7 +174,7 @@ def convert_to_qe_data(
 
     with (JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=verbose)):
         tokenizer = AutoTokenizer.from_pretrained(pretrained)
-        input_dataset = load_dataset("json", data_files=str(predction_file), split=datasets.Split.TRAIN)
+        input_dataset = load_dataset("json", data_files=str(generation_file), split=datasets.Split.TRAIN)
         raw_examples = defaultdict(list)
         val_examples = defaultdict(list)
         train_examples = defaultdict(list)
@@ -231,9 +233,60 @@ def convert_to_qe_data(
             logger.info(f"QE data[{split}] saved to {env.output_dir / output_file}")
 
 
+@main.command("rerank_predict_results")
+def rerank_predict_results(
+        generation_file: Annotated[str, typer.Option("--generation_file")] = "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl",  # "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl", "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl"
+        regression_input_files: Annotated[str, typer.Option("--regression_input_files")] = "data/GNER-QE/ZSE-validation-pred-by_beam-num=*-val.json",
+        regression_output_files: Annotated[str, typer.Option("--regression_output_files")] = "output/GNER-QE/**/checkpoint-*-pred/predict_results_*",
+        logging_file: Annotated[str, typer.Option("--logging_file")] = "check_possibility.out",
+        verbose: Annotated[int, typer.Option("--verbose")] = 1,
+):
+    stamp = now_stamp()
+    env = NewProjectEnv(
+        time_stamp=from_timestamp(stamp, fmt='%m%d-%H%M%S'),
+        logging_file=new_path(logging_file, post=from_timestamp(stamp, fmt='%m%d-%H%M%S')),
+        logging_level=logging.INFO,
+        logging_format=LoggingFormat.CHECK_24,
+    )
+    env.setup_logger(env.logging_level)
+
+    with (JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=verbose)):
+        gner_data = defaultdict(GenNERSampleWrapper)
+        with Path(generation_file).open() as generation_data:
+            for line in generation_data:
+                example = GenNERSampleWrapper.model_validate_json(line)
+                example.instance.prediction_outputs = []
+                gner_data[' '.join(example.instance.words)] = example
+        logger.info(f"Loaded {len(gner_data)} samples from {generation_file}")
+
+        # regression_outputs = {k: list(vs) for k, vs in grouped(files(regression_output_files), key=lambda x: x.parent)}
+        # regression_inputs = {k: list(vs)[0] for k, vs in grouped(files(regression_input_files), key=lambda x: x.stem)}
+        # # print(regression_inputs)
+        # for checkpoint in regression_outputs:
+        #     for regression_output_file in regression_outputs[checkpoint]:
+        #         regression_input_name = regression_output_file.stem.split("predict_results_")[-1]
+        #         regression_input_file = regression_inputs[regression_input_name]
+        #         regression_input_samples = []
+        #         with Path(regression_input_file).open() as regression_input:
+        #             for line in regression_input:
+        #                 regression_input_samples.append(RegressionSample.model_validate_json(line))
+        #
+        #         regression_output_labels = pd.read_csv(regression_output_file, delimiter="\t")['prediction'].tolist()
+        #         assert len(regression_input_samples) == len(regression_output_labels), f"Length mismatch: input({len(regression_input_samples)}) != output({len(regression_output_labels)})"
+        #         for input_sample, output_label in zip(regression_input_samples, regression_output_labels):
+        #             input_sample.label = output_label
+        #         reranked_samples = {k: sorted(vs, key=attrgetter('label'), reverse=True) for k, vs in grouped(regression_input_samples, attrgetter='sentence2')}
+        #         for k, vs in reranked_samples.items():
+        #             print(f"{k}: {len(vs)}")
+        #             for v in vs:
+        #                 print(f"  {v.label:.2f}: {v.sentence1}")
+        #             print()
+        #         exit(1)
+
+
 @main.command("check_possibility")
 def check_possibility(
-        predction_file: Annotated[str, typer.Option("--predction_file")] = "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl",  # "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl", "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl"
+        generation_file: Annotated[str, typer.Option("--generation_file")] = "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl",  # "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl", "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl"
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
         max_examples: Annotated[int, typer.Option("--max_examples")] = -1,
         output_home: Annotated[str, typer.Option("--output_home")] = "output",
@@ -249,7 +302,7 @@ def check_possibility(
         output_home=output_home,
         output_file=new_path(
             output_file,
-            pre=Path(predction_file).stem,
+            pre=Path(generation_file).stem,
         ),
         logging_file=new_path(logging_file, post=from_timestamp(stamp, fmt='%m%d-%H%M%S')),
         logging_level=logging.INFO,
@@ -259,7 +312,7 @@ def check_possibility(
 
     with (JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=verbose)):
         tokenizer = AutoTokenizer.from_pretrained(pretrained)
-        input_dataset = load_dataset("json", data_files=str(predction_file), split=datasets.Split.TRAIN)
+        input_dataset = load_dataset("json", data_files=str(generation_file), split=datasets.Split.TRAIN)
         all_examples = defaultdict(list)
         for example in input_dataset:
             example = GenNERSampleWrapper.model_validate(example)
@@ -273,7 +326,7 @@ def check_possibility(
         )
         num_dataset = len(all_examples)
 
-        logger.info(f"Checking the possibility of predictions from {predction_file}"
+        logger.info(f"Checking the possibility of predictions from {generation_file}"
                     f" for {len(all_examples)} dataset ({sum(len(all_examples[d]) for d in all_examples)} samples)")
         all_results = {}
         for di, dataset in enumerate(sorted(all_examples.keys()), start=1):
