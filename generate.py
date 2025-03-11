@@ -37,7 +37,7 @@ main = AppTyper()
 @main.command("generate_prediction")
 def generate_prediction(
         device: Annotated[str, typer.Option("--device")] = ...,
-        input_file: Annotated[str, typer.Option("--input_file")] = ...,  # "data/ZSE-validation.jsonl", "data/ZSE-test.jsonl"
+        input_file: Annotated[str, typer.Option("--input_file")] = ...,  # "data/ZSE-validation.jsonl", "data/ZSE-test.jsonl", "data/pile-ner=10-100,3-7,3-10.jsonl"
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
         max_generation_tokens: Annotated[int, typer.Option("--max_generation_tokens")] = 640,
         generation_by_sample: Annotated[bool, typer.Option("--generation_by_sample/--generation_by_beam")] = ...,
