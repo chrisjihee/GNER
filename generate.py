@@ -321,11 +321,11 @@ def rerank_by_predict_results(
 
 @main.command("check_possibility")
 def check_possibility(
-        generation_file: Annotated[str, typer.Option("--generation_file")] = "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl",  # "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl", "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl"
+        generation_file: Annotated[str, typer.Argument()] = ...,  # "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl",  "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl"
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
         max_examples: Annotated[int, typer.Option("--max_examples")] = -1,
         output_home: Annotated[str, typer.Option("--output_home")] = "output",
-        output_name: Annotated[str, typer.Option("--output_name")] = "ZSE-predict",
+        output_name: Annotated[str, typer.Option("--output_name")] = None,
         output_file: Annotated[str, typer.Option("--output_file")] = "eval.csv",
         logging_file: Annotated[str, typer.Option("--logging_file")] = "check_possibility.out",
         verbose: Annotated[int, typer.Option("--verbose")] = 1,
@@ -394,7 +394,7 @@ def check_possibility(
         f1_data = {dataset: [metric.f1 for metric in all_results[dataset]] for dataset in dataset_names}
         df_results = pd.DataFrame(f1_data, index=candidate_numbers)
         df_results.index.name = "candidate"
-        df_results.to_csv(env.output_dir / env.output_file)
+        df_results.to_csv(Path(generation_file).parent / env.output_file)
         log_table(logger, df_results.map(lambda x: f"{x:.4f}"), tablefmt="orgtbl", border_idx=1)
         logger.info(f"F1 performance results saved to {env.output_dir / env.output_file}")
 
