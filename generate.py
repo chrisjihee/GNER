@@ -1,3 +1,4 @@
+import json
 import logging
 import re
 from collections import defaultdict
@@ -16,7 +17,7 @@ from sklearn.model_selection import train_test_split
 from typing_extensions import Annotated
 
 from chrisbase.data import AppTyper, JobTimer, NewProjectEnv
-from chrisbase.io import LoggingFormat, LoggerWriter, new_path, log_table, files, make_parent_dir
+from chrisbase.io import LoggingFormat, LoggerWriter, new_path, log_table, files, make_parent_dir, load_json
 from chrisbase.time import from_timestamp, now_stamp
 from chrisbase.util import grouped
 from chrisdata.learn import F1, RegressionSample
@@ -237,7 +238,7 @@ def convert_to_qe_data(
 def rerank_by_predict_results(
         generation_file: Annotated[str, typer.Option("--generation_file")] = "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl",  # "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl", "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl"
         regression_input_files: Annotated[str, typer.Option("--regression_input_files")] = "data/GNER-QE/ZSE-validation-pred-by_beam-num=*-val.json",
-        regression_output_files: Annotated[str, typer.Option("--regression_output_files")] = "output/GNER-QE/**/checkpoint-*-pred/predict_results_*",
+        regression_output_files: Annotated[str, typer.Option("--regression_output_files")] = "output/GNER-QE/**/checkpoint-*/pred/predict_results_*",
         # pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
         output_home: Annotated[str, typer.Option("--output_home")] = "output",
         output_name: Annotated[str, typer.Option("--output_name")] = "ZSE-rerank",
@@ -280,10 +281,16 @@ def rerank_by_predict_results(
             regression_inputs[k] = regression_input_samples
         logger.info(f"Loaded {sum([len(x) for x in regression_inputs.values()])} regression input samples: {len(regression_inputs)} regression inputs")
 
-        regression_outputs = {k: list(vs) for k, vs in grouped(files(regression_output_files), key=lambda x: x.parent)}
+        regression_outputs = {k: list(vs) for k, vs in grouped(files(regression_output_files), key=lambda x: x.parent.parent)}
         logger.info(f"Merging and reranking {sum([len(x) for x in regression_outputs.values()])} outputs: {len(regression_outputs)} regression models * {len(regression_inputs)} regression inputs")
         for model in regression_outputs:
             logger.info(f"[model] {model}")
+
+            # Copy the evaluation results
+            model_eval_file = model / "pred" / "eval_results.json"
+            assert model_eval_file.exists() and model_eval_file.is_file(), f"Missing evaluation results: {model_eval_file}"
+            make_parent_dir(env.output_dir / model.parent.name / model.name / "eval_results.json").write_text(json.dumps(load_json(model_eval_file), indent=4))
+
             for regression_output_file in regression_outputs[model]:
                 regression_input_name = regression_output_file.stem.split("predict_results_")[-1]
                 regression_input_samples = regression_inputs[regression_input_name]
@@ -309,7 +316,7 @@ def rerank_by_predict_results(
                 # sum_candidate = sum([len(x.instance.prediction_outputs) for x in reranked_gner_data])
                 # logger.info(f"  => {len(reranked_gner_data)}, {num_candidate}, {sum_candidate}")
 
-                reranked_data_file = make_parent_dir(env.output_dir / model.parent.name / model.name.replace('-pred', '') / new_path(env.output_file, post=f"cand={num_candidate}"))
+                reranked_data_file = make_parent_dir(env.output_dir / model.parent.name / model.name / new_path(env.output_file, post=f"cand={num_candidate}"))
                 with reranked_data_file.open("w") as out:
                     for example in reranked_gner_data:
                         out.write(example.model_dump_json() + "\n")
