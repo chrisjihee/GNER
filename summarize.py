@@ -107,6 +107,9 @@ def summarize_trainer_state_json(
         JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=logging_level <= logging.INFO),
     ):
         output_file = Path(input_dirs).parent.with_suffix(".csv")
+        str_columns = ["model"]
+        int_columns = ["step"]
+        round1_columns = ["epoch", "eval_runtime", "train_runtime"]
         common_columns1 = ["model", "step", "epoch"]
         common_columns2 = ["eval_loss", "train_loss", "eval_runtime", "train_runtime"]
         if task_type == "regression":
@@ -125,7 +128,18 @@ def summarize_trainer_state_json(
                 metrics_per_step = {k: merge_dicts(*vs) for k, vs in grouped(log_history, itemgetter="step")}
                 model_df = pd.DataFrame(metrics_per_step).transpose()
                 model_df["model"] = input_dir.name
-                model_dfs.append(model_df[[x for x in interest_columns if x in model_df.columns]])
+                final_columns = [x for x in interest_columns if x in model_df.columns]
+
+                for c in round1_columns:
+                    if c in model_df.columns:
+                        model_df[c] = model_df[c].round(1)
+                for c in int_columns:
+                    if c in model_df.columns:
+                        model_df[c] = model_df[c].astype(int)
+                for c in set(final_columns) - set(str_columns) - set(int_columns) - set(round1_columns):
+                    if c in model_df.columns:
+                        model_df[c] = model_df[c].round(4)
+                model_dfs.append(model_df[final_columns])
         all_model_df = pd.concat(model_dfs)
         all_model_df.to_csv(output_file, index=False)
         logger.info("Summary is saved to %s", output_file)
