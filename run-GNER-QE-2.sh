@@ -13,8 +13,8 @@ MODEL_NAMES=(
 #  "google-bert/bert-base-cased"
 #  "FacebookAI/roberta-base"
 #  "FacebookAI/roberta-large"
-  "answerdotai/ModernBERT-base"
-  "answerdotai/ModernBERT-large"
+#  "answerdotai/ModernBERT-base"
+#  "answerdotai/ModernBERT-large"
 #  "microsoft/deberta-v3-base"
 #  "microsoft/deberta-v3-large"
 )
@@ -43,6 +43,9 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
       --logging_strategy epoch \
       --eval_strategy epoch \
       --save_strategy epoch \
+      --save_total_limit 3 \
+      --load_best_model_at_end True \
+      --metric_for_best_model spearmanr \
       --deepspeed $DEEPSPEED_CONFIG \
       --overwrite_output_dir \
       --overwrite_cache

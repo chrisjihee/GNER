@@ -3,7 +3,7 @@ set -x
 
 DEEPSPEED_CONFIG="configs/deepspeed/ds1_t5.json"
 DEEPSPEED_PORT=$(shuf -i 25000-30000 -n 1)
-CUDA_DEVICES=0,1
+CUDA_DEVICES=2,3
 SOURCE_FILE="run_glue.py"
 TRAIN_FILE="data/GNER-QE/ZSE-validation-pred-by_beam-num=10-train.json"
 VALID_FILE="data/GNER-QE/ZSE-validation-pred-by_beam-num=10-val.json"
@@ -43,6 +43,9 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
       --logging_strategy epoch \
       --eval_strategy epoch \
       --save_strategy epoch \
+      --save_total_limit 3 \
+      --load_best_model_at_end True \
+      --metric_for_best_model spearmanr \
       --deepspeed $DEEPSPEED_CONFIG \
       --overwrite_output_dir \
       --overwrite_cache
