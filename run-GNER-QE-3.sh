@@ -10,15 +10,13 @@ VALID_FILE="data/GNER-QE/ZSE-validation-pred-by_beam-num=30-val.json"
 OUTPUT_NAME="GNER-QE"
 
 MODEL_NAMES=(
-  "google-bert/bert-base-cased"
-  "FacebookAI/roberta-base"
-  "FacebookAI/roberta-large"
+#  "google-bert/bert-base-cased"
+#  "FacebookAI/roberta-base"
+#  "FacebookAI/roberta-large"
 #  "answerdotai/ModernBERT-base"
 #  "answerdotai/ModernBERT-large"
-#  "microsoft/deberta-v3-base"
-#  "microsoft/deberta-v3-large"
-#  "microsoft/deberta-v2-xlarge"
-#  "microsoft/deberta-v2-xxlarge"
+  "microsoft/deberta-v3-base"
+  "microsoft/deberta-v3-large"
 )
 
 for MODEL_NAME in "${MODEL_NAMES[@]}"; do
