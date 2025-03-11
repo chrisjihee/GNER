@@ -3,7 +3,7 @@ set -x
 
 DEEPSPEED_CONFIG="configs/deepspeed/ds1_t5.json"
 DEEPSPEED_PORT=$(shuf -i 25000-30000 -n 1)
-CUDA_DEVICES=2,3
+CUDA_DEVICES=1
 SOURCE_FILE="run_glue.py"
 TRAIN_FILE="data/GNER-QE/ZSE-validation-pred-by_beam-num=20-train.json"
 VALID_FILE="data/GNER-QE/ZSE-validation-pred-by_beam-num=20-val.json"
@@ -13,8 +13,8 @@ MODEL_NAMES=(
 #  "google-bert/bert-base-cased"
 #  "FacebookAI/roberta-base"
 #  "FacebookAI/roberta-large"
-#  "answerdotai/ModernBERT-base"
-#  "answerdotai/ModernBERT-large"
+  "answerdotai/ModernBERT-base"
+  "answerdotai/ModernBERT-large"
 #  "microsoft/deberta-v3-base"
 #  "microsoft/deberta-v3-large"
 )
