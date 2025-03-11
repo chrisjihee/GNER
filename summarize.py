@@ -145,30 +145,32 @@ def summarize_trainer_state_json(
         logger.info("Summary is saved to %s", output_file)
 
 
-@main.command("summarize_generation_eval_csv")
-def summarize_generation_eval_csv(
-        input_dirs: Annotated[str, typer.Argument()] = "output/ZSE-predict",  # "output/ZSE-predict"
-        csv_filename: Annotated[str, typer.Option("--csv_filename")] = ...,  # "ZSE-test-*-eval.csv", "ZSE-validation-*-eval.csv"
+@main.command("summarize_check_possibility_csv")
+def summarize_check_possibility_csv(
+        input_dir: Annotated[str, typer.Argument()] = "output/ZSE-rerank",  # "output/ZSE-predict", "output/ZSE-rerank"
+        csv_filename: Annotated[str, typer.Option("--csv_filename")] = "ZSE-validation-*-eval.csv",  # "ZSE-test-*-eval.csv", "ZSE-validation-*-eval.csv",
         logging_level: Annotated[int, typer.Option("--logging_level")] = logging.INFO,
 ):
     env = NewProjectEnv(logging_level=logging_level)
     with (
         JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=logging_level <= logging.INFO),
     ):
-        output_file = Path(input_dirs).with_suffix(".csv")
-        interest_columns = ['method', 'candidate', 'average',
+        input_dir = Path(input_dir)
+        output_file = input_dir.with_suffix(".csv")
+        interest_columns = ['method1', 'method2', 'method3', 'candidate', 'average',
                             'ai', 'literature', 'music', 'politics', 'science', 'movie', 'restaurant']
 
         all_dfs = []
-        for input_dir in dirs(input_dirs):
-            logger.info("[input_dir] %s", input_dir)
-            for input_file in files(input_dir / csv_filename):
-                logger.info("  [input_file] %s", input_file)
-                df = pd.read_csv(input_file)
-                df["method"] = input_file.name.replace("-eval.csv", "").replace("-num=100", "").split("by_")[-1]
-                df = df[df['candidate'].isin([1, 2, 3, 4, 5]) | (df['candidate'] % 10 == 0)]
-                df = df[interest_columns]
-                all_dfs.append(df)
+        logger.info("[input_dir] %s", input_dir)
+        for input_file in files(input_dir / "**" / csv_filename):
+            logger.info("  [input_file] %s", input_file)
+            df = pd.read_csv(input_file)
+            df["method1"] = input_file.parent.parent.name
+            df["method2"] = input_file.parent.name
+            df["method3"] = input_file.name.replace("-eval.csv", "").replace("-num=100", "").split("by_")[-1]
+            df = df[df['candidate'].isin([1, 2, 3, 4, 5]) | (df['candidate'] % 10 == 0)]
+            df = df[interest_columns]
+            all_dfs.append(df)
         all_dfs = pd.concat(all_dfs)
         all_dfs.to_csv(output_file, index=False)
 
