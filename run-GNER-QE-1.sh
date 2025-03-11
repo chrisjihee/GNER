@@ -17,8 +17,6 @@ MODEL_NAMES=(
 #  "answerdotai/ModernBERT-large"
   "microsoft/deberta-v3-base"
   "microsoft/deberta-v3-large"
-  "microsoft/deberta-v2-xlarge"
-  "microsoft/deberta-v2-xxlarge"
 )
 
 for MODEL_NAME in "${MODEL_NAMES[@]}"; do
