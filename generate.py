@@ -16,7 +16,7 @@ from sklearn.model_selection import train_test_split
 from typing_extensions import Annotated
 
 from chrisbase.data import AppTyper, JobTimer, NewProjectEnv
-from chrisbase.io import LoggingFormat, LoggerWriter, new_path, log_table, files
+from chrisbase.io import LoggingFormat, LoggerWriter, new_path, log_table, files, make_parent_dir
 from chrisbase.time import from_timestamp, now_stamp
 from chrisbase.util import grouped
 from chrisdata.learn import F1, RegressionSample
@@ -233,18 +233,27 @@ def convert_to_qe_data(
             logger.info(f"QE data[{split}] saved to {env.output_dir / output_file}")
 
 
-@main.command("rerank_predict_results")
-def rerank_predict_results(
+@main.command("rerank_by_predict_results")
+def rerank_by_predict_results(
         generation_file: Annotated[str, typer.Option("--generation_file")] = "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl",  # "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl", "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl"
         regression_input_files: Annotated[str, typer.Option("--regression_input_files")] = "data/GNER-QE/ZSE-validation-pred-by_beam-num=*-val.json",
         regression_output_files: Annotated[str, typer.Option("--regression_output_files")] = "output/GNER-QE/**/checkpoint-*-pred/predict_results_*",
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
-        logging_file: Annotated[str, typer.Option("--logging_file")] = "check_possibility.out",
+        output_home: Annotated[str, typer.Option("--output_home")] = "output",
+        output_name: Annotated[str, typer.Option("--output_name")] = "ZSE-rerank",
+        output_file: Annotated[str, typer.Option("--output_file")] = "rerank.jsonl",
+        logging_file: Annotated[str, typer.Option("--logging_file")] = "rerank_by_predict_results.out",
         verbose: Annotated[int, typer.Option("--verbose")] = 1,
 ):
     stamp = now_stamp()
     env = NewProjectEnv(
         time_stamp=from_timestamp(stamp, fmt='%m%d-%H%M%S'),
+        output_name=output_name,
+        output_home=output_home,
+        output_file=new_path(
+            output_file,
+            pre=Path(generation_file).stem,
+        ),
         logging_file=new_path(logging_file, post=from_timestamp(stamp, fmt='%m%d-%H%M%S')),
         logging_level=logging.INFO,
         logging_format=LoggingFormat.CHECK_24,
@@ -276,7 +285,7 @@ def rerank_predict_results(
         for model in regression_outputs:
             logger.info(f"[model] {model}")
             for regression_output_file in regression_outputs[model]:
-                logger.info(f"- [regression_output_file] {regression_output_file}")
+                # logger.info(f"- [regression_output_file] {regression_output_file}")
                 regression_input_name = regression_output_file.stem.split("predict_results_")[-1]
                 regression_input_samples = regression_inputs[regression_input_name]
                 regression_output_labels = pd.read_csv(regression_output_file, delimiter="\t")['prediction'].tolist()
@@ -296,8 +305,17 @@ def rerank_predict_results(
                     #     logger.info(f"{previous_f1} -> {reranked_f1}")
                     # logger.info("--------------------")
                     reranked_gner_data.append(example)
+                reranked_gner_data = sorted(reranked_gner_data, key=lambda x: (x.dataset, int(x.id)))
                 num_candidate = max([len(x.instance.prediction_outputs) for x in reranked_gner_data])
-                logger.info(f"  => {len(reranked_gner_data)}, {num_candidate}")
+                # sum_candidate = sum([len(x.instance.prediction_outputs) for x in reranked_gner_data])
+                # logger.info(f"  => {len(reranked_gner_data)}, {num_candidate}, {sum_candidate}")
+
+                reranked_data_file = make_parent_dir(env.output_dir / model.parent.name / model.name.replace('-pred', '') / new_path(env.output_file, post=f"cand={num_candidate}"))
+                with reranked_data_file.open("w") as out:
+                    for example in reranked_gner_data:
+                        out.write(example.model_dump_json() + "\n")
+                # logger.info(f"  => {reranked_data_file}")
+                logger.info(f"- {regression_output_file} => {reranked_data_file}")
             exit(1)
 
 
