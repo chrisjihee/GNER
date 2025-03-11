@@ -257,6 +257,7 @@ def rerank_predict_results(
         with Path(generation_file).open() as generation_data:
             for line in generation_data:
                 example = GenNERSampleWrapper.model_validate_json(line)
+                example.id = example.instance.id
                 # example.instance.prediction_outputs = []
                 gner_data[' '.join(example.instance.words)] = example
         logger.info(f"Loaded {len(gner_data)} samples from {generation_file}")
@@ -283,17 +284,21 @@ def rerank_predict_results(
                 for input_sample, output_label in zip(regression_input_samples, regression_output_labels):
                     input_sample.label = output_label
                 reranked_samples = {k: sorted(vs, key=attrgetter('label'), reverse=True) for k, vs in grouped(regression_input_samples, attrgetter='sentence2')}
-                for input_sentence, regression_samples in reranked_samples.items():
-                    example = gner_data[input_sentence]
-                    reranked = [x.sentence1 for x in regression_samples]
-                    previous = example.instance.prediction_outputs
-                    for reranked_sample, previous_sample in zip(reranked, previous[:len(reranked)]):
-                        previous_f1 = NEREvaluator().evaluate_prediction(previous_sample, example, tokenizer)
-                        reranked_f1 = NEREvaluator().evaluate_prediction(reranked_sample, example, tokenizer)
-                        logger.info(f"{previous_f1} -> {reranked_f1}")
-                    logger.info("--------------------")
-                logger.info(len(reranked_samples))
-                exit(1)
+                reranked_gner_data = []
+                for input_sentence, reranked in reranked_samples.items():
+                    example = gner_data[input_sentence].model_copy(deep=True)
+                    example.instance.prediction_outputs = [x.sentence1 for x in reranked]
+                    # reranked = [x.sentence1 for x in reranked]
+                    # previous = example.instance.prediction_outputs
+                    # for reranked_sample, previous_sample in zip(reranked, previous[:len(reranked)]):
+                    #     previous_f1 = NEREvaluator().evaluate_prediction(previous_sample, example, tokenizer)
+                    #     reranked_f1 = NEREvaluator().evaluate_prediction(reranked_sample, example, tokenizer)
+                    #     logger.info(f"{previous_f1} -> {reranked_f1}")
+                    # logger.info("--------------------")
+                    reranked_gner_data.append(example)
+                num_candidate = max([len(x.instance.prediction_outputs) for x in reranked_gner_data])
+                logger.info(f"  => {len(reranked_gner_data)}, {num_candidate}")
+            exit(1)
 
 
 @main.command("check_possibility")
