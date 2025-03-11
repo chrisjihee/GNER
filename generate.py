@@ -334,6 +334,7 @@ def check_possibility(
         logging_file: Annotated[str, typer.Option("--logging_file")] = "check_possibility.out",
         verbose: Annotated[int, typer.Option("--verbose")] = 1,
 ):
+    generation_file = Path(generation_file)
     stamp = now_stamp()
     env = NewProjectEnv(
         time_stamp=from_timestamp(stamp, fmt='%m%d-%H%M%S'),
@@ -341,7 +342,7 @@ def check_possibility(
         output_home=output_home,
         output_file=new_path(
             output_file,
-            pre=Path(generation_file).stem,
+            pre=generation_file.stem,
         ),
         logging_file=new_path(logging_file, post=from_timestamp(stamp, fmt='%m%d-%H%M%S')),
         logging_level=logging.INFO,
@@ -367,6 +368,11 @@ def check_possibility(
 
         logger.info(f"Checking the possibility of predictions from {generation_file}"
                     f" for {len(all_examples)} dataset ({sum(len(all_examples[d]) for d in all_examples)} samples)")
+        evaluation_file = generation_file.parent / "eval_results.json"
+        evaluation_results = None
+        if evaluation_file.exists() and evaluation_file.is_file():
+            logger.info(f"Loading evaluation results from {evaluation_file}")
+            evaluation_results = load_json(evaluation_file)
         all_results = {}
         for di, dataset in enumerate(sorted(all_examples.keys()), start=1):
             dataset_metrics = [F1()] * max_candidates
@@ -395,11 +401,14 @@ def check_possibility(
 
         dataset_names = list(all_results.keys())
         candidate_numbers = list(range(1, max_candidates + 1))
-        f1_data = {dataset: [metric.f1 for metric in all_results[dataset]] for dataset in dataset_names}
-        df_results = pd.DataFrame(f1_data, index=candidate_numbers)
-        df_results.index.name = "candidate"
-        df_results.to_csv(Path(generation_file).parent / env.output_file)
-        log_table(logger, df_results.map(lambda x: f"{x:.4f}"), tablefmt="orgtbl", border_idx=1)
+        performance_data = {dataset: [metric.f1 for metric in all_results[dataset]] for dataset in dataset_names}
+        performance_df = pd.DataFrame(performance_data, index=candidate_numbers)
+        performance_df.index.name = "candidate"
+        if evaluation_results:
+            for k, v in evaluation_results.items():
+                performance_df[k] = v
+        performance_df.to_csv(Path(generation_file).parent / env.output_file)
+        log_table(logger, performance_df.map(lambda x: f"{x:.4f}"), tablefmt="orgtbl", border_idx=1)
         logger.info(f"F1 performance results saved to {env.output_dir / env.output_file}")
 
 
