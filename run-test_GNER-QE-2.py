@@ -6,10 +6,10 @@ from chrisbase.io import dirs, files
 
 DEEPSPEED_CONFIG = "configs/deepspeed/ds3_t5.json"
 DEEPSPEED_PORT = random.randint(25000, 30000)
-CUDA_DEVICES = os.getenv("CUDA_VISIBLE_DEVICES", "0,1")
+CUDA_DEVICES = os.getenv("CUDA_VISIBLE_DEVICES", "1")
 SOURCE_FILE = "run_glue.py"
 
-trained_model_paths = dirs("output/GNER-QE/**/checkpoint-*")
+trained_model_paths = dirs("output/GNER-QE/**/roberta-large-*/checkpoint-*")
 train_files = files("data/GNER-QE/ZSE-validation-pred-by_beam-num=*-train.json")
 valid_files = files("data/GNER-QE/ZSE-validation-pred-by_beam-num=*-val.json")
 test_files = files("data/GNER-QE/ZSE-validation-pred-by_beam-num=*-val.json")
