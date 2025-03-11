@@ -145,21 +145,26 @@ class PredictionQuality(BaseModel):
 
 @main.command("convert_to_qe_data")
 def convert_to_qe_data(
-        generation_file: Annotated[str, typer.Option("--generation_file")] = "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl",  # "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl", "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl"
+        generation_file: Annotated[str, typer.Option("--generation_file")] = "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl",  # "output/ZSE-predict/ZSE-test-pred-by_beam-num=100.jsonl", "output/ZSE-predict/ZSE-validation-pred-by_beam-num=100.jsonl"
+        output_file: Annotated[str, typer.Option("--output_file")] = None,
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
         num_candidates: Annotated[int, typer.Option("--num_candidates")] = 10,
-        num_val: Annotated[int, typer.Option("--num_validation")] = 10,
+        no_train_split: Annotated[bool, typer.Option("--no_train_split")] = True,
+        test_count: Annotated[int, typer.Option("--test_count")] = 10,
+        test_ratio: Annotated[float, typer.Option("--test_ratio")] = 1.0,
+        test_split: Annotated[str, typer.Option("--test_split")] = "test",
         weight_f1: Annotated[float, typer.Option("--weight_f1")] = 0.7,
         weight_nd: Annotated[float, typer.Option("--weight_nd")] = 0.3,
         pow_weight: Annotated[float, typer.Option("--pow_weight")] = 2.0,
         max_score: Annotated[float, typer.Option("--max_score")] = 5.0,
         output_home: Annotated[str, typer.Option("--output_home")] = "data",
         output_name: Annotated[str, typer.Option("--output_name")] = "GNER-QE",
-        output_file: Annotated[str, typer.Option("--output_file")] = "ZSE-validation-pred-by_beam.json",
         logging_file: Annotated[str, typer.Option("--logging_file")] = "convert_to_qe_data.out",
         random_seed: Annotated[int, typer.Option("--random_seed")] = 7,
         verbose: Annotated[int, typer.Option("--verbose")] = 1,
 ):
+    if not output_file:
+        output_file = Path(generation_file).stem.split("-num=")[0] + ".json"
     stamp = now_stamp()
     env = NewProjectEnv(
         time_stamp=from_timestamp(stamp, fmt='%m%d-%H%M%S'),
@@ -177,25 +182,30 @@ def convert_to_qe_data(
         tokenizer = AutoTokenizer.from_pretrained(pretrained)
         input_dataset = load_dataset("json", data_files=str(generation_file), split=datasets.Split.TRAIN)
         raw_examples = defaultdict(list)
-        val_examples = defaultdict(list)
+        test_examples = defaultdict(list)
         train_examples = defaultdict(list)
         for example in input_dataset:
             example = GenNERSampleWrapper.model_validate(example)
             example.id = example.id or example.instance.id
             raw_examples[example.dataset].append(example)
         for sub in raw_examples:
-            val_size = min(num_val, len(raw_examples[sub]))
-            train_set, val_set = train_test_split(raw_examples[sub], test_size=val_size, random_state=env.random_seed)
+            test_size = test_count if test_count > 0 else test_ratio
+            if isinstance(test_size, float) and test_size >= 1.0:
+                train_set, test_set = [], raw_examples[sub]
+            else:
+                train_set, test_set = train_test_split(raw_examples[sub], test_size=test_size, random_state=env.random_seed)
+                if no_train_split:
+                    train_set = []
             train_examples[sub] = sorted(train_set, key=lambda x: int(x.id))
-            val_examples[sub] = sorted(val_set, key=lambda x: int(x.id))
+            test_examples[sub] = sorted(test_set, key=lambda x: int(x.id))
 
         logger.info(f"Converting the generated predictions into QE data"
-                    f" for {len(raw_examples)} dataset ({sum(len(raw_examples[d]) for d in raw_examples)} samples)")
+                    f" for {len(raw_examples)} dataset ({sum(map(len, raw_examples.values()))} samples = {sum(map(len, train_examples.values()))} + {sum(map(len, test_examples.values()))})")
 
         converted_dataset = defaultdict(list)
         for split, examples in {
             "train": train_examples,
-            "val": val_examples,
+            test_split: test_examples,
         }.items():
             idx = 0
             for i, sub in enumerate(sorted(examples.keys()), start=1):
