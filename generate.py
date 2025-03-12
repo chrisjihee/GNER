@@ -38,12 +38,12 @@ main = AppTyper()
 def generate_prediction(
         device: Annotated[str, typer.Option("--device")] = ...,
         input_file: Annotated[str, typer.Option("--input_file")] = ...,  # "data/ZSE-validation.jsonl", "data/ZSE-test.jsonl", "data/pile-ner=10-100,3-7,3-10.jsonl"
-        pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
-        max_generation_tokens: Annotated[int, typer.Option("--max_generation_tokens")] = 640,
+        generation_amount: Annotated[int, typer.Option("--num_generation")] = ...,
         generation_by_sample: Annotated[bool, typer.Option("--generation_by_sample/--generation_by_beam")] = ...,
-        generation_num_return: Annotated[int, typer.Option("--num_generation")] = ...,
-        generation_temperature: Annotated[float, typer.Option("--temperature")] = None,
-        generation_top_p: Annotated[float, typer.Option("--top_p")] = None,
+        generation_temperature: Annotated[float, typer.Option("--temperature")] = 1.5,
+        generation_top_p: Annotated[float, typer.Option("--top_p")] = 0.9,
+        max_generation_tokens: Annotated[int, typer.Option("--max_generation_tokens")] = 640,
+        pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
         output_home: Annotated[str, typer.Option("--output_home")] = "output",
         output_name: Annotated[str, typer.Option("--output_name")] = "ZSE-predict",
         output_file: Annotated[str, typer.Option("--output_file")] = "pred.jsonl",
@@ -59,8 +59,8 @@ def generate_prediction(
         output_file=new_path(
             output_file,
             pre=Path(input_file).stem,
-            post=f'by_sample-num={generation_num_return}-temp={generation_temperature}-top_p={generation_top_p}'
-            if generation_by_sample else f'by_beam-num={generation_num_return}'
+            post=f'by_sample-amount={generation_amount}-temp={generation_temperature}-top_p={generation_top_p}'
+            if generation_by_sample else f'by_beam-amount={generation_amount}'
         ),
         logging_file=new_path(logging_file, post=from_timestamp(stamp, fmt='%m%d-%H%M%S')),
         logging_level=logging.INFO,
@@ -89,9 +89,9 @@ def generate_prediction(
                 model_outputs = model.generate(
                     **model_input,
                     max_new_tokens=max_generation_tokens,
-                    num_return_sequences=generation_num_return,
+                    num_return_sequences=generation_amount,
                     do_sample=generation_by_sample,
-                    num_beams=1 if generation_by_sample else generation_num_return,
+                    num_beams=1 if generation_by_sample else generation_amount,
                     temperature=generation_temperature if generation_by_sample else None,
                     top_p=generation_top_p if generation_by_sample else None,
                 )
