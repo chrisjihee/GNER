@@ -6,7 +6,7 @@ from chrisbase.io import dirs, files
 
 DEEPSPEED_CONFIG = "configs/deepspeed/ds3_t5.json"
 DEEPSPEED_PORT = random.randint(25000, 30000)
-CUDA_DEVICES = os.getenv("CUDA_VISIBLE_DEVICES", "5")
+CUDA_DEVICES = os.getenv("CUDA_VISIBLE_DEVICES", "4")
 SOURCE_FILE = "run_glue.py"
 
 trained_model_paths = dirs("output/GNER-QE/**/ModernBERT-large-*/checkpoint-*")
