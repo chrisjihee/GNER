@@ -9,7 +9,7 @@ DEEPSPEED_PORT = random.randint(25000, 30000)
 CUDA_DEVICES = os.getenv("CUDA_VISIBLE_DEVICES", "6")
 SOURCE_FILE = "run_glue.py"
 
-trained_model_paths = dirs("output/GNER-QE/**/deberta-v3-base-*/checkpoint-*")
+trained_model_paths = dirs("output/GNER-QE/**/deberta-v3-large-*/checkpoint-*")
 train_files = files("data/GNER-QE/ZSE-validation-pred-by_beam-num=*-train.json")
 valid_files = files("data/GNER-QE/ZSE-validation-pred-by_beam-num=*-val.json")
 test_files = files("data/GNER-QE/ZSE-test-pred-by_beam-num=*-test.json")
