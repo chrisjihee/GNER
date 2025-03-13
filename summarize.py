@@ -148,7 +148,7 @@ def summarize_trainer_state_json(
 @main.command("summarize_check_possibility_csv")
 def summarize_check_possibility_csv(
         input_dir: Annotated[str, typer.Argument()] = "output/ZSE-rerank",  # "output/ZSE-predict", "output/ZSE-rerank"
-        csv_filename: Annotated[str, typer.Option("--csv_filename")] = "ZSE-validation-*-eval.csv",  # "ZSE-test-*-eval.csv", "ZSE-validation-*-eval.csv",
+        csv_filename: Annotated[str, typer.Option("--csv_filename")] = "ZSE-*-eval.csv",  # "ZSE-test-*-eval.csv", "ZSE-validation-*-eval.csv",
         logging_level: Annotated[int, typer.Option("--logging_level")] = logging.INFO,
 ):
     env = NewProjectEnv(logging_level=logging_level)
@@ -174,6 +174,7 @@ def summarize_check_possibility_csv(
             all_dfs.append(df[final_columns])
         all_dfs = pd.concat(all_dfs)
         all_dfs.to_csv(output_file, index=False)
+        logger.info("Summary is saved to %s", output_file)
 
 
 if __name__ == "__main__":
