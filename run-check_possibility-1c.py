@@ -6,7 +6,7 @@ source_file = "generate.py"
 
 
 for output_file in (
-        files("output/ZSE-rerank/ModernBERT-base-num=20/**/ZSE-test-pred-*-rerank-*.jsonl") +
+        files("output/ZSE-rerank/bert-base-cased-num=30/**/ZSE-test-pred-*-rerank-*.jsonl") +
         []
 ):
     command = f"""python {source_file} check_possibility {output_file}"""
