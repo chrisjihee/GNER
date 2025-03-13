@@ -419,7 +419,7 @@ def check_possibility(
                 performance_df[k] = v
         performance_df.to_csv(Path(generation_file).parent / env.output_file)
         log_table(logger, performance_df.map(lambda x: f"{x:.4f}"), tablefmt="orgtbl", border_idx=1)
-        logger.info(f"F1 performance results saved to {env.output_dir / env.output_file}")
+        logger.info(f"F1 performance results saved to {Path(generation_file).parent / env.output_file}")
 
 
 if __name__ == "__main__":
