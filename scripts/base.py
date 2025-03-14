@@ -7,8 +7,8 @@ model_specs_2gpu = [
 ]
 
 model_specs_4gpu_a = [
-    {"ds_config": "configs/deepspeed/ds2_t5.json", "run_prefix": "FlanT5-3B", "pretrained": "google/flan-t5-xl", "train_batch": 1},
     {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "Llama3-3B", "pretrained": "meta-llama/Llama-3.2-3B", "train_batch": 1},
+    {"ds_config": "configs/deepspeed/ds2_t5.json", "run_prefix": "FlanT5-3B", "pretrained": "google/flan-t5-xl", "train_batch": 1},
     # {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "EAGLE-3B", "pretrained": "etri-lirs/eagle-3b-preview", "train_batch": 1},
 ]
 
