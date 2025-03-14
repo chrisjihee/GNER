@@ -9,19 +9,20 @@ from base import *
 debugging = False
 port = random.randint(25000, 30000)
 hostname = socket.gethostname()
-cuda_devices = os.getenv("CUDA_VISIBLE_DEVICES", "4,5,6,7" if not debugging else "0")
+cuda_devices = os.getenv("CUDA_VISIBLE_DEVICES", "0,1" if not debugging else "0")
 source_file = "train_GNER.py"
 
 # Training arguments
-experiment_type = "HR2"
+experiment_type = "HR-0"
 output_name = f"train_ZSE-{experiment_type}-{hostname}"
-train_file = "data/pile-ner=10-100,3-10,3-10-HR.jsonl"
-eval_file = "data/ZSE-test-HR.jsonl"
+train_file = "data/pile-ner-sampled-N19988-HR207842,103814,104028.jsonl"
+eval_file = "data/ZSE-validation-sampled-N70-HR1500,700,800.jsonl"
+pred_file = "data/ZSE-test-sampled-N70-HR1500,700,800.jsonl"
 metric_for_best_model = "eval_average"
 max_generation_tokens = 640
 save_total_limit = 3
-train_epochs = 12
-eval_epochs = 0.5
+train_epochs = 0.2
+eval_epochs = 0.1
 save_epochs = eval_epochs
 learning_rate = 5e-5
 logging_steps = 10
@@ -48,6 +49,7 @@ for ds_config, run_prefix, pretrained in model_specs:
                 --include=localhost:{cuda_devices}
                 --master_port={port}
             {source_file}
+                --pred_file {pred_file}
                 --eval_file {eval_file}
                 --train_file {train_file}
                 --output_file train-metrics-{train_epochs}ep.csv
