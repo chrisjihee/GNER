@@ -1,4 +1,5 @@
 pile-ner.json*
+pile-ner=*-HR.json*
 SFT-*.json*
 ZSE-*.json*
 AnatEM/conll
