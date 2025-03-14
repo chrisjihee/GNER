@@ -13,10 +13,10 @@ cuda_devices = os.getenv("CUDA_VISIBLE_DEVICES", "0,1,2,3" if not debugging else
 source_file = "train_GNER.py"
 
 # Training arguments
-experiment_type = "BL"
+experiment_type = "HR"
 output_name = f"train_ZSE-{experiment_type}-{hostname}"
 data_config_dir = "configs/dataset/ZSE"
-train_file = "data/pile-ner.jsonl"
+train_file = "data/pile-ner=10-100,3-7,3-10-HR.jsonl"
 metric_for_best_model = "eval_average"
 max_generation_tokens = 640
 save_total_limit = 3
