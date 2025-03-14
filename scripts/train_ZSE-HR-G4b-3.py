@@ -14,9 +14,9 @@ num_devices = len(cuda_devices.split(','))
 source_file = "train_GNER.py"
 
 # Training arguments
-experiment_type = "HR523562"
+experiment_type = "HR433594"
 output_name = f"train_ZSE-{experiment_type}-{hostname}"
-train_file = "data/pile-ner-sampled-N49800-HR523562,103814,419748.jsonl"
+train_file = "data/pile-ner-sampled-N39852-HR433594,103814,329780.jsonl"
 eval_file = "data/ZSE-validation-sampled-N210-HR3100,700,2400.jsonl"
 pred_file = "data/ZSE-test-sampled-N700-HR10100,2100,8000.jsonl"
 metric_for_best_model = "eval_average"
@@ -32,7 +32,7 @@ eval_batch = int(total_batch / num_devices)
 assert eval_batch * num_devices == total_batch, f"total_batch={total_batch} != eval_batch={eval_batch} * num_devices={num_devices}"
 
 # Loop through each model
-for spec in model_specs_4gpu:
+for spec in model_specs_4gpu_b:
     # command = "rm -rf .cache_hf/datasets".strip().split()
     # print("*" * 120)
     # print("[COMMAND]", " ".join(command))
