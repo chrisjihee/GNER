@@ -15,7 +15,7 @@ source_file = "train_GNER.py"
 # Training arguments
 experiment_type = "HR-0"
 output_name = f"train_ZSE-{experiment_type}-{hostname}"
-train_file = "data/pile-ner-sampled-N19988-HR207842,103814,104028.jsonl"
+train_file = "data/pile-ner-sampled-N902-HR4244,902,3342.jsonl"
 eval_file = "data/ZSE-validation-sampled-N70-HR1500,700,800.jsonl"
 pred_file = "data/ZSE-test-sampled-N70-HR1500,700,800.jsonl"
 metric_for_best_model = "eval_average"
@@ -26,12 +26,11 @@ eval_epochs = 0.1
 save_epochs = eval_epochs
 learning_rate = 5e-5
 logging_steps = 10
-gradient_steps = 4
-train_batch = 8
-eval_batch = 8
+total_batch = 64
+eval_batch = 64
 
-# Loop through each model and dataset
-for ds_config, run_prefix, pretrained in model_specs:
+# Loop through each model
+for spec in model_specs:
     command = "rm -rf .cache_hf/datasets".strip().split()
     print("*" * 120)
     print("[COMMAND]", " ".join(command))
@@ -40,8 +39,10 @@ for ds_config, run_prefix, pretrained in model_specs:
     print("\n" * 3)
 
     suffix = f"-{experiment_type}"
-    run_version = f"{run_prefix}{suffix}"
-    use_flash_attention = pretrained.startswith("microsoft/Phi")
+    run_version = f"{spec['run_prefix']}{suffix}"
+    train_batch = spec['train_batch']
+    gradient_steps = total_batch / len(cuda_devices.split(',')) / train_batch
+    use_flash_attention = spec['pretrained'].startswith("microsoft/Phi")
 
     command = f"""
         python -m
@@ -56,8 +57,8 @@ for ds_config, run_prefix, pretrained in model_specs:
                 --logging_file train-loggings-{train_epochs}ep.out
                 --output_name {output_name}
                 --run_version {run_version}
-                --pretrained {pretrained}
-                --trainer_deepspeed {ds_config}
+                --pretrained {spec['pretrained']}
+                --trainer_deepspeed {spec['ds_config']}
                 --num_train_epochs {train_epochs}
                 --eval_epochs {eval_epochs}
                 --save_epochs {save_epochs}
