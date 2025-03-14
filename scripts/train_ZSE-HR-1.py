@@ -10,6 +10,7 @@ debugging = False
 port = random.randint(25000, 30000)
 hostname = socket.gethostname()
 cuda_devices = os.getenv("CUDA_VISIBLE_DEVICES", "2,3" if not debugging else "0")
+num_devices = len(cuda_devices.split(','))
 source_file = "train_GNER.py"
 
 # Training arguments
@@ -41,7 +42,8 @@ for spec in model_specs:
     suffix = f"-{experiment_type}"
     run_version = f"{spec['run_prefix']}{suffix}"
     train_batch = spec['train_batch']
-    gradient_steps = total_batch / len(cuda_devices.split(',')) / train_batch
+    gradient_steps = int(total_batch / num_devices / train_batch)
+    assert gradient_steps * train_batch * num_devices == total_batch, f"total_batch={total_batch} != gradient_steps={gradient_steps} * train_batch={train_batch} * num_devices={num_devices}"
     use_flash_attention = spec['pretrained'].startswith("microsoft/Phi")
 
     command = f"""
