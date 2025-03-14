@@ -1,5 +1,5 @@
 model_specs_2gpu = [
-    {"ds_config": "configs/deepspeed/ds0_t5.json", "run_prefix": "FlanT5-Base", "pretrained": "google/flan-t5-base", "train_batch": 16},
+    {"ds_config": "configs/deepspeed/ds0_t5.json", "run_prefix": "FlanT5-Base", "pretrained": "google/flan-t5-base", "train_batch": 32},
     {"ds_config": "configs/deepspeed/ds0_t5.json", "run_prefix": "FlanT5-Large", "pretrained": "google/flan-t5-large", "train_batch": 4},
     {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "Llama3-1B", "pretrained": "meta-llama/Llama-3.2-1B", "train_batch": 4},
     {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "Qwen2-1B", "pretrained": "Qwen/Qwen2.5-1.5B", "train_batch": 4},
