@@ -1,8 +1,6 @@
 model_specs_2gpu = [
+    {"ds_config": "configs/deepspeed/ds0_t5.json", "run_prefix": "FlanT5-Large", "pretrained": "google/flan-t5-large", "train_batch": 16},
     {"ds_config": "configs/deepspeed/ds0_t5.json", "run_prefix": "FlanT5-Base", "pretrained": "google/flan-t5-base", "train_batch": 32},
-    {"ds_config": "configs/deepspeed/ds0_t5.json", "run_prefix": "FlanT5-Large", "pretrained": "google/flan-t5-large", "train_batch": 4},
-    {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "Llama3-1B", "pretrained": "meta-llama/Llama-3.2-1B", "train_batch": 4},
-    {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "Qwen2-1B", "pretrained": "Qwen/Qwen2.5-1.5B", "train_batch": 4},
     # {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "EAGLE-1B", "pretrained": "etri-lirs/egpt-1.3b-preview", "train_batch": 4},
 ]
 
@@ -15,6 +13,8 @@ model_specs_4gpu_a = [
 model_specs_4gpu_b = [
     {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "Phi3-4B", "pretrained": "microsoft/Phi-3-mini-4k-instruct", "train_batch": 8},  # modeling_phi3.py: get_max_length -> get_max_cache_shape
     {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "Qwen2-3B", "pretrained": "Qwen/Qwen2.5-3B", "train_batch": 8},
+    {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "Qwen2-1B", "pretrained": "Qwen/Qwen2.5-1.5B", "train_batch": 16},
+    {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "Llama3-1B", "pretrained": "meta-llama/Llama-3.2-1B", "train_batch": 16},
 ]
 
 model_specs_8gpu = [
