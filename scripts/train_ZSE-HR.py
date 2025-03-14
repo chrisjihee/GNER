@@ -15,8 +15,8 @@ source_file = "train_GNER.py"
 # Training arguments
 experiment_type = "HR"
 output_name = f"train_ZSE-{experiment_type}-{hostname}"
-data_config_dir = "configs/dataset/ZSE"
 train_file = "data/pile-ner=10-100,3-7,3-10-HR.jsonl"
+eval_file = "data/ZSE-test-HR.jsonl"
 metric_for_best_model = "eval_average"
 max_generation_tokens = 640
 save_total_limit = 3
@@ -48,7 +48,7 @@ for ds_config, run_prefix, pretrained in model_specs:
                 --include=localhost:{cuda_devices}
                 --master_port={port}
             {source_file}
-                --data_config_dir {data_config_dir}
+                --eval_file {eval_file}
                 --train_file {train_file}
                 --output_file train-metrics-{train_epochs}ep.csv
                 --logging_file train-loggings-{train_epochs}ep.out
