@@ -10,17 +10,16 @@ debugging = False
 port = random.randint(25000, 30000)
 hostname = socket.gethostname()
 cuda_devices = os.getenv("CUDA_VISIBLE_DEVICES", "0,1,2,3" if not debugging else "0")
-source_file = "finetune.py"
+source_file = "train_GNER.py"
 
 # Training arguments
 experiment_type = "BL"
-dataset_type = "united"
-output_name = f"ZSE-jihee-BL-{hostname}"
+output_name = f"train_ZSE-{experiment_type}-{hostname}"
 data_config_dir = "configs/dataset/ZSE"
 train_file = "data/pile-ner.jsonl"
 metric_for_best_model = "eval_average"
 max_generation_tokens = 640
-save_total_limit = 2
+save_total_limit = 3
 train_epochs = 12
 eval_epochs = 0.5
 save_epochs = eval_epochs
@@ -51,8 +50,8 @@ for ds_config, run_prefix, pretrained in model_specs:
             {source_file}
                 --data_config_dir {data_config_dir}
                 --train_file {train_file}
-                --output_file train-metrics-{dataset_type}-{train_epochs}ep.csv
-                --logging_file train-loggings-{dataset_type}-{train_epochs}ep.out
+                --output_file train-metrics-{train_epochs}ep.csv
+                --logging_file train-loggings-{train_epochs}ep.out
                 --output_name {output_name}
                 --run_version {run_version}
                 --pretrained {pretrained}
