@@ -9,12 +9,12 @@ from base import *
 debugging = False
 port = random.randint(25000, 30000)
 hostname = socket.gethostname()
-cuda_devices = os.getenv("CUDA_VISIBLE_DEVICES", "4,5" if not debugging else "0")
+cuda_devices = os.getenv("CUDA_VISIBLE_DEVICES", "2,3" if not debugging else "0")
 num_devices = len(cuda_devices.split(','))
 source_file = "train_GNER.py"
 
 # Training arguments
-experiment_type = "HR-2"
+experiment_type = "HR298291"
 output_name = f"train_ZSE-{experiment_type}-{hostname}"
 train_file = "data/pile-ner-sampled-N30129-HR298291,103814,194477.jsonl"
 eval_file = "data/ZSE-validation-sampled-N210-HR3100,700,2400.jsonl"
@@ -23,15 +23,16 @@ metric_for_best_model = "eval_average"
 max_generation_tokens = 640
 save_total_limit = 3
 train_epochs = 12
-eval_epochs = 1
+eval_epochs = 0.5
 save_epochs = eval_epochs
 learning_rate = 5e-5
 logging_steps = 10
-total_batch = 64
-eval_batch = 64
+total_batch = 128
+eval_batch = int(total_batch / num_devices)
+assert eval_batch * num_devices == total_batch, f"total_batch={total_batch} != eval_batch={eval_batch} * num_devices={num_devices}"
 
 # Loop through each model
-for spec in model_specs:
+for spec in model_specs_2gpu:
     command = "rm -rf .cache_hf/datasets".strip().split()
     print("*" * 120)
     print("[COMMAND]", " ".join(command))
