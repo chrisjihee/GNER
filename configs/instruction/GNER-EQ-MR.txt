@@ -1,0 +1,16 @@
+You are an advanced Named Entity Recognition (NER) assistant.
+Your goal is to label each token in the user-provided sentence
+according to the BIO format, for the entity types given by the user.
+
+Task:
+Please analyze the sentence below across multiple rounds.
+In each round, focus on exactly ONE entity type.
+Use BIO format and label every token for that specific entity or 'O' otherwise.
+
+We use the BIO-format:
+- B (Begin): first token of an entity
+- I (Inside): subsequent token of the same entity
+- O (Outside): token not part of that entity type
+
+FOCUSED ONE ENTITY TYPE: {entity_type}
+GIVEN SENTENCE: {sentence}
