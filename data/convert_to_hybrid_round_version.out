@@ -1,0 +1,72 @@
+/raid/chrisjihee/miniforge3/envs/GNER/bin/python /raid/chrisjihee/proj/GNER/chrisdata/src/chrisdata/cli.py ner convert_to_hybrid_round_version data/pile-ner=10-100,3-7,3-10.jsonl
+[03.14 17:55:14] ┇ =========================================================================================================================================
+[03.14 17:55:14] ┇ [INIT] python /raid/chrisjihee/proj/GNER/chrisdata/src/chrisdata/cli.py ner convert_to_hybrid_round_version data/pile-ner=10-100,3-7,3-10.jsonl
+[03.14 17:55:14] ┇ =========================================================================================================================================
+[03.14 17:55:14] ┇ [input_file]        : data/pile-ner=10-100,3-7,3-10.jsonl
+[03.14 17:55:14] ┇ [output_file]       : data/pile-ner=10-100,3-7,3-10-HR.jsonl
+[03.14 17:55:14] ┇ [instruction_file1] : configs/instruction/GNER-EQ-SR.txt
+[03.14 17:55:14] ┇ [instruction_file2] : configs/instruction/GNER-EQ-MR.txt
+[03.14 17:55:14] ┇ Converting data/pile-ner=10-100,3-7,3-10.jsonl:   0%|                    |     1/19988 [0:00:00<0:00:13, 1512.59Hz]
+[03.14 17:55:16] ┇ Converting data/pile-ner=10-100,3-7,3-10.jsonl:  48%|█████████▌          |  9579/19988 [0:00:02<0:00:02, 4512.07Hz]
+[03.14 17:55:18] ┇ Converting data/pile-ner=10-100,3-7,3-10.jsonl:  94%|██████████████████▊ | 18856/19988 [0:00:04<0:00:00, 4420.59Hz]
+[03.14 17:55:18] ┇ Converting data/pile-ner=10-100,3-7,3-10.jsonl: 100%|████████████████████| 19988/19988 [0:00:04<0:00:00, 3918.56Hz]
+[03.14 17:55:18] ┇ >> Number of new samples in data/pile-ner=10-100,3-7,3-10-HR.jsonl = 76091
+[03.14 17:55:18] ┇ =========================================================================================================================================
+[03.14 17:55:18] ┇ [EXIT] python /raid/chrisjihee/proj/GNER/chrisdata/src/chrisdata/cli.py ner convert_to_hybrid_round_version data/pile-ner=10-100,3-7,3-10.jsonl ($=00:00:04.345)
+[03.14 17:55:18] ┇ =========================================================================================================================================
+
+/raid/chrisjihee/miniforge3/envs/GNER/bin/python /raid/chrisjihee/proj/GNER/chrisdata/src/chrisdata/cli.py ner convert_to_hybrid_round_version data/pile-ner=10-100,3-10,3-10.jsonl
+[03.14 17:55:38] ┇ =========================================================================================================================================
+[03.14 17:55:38] ┇ [INIT] python /raid/chrisjihee/proj/GNER/chrisdata/src/chrisdata/cli.py ner convert_to_hybrid_round_version data/pile-ner=10-100,3-10,3-10.jsonl
+[03.14 17:55:38] ┇ =========================================================================================================================================
+[03.14 17:55:38] ┇ [input_file]        : data/pile-ner=10-100,3-10,3-10.jsonl
+[03.14 17:55:38] ┇ [output_file]       : data/pile-ner=10-100,3-10,3-10-HR.jsonl
+[03.14 17:55:38] ┇ [instruction_file1] : configs/instruction/GNER-EQ-SR.txt
+[03.14 17:55:38] ┇ [instruction_file2] : configs/instruction/GNER-EQ-MR.txt
+[03.14 17:55:38] ┇ Converting data/pile-ner=10-100,3-10,3-10.jsonl:   0%|                    |     1/30129 [0:00:00<0:00:21, 1411.53Hz]
+[03.14 17:55:40] ┇ Converting data/pile-ner=10-100,3-10,3-10.jsonl:  28%|█████▋              |  8573/30129 [0:00:02<0:00:04, 4725.78Hz]
+[03.14 17:55:42] ┇ Converting data/pile-ner=10-100,3-10,3-10.jsonl:  56%|███████████▎        | 16993/30129 [0:00:04<0:00:03, 3978.86Hz]
+[03.14 17:55:44] ┇ Converting data/pile-ner=10-100,3-10,3-10.jsonl:  83%|████████████████▌   | 24997/30129 [0:00:06<0:00:01, 3981.65Hz]
+[03.14 17:55:45] ┇ Converting data/pile-ner=10-100,3-10,3-10.jsonl: 100%|████████████████████| 30129/30129 [0:00:07<0:00:00, 3193.41Hz]
+[03.14 17:55:45] ┇ >> Number of new samples in data/pile-ner=10-100,3-10,3-10-HR.jsonl = 135956
+[03.14 17:55:46] ┇ =========================================================================================================================================
+[03.14 17:55:46] ┇ [EXIT] python /raid/chrisjihee/proj/GNER/chrisdata/src/chrisdata/cli.py ner convert_to_hybrid_round_version data/pile-ner=10-100,3-10,3-10.jsonl ($=00:00:07.458)
+[03.14 17:55:46] ┇ =========================================================================================================================================
+
+/raid/chrisjihee/miniforge3/envs/GNER/bin/python /raid/chrisjihee/proj/GNER/chrisdata/src/chrisdata/cli.py ner convert_to_hybrid_round_version data/pile-ner.jsonl
+[03.14 17:55:58] ┇ =========================================================================================================================================
+[03.14 17:55:58] ┇ [INIT] python /raid/chrisjihee/proj/GNER/chrisdata/src/chrisdata/cli.py ner convert_to_hybrid_round_version data/pile-ner.jsonl
+[03.14 17:55:58] ┇ =========================================================================================================================================
+[03.14 17:55:58] ┇ [input_file]        : data/pile-ner.jsonl
+[03.14 17:55:58] ┇ [output_file]       : data/pile-ner-HR.jsonl
+[03.14 17:55:58] ┇ [instruction_file1] : configs/instruction/GNER-EQ-SR.txt
+[03.14 17:55:58] ┇ [instruction_file2] : configs/instruction/GNER-EQ-MR.txt
+[03.14 17:55:58] ┇ Converting data/pile-ner.jsonl:   0%|                    |      1/105659 [0:00:00<0:01:09, 1530.18Hz]
+[03.14 17:56:00] ┇ Converting data/pile-ner.jsonl:   4%|▉                   |   4677/105659 [0:00:02<0:00:36, 2731.74Hz]
+[03.14 17:56:02] ┇ Converting data/pile-ner.jsonl:   9%|█▊                  |   9315/105659 [0:00:04<0:00:33, 2887.44Hz]
+[03.14 17:56:04] ┇ Converting data/pile-ner.jsonl:  13%|██▋                 |  13875/105659 [0:00:06<0:00:35, 2585.10Hz]
+[03.14 17:56:06] ┇ Converting data/pile-ner.jsonl:  18%|███▌                |  18590/105659 [0:00:08<0:00:37, 2321.64Hz]
+[03.14 17:56:08] ┇ Converting data/pile-ner.jsonl:  22%|████▍               |  23294/105659 [0:00:10<0:00:35, 2302.72Hz]
+[03.14 17:56:10] ┇ Converting data/pile-ner.jsonl:  26%|█████▎              |  27879/105659 [0:00:12<0:00:33, 2314.19Hz]
+[03.14 17:56:12] ┇ Converting data/pile-ner.jsonl:  31%|██████▏             |  32505/105659 [0:00:14<0:00:33, 2206.45Hz]
+[03.14 17:56:14] ┇ Converting data/pile-ner.jsonl:  35%|███████             |  37149/105659 [0:00:16<0:00:33, 2065.22Hz]
+[03.14 17:56:16] ┇ Converting data/pile-ner.jsonl:  40%|███████▉            |  41742/105659 [0:00:18<0:00:27, 2362.94Hz]
+[03.14 17:56:18] ┇ Converting data/pile-ner.jsonl:  44%|████████▊           |  46271/105659 [0:00:20<0:00:31, 1868.89Hz]
+[03.14 17:56:20] ┇ Converting data/pile-ner.jsonl:  48%|█████████▌          |  50801/105659 [0:00:22<0:00:22, 2450.09Hz]
+[03.14 17:56:22] ┇ Converting data/pile-ner.jsonl:  52%|██████████▍         |  55413/105659 [0:00:24<0:00:22, 2282.84Hz]
+[03.14 17:56:24] ┇ Converting data/pile-ner.jsonl:  57%|███████████▎        |  59954/105659 [0:00:26<0:00:20, 2274.99Hz]
+[03.14 17:56:26] ┇ Converting data/pile-ner.jsonl:  61%|████████████▏       |  64586/105659 [0:00:28<0:00:19, 2106.61Hz]
+[03.14 17:56:28] ┇ Converting data/pile-ner.jsonl:  65%|█████████████       |  69202/105659 [0:00:30<0:00:14, 2481.51Hz]
+[03.14 17:56:30] ┇ Converting data/pile-ner.jsonl:  70%|█████████████▉      |  73850/105659 [0:00:32<0:00:13, 2379.64Hz]
+[03.14 17:56:32] ┇ Converting data/pile-ner.jsonl:  74%|██████████████▊     |  78487/105659 [0:00:34<0:00:11, 2349.40Hz]
+[03.14 17:56:34] ┇ Converting data/pile-ner.jsonl:  79%|███████████████▋    |  83008/105659 [0:00:36<0:00:10, 2125.63Hz]
+[03.14 17:56:36] ┇ Converting data/pile-ner.jsonl:  83%|████████████████▌   |  87538/105659 [0:00:38<0:00:07, 2536.24Hz]
+[03.14 17:56:38] ┇ Converting data/pile-ner.jsonl:  87%|█████████████████▍  |  92108/105659 [0:00:40<0:00:06, 2103.32Hz]
+[03.14 17:56:40] ┇ Converting data/pile-ner.jsonl:  92%|██████████████████▎ |  96727/105659 [0:00:42<0:00:03, 2411.83Hz]
+[03.14 17:56:42] ┇ Converting data/pile-ner.jsonl:  96%|███████████████████▏| 101357/105659 [0:00:44<0:00:01, 2439.73Hz]
+[03.14 17:56:44] ┇ Converting data/pile-ner.jsonl: 100%|████████████████████| 105659/105659 [0:00:45<0:00:00, 2138.22Hz]
+[03.14 17:56:44] ┇ >> Number of new samples in data/pile-ner-HR.jsonl = 936426
+[03.14 17:56:44] ┇ =========================================================================================================================================
+[03.14 17:56:44] ┇ [EXIT] python /raid/chrisjihee/proj/GNER/chrisdata/src/chrisdata/cli.py ner convert_to_hybrid_round_version data/pile-ner.jsonl ($=00:00:46.324)
+[03.14 17:56:44] ┇ =========================================================================================================================================
+
