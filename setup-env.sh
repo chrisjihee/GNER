@@ -25,8 +25,8 @@ rm -rf progiter;     git clone https://github.com/chrisjihee/progiter.git;     p
 pip list | grep -E "torch|transformer|lightning |accelerate|deepspeed|flash_attn|numpy|sentencepiece|eval|chris|prog|pydantic" > dep_versions.txt
 
 # 5. Unzip some archived data
-cd data; gzip -d -k pile-ner.json.gz; cd ..
 cd data; gzip -d -k pile-ner.jsonl.gz; cd ..
+python chrisdata/scripts/ner_sample_jsonl.py
 mkdir -p output; mkdir -p output-lfs
 rm -rf output-lfs; ln -s /dlfs/jhryu/GNER-output output-lfs  # for some servers only
 
