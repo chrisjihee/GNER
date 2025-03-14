@@ -70,3 +70,31 @@
 [03.14 17:56:44] ┇ [EXIT] python /raid/chrisjihee/proj/GNER/chrisdata/src/chrisdata/cli.py ner convert_to_hybrid_round_version data/pile-ner.jsonl ($=00:00:46.324)
 [03.14 17:56:44] ┇ =========================================================================================================================================
 
+[03.14 18:14:35] ┇ =========================================================================================================================================
+[03.14 18:14:35] ┇ [INIT] python /raid/chrisjihee/proj/GNER/chrisdata/src/chrisdata/cli.py ner convert_to_hybrid_round_version data/ZSE-validation.jsonl
+[03.14 18:14:35] ┇ =========================================================================================================================================
+[03.14 18:14:35] ┇ [input_file]        : data/ZSE-validation.jsonl
+[03.14 18:14:35] ┇ [output_file]       : data/ZSE-validation-HR.jsonl
+[03.14 18:14:35] ┇ [instruction_file1] : configs/instruction/GNER-EQ-SR.txt
+[03.14 18:14:35] ┇ [instruction_file2] : configs/instruction/GNER-EQ-MR.txt
+[03.14 18:14:35] ┇ Converting data/ZSE-validation.jsonl:   0%|                    |    1/1400 [0:00:00<0:00:00, 2030.48Hz]
+[03.14 18:14:35] ┇ Converting data/ZSE-validation.jsonl: 100%|████████████████████| 1400/1400 [0:00:00<0:00:00, 2010.30Hz]
+[03.14 18:14:35] ┇ >> Number of new samples in data/ZSE-validation-HR.jsonl = 17400
+[03.14 18:14:36] ┇ =========================================================================================================================================
+[03.14 18:14:36] ┇ [EXIT] python /raid/chrisjihee/proj/GNER/chrisdata/src/chrisdata/cli.py ner convert_to_hybrid_round_version data/ZSE-validation.jsonl ($=00:00:00.610)
+[03.14 18:14:36] ┇ =========================================================================================================================================
+
+[03.14 18:15:00] ┇ =========================================================================================================================================
+[03.14 18:15:00] ┇ [INIT] python /raid/chrisjihee/proj/GNER/chrisdata/src/chrisdata/cli.py ner convert_to_hybrid_round_version data/ZSE-test.jsonl
+[03.14 18:15:00] ┇ =========================================================================================================================================
+[03.14 18:15:00] ┇ [input_file]        : data/ZSE-test.jsonl
+[03.14 18:15:00] ┇ [output_file]       : data/ZSE-test-HR.jsonl
+[03.14 18:15:00] ┇ [instruction_file1] : configs/instruction/GNER-EQ-SR.txt
+[03.14 18:15:00] ┇ [instruction_file2] : configs/instruction/GNER-EQ-MR.txt
+[03.14 18:15:00] ┇ Converting data/ZSE-test.jsonl:   0%|                    |    1/6470 [0:00:00<0:00:03, 2012.24Hz]
+[03.14 18:15:02] ┇ Converting data/ZSE-test.jsonl:  99%|███████████████████▊| 6417/6470 [0:00:02<0:00:00, 1894.62Hz]
+[03.14 18:15:02] ┇ Converting data/ZSE-test.jsonl: 100%|████████████████████| 6470/6470 [0:00:02<0:00:00, 1890.85Hz]
+[03.14 18:15:02] ┇ >> Number of new samples in data/ZSE-test-HR.jsonl = 77609
+[03.14 18:15:03] ┇ =========================================================================================================================================
+[03.14 18:15:03] ┇ [EXIT] python /raid/chrisjihee/proj/GNER/chrisdata/src/chrisdata/cli.py ner convert_to_hybrid_round_version data/ZSE-test.jsonl ($=00:00:02.239)
+[03.14 18:15:03] ┇ =========================================================================================================================================
