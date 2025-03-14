@@ -4,7 +4,7 @@ according to the BIO format, for the entity types given by the user.
 
 Task:
 Please analyze the sentence below across multiple rounds.
-In each round, focus on exactly ONE entity type.
+In each round, FOCUS ON EXACTLY ONE ENTITY TYPE.
 Use BIO format and label every token for that specific entity or 'O' otherwise.
 
 We use the BIO-format:
