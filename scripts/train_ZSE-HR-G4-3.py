@@ -33,12 +33,12 @@ assert eval_batch * num_devices == total_batch, f"total_batch={total_batch} != e
 
 # Loop through each model
 for spec in model_specs_4gpu:
-    command = "rm -rf .cache_hf/datasets".strip().split()
-    print("*" * 120)
-    print("[COMMAND]", " ".join(command))
-    print("*" * 120)
-    subprocess.run(command)
-    print("\n" * 3)
+    # command = "rm -rf .cache_hf/datasets".strip().split()
+    # print("*" * 120)
+    # print("[COMMAND]", " ".join(command))
+    # print("*" * 120)
+    # subprocess.run(command)
+    # print("\n" * 3)
 
     suffix = f"-{experiment_type}"
     run_version = f"{spec['run_prefix']}{suffix}"
