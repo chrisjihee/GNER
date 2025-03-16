@@ -162,7 +162,7 @@ cython_debug/
 # custom
 gradio_cached_examples
 output
-output-lfs
+output-*
 .cache
 .cache_*
 .*-token*
