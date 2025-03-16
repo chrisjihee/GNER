@@ -1,0 +1,14 @@
+{
+    "predict_average": 0.5986875855292787,
+    "predict_crossner_ai": 0.5827036103618911,
+    "predict_crossner_literature": 0.5844725302569334,
+    "predict_crossner_music": 0.7374603174102975,
+    "predict_crossner_politics": 0.6317917613854253,
+    "predict_crossner_science": 0.6789358600085883,
+    "predict_mit-movie": 0.5697292862506853,
+    "predict_mit-restaurant": 0.40571973303113046,
+    "predict_runtime": 528.7894,
+    "predict_samples": 6470,
+    "predict_samples_per_second": 12.235,
+    "predict_steps_per_second": 0.384
+}

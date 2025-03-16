@@ -1,0 +1,13 @@
+{
+    "pred_average": 0.6343941414561745,
+    "pred_crossner_ai": 0.6308316429519136,
+    "pred_crossner_literature": 0.551777434262126,
+    "pred_crossner_music": 0.7554786620029805,
+    "pred_crossner_politics": 0.6696035241790691,
+    "pred_crossner_science": 0.7057915057417009,
+    "pred_mit-movie": 0.6173752310036101,
+    "pred_mit-restaurant": 0.509900990051821,
+    "pred_runtime": 234.7413,
+    "pred_samples_per_second": 13.206,
+    "pred_steps_per_second": 0.107
+}
