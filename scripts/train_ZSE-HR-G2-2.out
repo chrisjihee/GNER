@@ -7337,3 +7337,264 @@ _load_legacy_checkpoint current_rank_sd[BASE_OPTIMIZER_STATE]
 [03.17 14:28:38] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▎| 27010/27960 [15:17:58<0:33:52, 0.47Hz] | epoch=11.59, loss=0.011600
 [03.17 14:28:57] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▎| 27020/27960 [15:18:17<0:33:29, 0.47Hz] | epoch=11.60, loss=0.010800
 [03.17 14:29:16] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▎| 27030/27960 [15:18:36<0:33:07, 0.47Hz] | epoch=11.60, loss=0.011500
+[03.17 14:29:36] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▎| 27040/27960 [15:18:55<0:32:45, 0.47Hz] | epoch=11.61, loss=0.010800
+[03.17 14:29:55] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▎| 27050/27960 [15:19:14<0:32:23, 0.47Hz] | epoch=11.61, loss=0.011700
+[03.17 14:30:14] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▎| 27060/27960 [15:19:33<0:32:02, 0.47Hz] | epoch=11.61, loss=0.011300
+[03.17 14:30:32] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▎| 27070/27960 [15:19:52<0:31:41, 0.47Hz] | epoch=11.62, loss=0.011100
+[03.17 14:30:52] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▎| 27080/27960 [15:20:12<0:31:21, 0.47Hz] | epoch=11.62, loss=0.010900
+[03.17 14:31:12] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▍| 27090/27960 [15:20:31<0:31:00, 0.47Hz] | epoch=11.63, loss=0.011200
+[03.17 14:31:31] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▍| 27100/27960 [15:20:50<0:30:38, 0.47Hz] | epoch=11.63, loss=0.010200
+[03.17 14:31:50] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▍| 27110/27960 [15:21:10<0:30:17, 0.47Hz] | epoch=11.63, loss=0.011400
+[03.17 14:32:09] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▍| 27120/27960 [15:21:28<0:29:56, 0.47Hz] | epoch=11.64, loss=0.011400
+[03.17 14:32:28] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▍| 27130/27960 [15:21:48<0:29:34, 0.47Hz] | epoch=11.64, loss=0.011400
+[03.17 14:32:48] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▍| 27140/27960 [15:22:07<0:29:13, 0.47Hz] | epoch=11.65, loss=0.011200
+[03.17 14:33:07] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▍| 27150/27960 [15:22:26<0:28:52, 0.47Hz] | epoch=11.65, loss=0.011400
+[03.17 14:33:25] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▍| 27160/27960 [15:22:45<0:28:31, 0.47Hz] | epoch=11.66, loss=0.011400
+[03.17 14:33:45] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▍| 27170/27960 [15:23:05<0:28:09, 0.47Hz] | epoch=11.66, loss=0.010700
+[03.17 14:34:06] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▍| 27180/27960 [15:23:25<0:27:50, 0.47Hz] | epoch=11.66, loss=0.011500
+[03.17 14:34:25] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▍| 27190/27960 [15:23:45<0:27:30, 0.47Hz] | epoch=11.67, loss=0.011600
+[03.17 14:34:45] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▍| 27200/27960 [15:24:05<0:27:08, 0.47Hz] | epoch=11.67, loss=0.011800
+[03.17 14:35:04] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▍| 27210/27960 [15:24:24<0:26:47, 0.47Hz] | epoch=11.68, loss=0.010600
+[03.17 14:35:23] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▍| 27220/27960 [15:24:42<0:26:24, 0.47Hz] | epoch=11.68, loss=0.011400
+[03.17 14:35:42] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▍| 27230/27960 [15:25:01<0:26:03, 0.47Hz] | epoch=11.69, loss=0.011800
+[03.17 14:36:01] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▍| 27240/27960 [15:25:20<0:25:41, 0.47Hz] | epoch=11.69, loss=0.011000
+[03.17 14:36:20] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▍| 27250/27960 [15:25:40<0:25:20, 0.47Hz] | epoch=11.70, loss=0.010400
+[03.17 14:36:40] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  97%|███████████████████▍| 27260/27960 [15:25:59<0:24:59, 0.47Hz] | epoch=11.70, loss=0.010500
+[03.17 14:36:58] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▌| 27270/27960 [15:26:18<0:24:38, 0.47Hz] | epoch=11.70, loss=0.011200
+[03.17 14:37:18] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▌| 27280/27960 [15:26:37<0:24:16, 0.47Hz] | epoch=11.71, loss=0.010600
+[03.17 14:37:38] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▌| 27290/27960 [15:26:57<0:23:57, 0.47Hz] | epoch=11.71, loss=0.012000
+[03.17 14:37:57] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▌| 27300/27960 [15:27:16<0:23:35, 0.47Hz] | epoch=11.72, loss=0.010700
+[03.17 14:38:15] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▌| 27310/27960 [15:27:35<0:23:13, 0.47Hz] | epoch=11.72, loss=0.010700
+[03.17 14:38:34] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▌| 27320/27960 [15:27:54<0:22:52, 0.47Hz] | epoch=11.72, loss=0.010600
+[03.17 14:38:54] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▌| 27330/27960 [15:28:13<0:22:30, 0.47Hz] | epoch=11.73, loss=0.010700
+[03.17 14:39:13] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▌| 27340/27960 [15:28:33<0:22:09, 0.47Hz] | epoch=11.73, loss=0.011000
+[03.17 14:39:32] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▌| 27350/27960 [15:28:52<0:21:47, 0.47Hz] | epoch=11.74, loss=0.010100
+[03.17 14:39:52] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▌| 27360/27960 [15:29:11<0:21:26, 0.47Hz] | epoch=11.74, loss=0.011200
+[03.17 14:40:11] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▌| 27370/27960 [15:29:30<0:21:05, 0.47Hz] | epoch=11.75, loss=0.011200
+[03.17 14:40:30] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▌| 27380/27960 [15:29:50<0:20:43, 0.47Hz] | epoch=11.75, loss=0.011300
+[03.17 14:40:50] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▌| 27390/27960 [15:30:10<0:20:22, 0.47Hz] | epoch=11.76, loss=0.011100
+[03.17 14:41:10] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▌| 27400/27960 [15:30:29<0:20:01, 0.47Hz] | epoch=11.76, loss=0.010800
+[03.17 14:41:28] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▌| 27410/27960 [15:30:48<0:19:38, 0.47Hz] | epoch=11.76, loss=0.011000
+[03.17 14:41:48] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▌| 27420/27960 [15:31:07<0:17:21, 0.52Hz] | epoch=11.77, loss=0.010800
+[03.17 14:42:07] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▌| 27430/27960 [15:31:26<0:16:58, 0.52Hz] | epoch=11.77, loss=0.011100
+[03.17 14:42:26] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▋| 27440/27960 [15:31:45<0:16:38, 0.52Hz] | epoch=11.78, loss=0.010900
+[03.17 14:42:45] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▋| 27450/27960 [15:32:04<0:16:19, 0.52Hz] | epoch=11.78, loss=0.010800
+[03.17 14:43:04] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▋| 27460/27960 [15:32:23<0:16:01, 0.52Hz] | epoch=11.79, loss=0.011100
+[03.17 14:43:24] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▋| 27470/27960 [15:32:44<0:15:43, 0.52Hz] | epoch=11.79, loss=0.011500
+[03.17 14:43:44] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▋| 27480/27960 [15:33:03<0:15:23, 0.52Hz] | epoch=11.79, loss=0.012100
+[03.17 14:44:03] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▋| 27490/27960 [15:33:23<0:15:05, 0.52Hz] | epoch=11.80, loss=0.011200
+[03.17 14:44:24] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▋| 27500/27960 [15:33:43<0:14:46, 0.52Hz] | epoch=11.80, loss=0.011500
+[03.17 14:44:43] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▋| 27510/27960 [15:34:02<0:14:27, 0.52Hz] | epoch=11.81, loss=0.011100
+[03.17 14:45:02] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▋| 27520/27960 [15:34:22<0:14:08, 0.52Hz] | epoch=11.81, loss=0.011300
+[03.17 14:45:21] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▋| 27530/27960 [15:34:40<0:13:48, 0.52Hz] | epoch=11.81, loss=0.012300
+[03.17 14:45:40] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  98%|███████████████████▋| 27540/27960 [15:34:59<0:13:28, 0.52Hz] | epoch=11.82, loss=0.012000
+[03.17 14:45:59] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▋| 27550/27960 [15:35:19<0:13:09, 0.52Hz] | epoch=11.82, loss=0.010500
+[03.17 14:46:18] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▋| 27560/27960 [15:35:38<0:12:50, 0.52Hz] | epoch=11.83, loss=0.011200
+[03.17 14:46:38] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▋| 27570/27960 [15:35:57<0:12:31, 0.52Hz] | epoch=11.83, loss=0.011000
+[03.17 14:46:58] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▋| 27580/27960 [15:36:17<0:12:12, 0.52Hz] | epoch=11.84, loss=0.011400
+[03.17 14:47:17] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▋| 27590/27960 [15:36:36<0:11:53, 0.52Hz] | epoch=11.84, loss=0.010300
+[03.17 14:47:36] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▋| 27600/27960 [15:36:55<0:11:33, 0.52Hz] | epoch=11.85, loss=0.011500
+[03.17 14:47:56] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▋| 27610/27960 [15:37:15<0:11:14, 0.52Hz] | epoch=11.85, loss=0.011800
+[03.17 14:48:15] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▊| 27620/27960 [15:37:35<0:10:56, 0.52Hz] | epoch=11.85, loss=0.010600
+[03.17 14:48:34] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▊| 27630/27960 [15:37:53<0:10:36, 0.52Hz] | epoch=11.86, loss=0.011000
+[03.17 14:48:54] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▊| 27640/27960 [15:38:13<0:10:17, 0.52Hz] | epoch=11.86, loss=0.010800
+[03.17 14:49:13] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▊| 27650/27960 [15:38:32<0:09:58, 0.52Hz] | epoch=11.87, loss=0.011300
+[03.17 14:49:31] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▊| 27660/27960 [15:38:51<0:09:38, 0.52Hz] | epoch=11.87, loss=0.010100
+[03.17 14:49:52] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▊| 27670/27960 [15:39:11<0:09:19, 0.52Hz] | epoch=11.88, loss=0.011200
+[03.17 14:50:11] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▊| 27680/27960 [15:39:31<0:09:00, 0.52Hz] | epoch=11.88, loss=0.011300
+[03.17 14:50:30] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▊| 27690/27960 [15:39:50<0:08:41, 0.52Hz] | epoch=11.88, loss=0.012000
+[03.17 14:50:50] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▊| 27700/27960 [15:40:09<0:08:22, 0.52Hz] | epoch=11.89, loss=0.010900
+[03.17 14:51:09] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▊| 27710/27960 [15:40:28<0:08:02, 0.52Hz] | epoch=11.89, loss=0.010400
+[03.17 14:51:28] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▊| 27720/27960 [15:40:48<0:07:43, 0.52Hz] | epoch=11.90, loss=0.010900
+[03.17 14:51:47] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▊| 27730/27960 [15:41:07<0:07:24, 0.52Hz] | epoch=11.90, loss=0.011400
+[03.17 14:52:06] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▊| 27740/27960 [15:41:26<0:07:04, 0.52Hz] | epoch=11.91, loss=0.011100
+[03.17 14:52:25] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▊| 27750/27960 [15:41:44<0:06:45, 0.52Hz] | epoch=11.91, loss=0.010400
+[03.17 14:52:44] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▊| 27760/27960 [15:42:03<0:06:25, 0.52Hz] | epoch=11.91, loss=0.010500
+[03.17 14:53:04] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▊| 27770/27960 [15:42:23<0:06:06, 0.52Hz] | epoch=11.92, loss=0.011000
+[03.17 14:53:23] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▊| 27780/27960 [15:42:42<0:05:47, 0.52Hz] | epoch=11.92, loss=0.010100
+[03.17 14:53:42] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▉| 27790/27960 [15:43:02<0:05:28, 0.52Hz] | epoch=11.93, loss=0.011100
+[03.17 14:54:02] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▉| 27800/27960 [15:43:21<0:05:08, 0.52Hz] | epoch=11.93, loss=0.011400
+[03.17 14:54:21] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▉| 27810/27960 [15:43:41<0:04:49, 0.52Hz] | epoch=11.94, loss=0.011200
+[03.17 14:54:41] ┇ INFO    ┇        gner.gner_trainer ┇ [training]  99%|███████████████████▉| 27820/27960 [15:44:00<0:04:30, 0.52Hz] | epoch=11.94, loss=0.010600
+[03.17 14:55:00] ┇ INFO    ┇        gner.gner_trainer ┇ [training] 100%|███████████████████▉| 27830/27960 [15:44:19<0:04:10, 0.52Hz] | epoch=11.94, loss=0.010600
+[03.17 14:55:20] ┇ INFO    ┇        gner.gner_trainer ┇ [training] 100%|███████████████████▉| 27840/27960 [15:44:39<0:03:51, 0.52Hz] | epoch=11.95, loss=0.011100
+[03.17 14:55:39] ┇ INFO    ┇        gner.gner_trainer ┇ [training] 100%|███████████████████▉| 27850/27960 [15:44:58<0:03:32, 0.52Hz] | epoch=11.95, loss=0.010100
+[03.17 14:55:58] ┇ INFO    ┇        gner.gner_trainer ┇ [training] 100%|███████████████████▉| 27860/27960 [15:45:18<0:03:13, 0.52Hz] | epoch=11.96, loss=0.010400
+[03.17 14:56:17] ┇ INFO    ┇        gner.gner_trainer ┇ [training] 100%|███████████████████▉| 27870/27960 [15:45:37<0:02:53, 0.52Hz] | epoch=11.96, loss=0.011400
+[03.17 14:56:36] ┇ INFO    ┇        gner.gner_trainer ┇ [training] 100%|███████████████████▉| 27880/27960 [15:45:55<0:02:34, 0.52Hz] | epoch=11.97, loss=0.010500
+[03.17 14:56:55] ┇ INFO    ┇        gner.gner_trainer ┇ [training] 100%|███████████████████▉| 27890/27960 [15:46:15<0:02:15, 0.52Hz] | epoch=11.97, loss=0.011500
+[03.17 14:57:14] ┇ INFO    ┇        gner.gner_trainer ┇ [training] 100%|███████████████████▉| 27900/27960 [15:46:34<0:01:55, 0.52Hz] | epoch=11.97, loss=0.010700
+[03.17 14:57:34] ┇ INFO    ┇        gner.gner_trainer ┇ [training] 100%|███████████████████▉| 27910/27960 [15:46:54<0:01:36, 0.52Hz] | epoch=11.98, loss=0.011300
+[03.17 14:57:53] ┇ INFO    ┇        gner.gner_trainer ┇ [training] 100%|███████████████████▉| 27920/27960 [15:47:13<0:01:17, 0.52Hz] | epoch=11.98, loss=0.011500
+[03.17 14:58:12] ┇ INFO    ┇        gner.gner_trainer ┇ [training] 100%|███████████████████▉| 27930/27960 [15:47:32<0:00:57, 0.52Hz] | epoch=11.99, loss=0.010500
+[03.17 14:58:31] ┇ INFO    ┇        gner.gner_trainer ┇ [training] 100%|███████████████████▉| 27940/27960 [15:47:50<0:00:38, 0.52Hz] | epoch=11.99, loss=0.010400
+[03.17 14:58:50] ┇ INFO    ┇        gner.gner_trainer ┇ [training] 100%|███████████████████▉| 27950/27960 [15:48:09<0:00:19, 0.52Hz] | epoch=12.00, loss=0.010900
+[03.17 14:59:09] ┇ INFO    ┇        gner.gner_trainer ┇ [training] 100%|████████████████████| 27960/27960 [15:48:29<0:00:00, 0.52Hz] | epoch=12.00, loss=0.010900
+[03.17 14:59:11] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]   4%|▊                   |  1/25 [0:00:01<0:00:41, 0.57Hz]
+[03.17 14:59:17] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]   8%|█▌                  |  2/25 [0:00:08<0:01:32, 0.25Hz]
+[03.17 14:59:24] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  12%|██▍                 |  3/25 [0:00:14<0:01:49, 0.20Hz]
+[03.17 14:59:32] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  16%|███▏                |  4/25 [0:00:23<0:02:01, 0.17Hz]
+[03.17 14:59:42] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  20%|████                |  5/25 [0:00:32<0:02:10, 0.15Hz]
+[03.17 14:59:49] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  24%|████▊               |  6/25 [0:00:40<0:02:07, 0.15Hz]
+[03.17 14:59:53] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  36%|███████▏            |  9/25 [0:00:43<0:01:17, 0.21Hz]
+[03.17 14:59:57] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  44%|████████▊           | 11/25 [0:00:47<0:01:00, 0.23Hz]
+[03.17 15:00:01] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  48%|█████████▌          | 12/25 [0:00:51<0:00:55, 0.23Hz]
+[03.17 15:00:07] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  52%|██████████▍         | 13/25 [0:00:57<0:00:53, 0.22Hz]
+[03.17 15:00:15] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  56%|███████████▏        | 14/25 [0:01:05<0:00:51, 0.21Hz]
+[03.17 15:00:19] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  60%|████████████        | 15/25 [0:01:10<0:00:46, 0.21Hz]
+[03.17 15:00:25] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  64%|████████████▊       | 16/25 [0:01:15<0:00:42, 0.21Hz]
+[03.17 15:00:31] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  68%|█████████████▌      | 17/25 [0:01:21<0:00:38, 0.21Hz]
+[03.17 15:00:39] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  72%|██████████████▍     | 18/25 [0:01:30<0:00:35, 0.20Hz]
+[03.17 15:00:45] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  76%|███████████████▏    | 19/25 [0:01:35<0:00:30, 0.20Hz]
+[03.17 15:00:53] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  80%|████████████████    | 20/25 [0:01:43<0:00:25, 0.19Hz]
+[03.17 15:01:00] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  84%|████████████████▊   | 21/25 [0:01:50<0:00:21, 0.19Hz]
+[03.17 15:01:06] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  88%|█████████████████▌  | 22/25 [0:01:56<0:00:15, 0.19Hz]
+[03.17 15:01:09] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  92%|██████████████████▍ | 23/25 [0:02:00<0:00:10, 0.19Hz]
+[03.17 15:01:14] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  96%|███████████████████▏| 24/25 [0:02:05<0:00:05, 0.19Hz]
+[03.17 15:01:19] ┇ INFO    ┇        gner.gner_trainer ┇ [checking] 100%|████████████████████| 25/25 [0:02:09<0:00:00, 0.19Hz]
+[03.17 15:01:22] ┇ INFO    ┇        gner.gner_trainer ┇ [training] 100%|████████████████████| 27960/27960 [15:48:29<0:00:00, 0.52Hz] | epoch=12.00, eval_average=0.5595
+_load_legacy_checkpoint current_rank_sd[BASE_OPTIMIZER_STATE]
+_load_legacy_checkpoint current_rank_sd[BASE_OPTIMIZER_STATE]
+[03.17 15:01:28] ┇ INFO    ┇        gner.gner_trainer ┇ [training] 100%|████████████████████| 27960/27960 [15:48:29<0:00:00, 0.52Hz] | epoch=12.00, train_loss=0.0170, total_pflos=2070.022
+[03.17 15:01:28] ┇ INFO    ┇        gner.gner_trainer ┇ -----------------------------------------------------------------------------------------------------------------------------------------
+[03.17 15:01:28] ┇ INFO    ┇                     gner ┇ ***** train metrics *****
+[03.17 15:01:28] ┇ INFO    ┇                     gner ┇   epoch                    =         12.0
+[03.17 15:01:28] ┇ INFO    ┇                     gner ┇   total_flos               = 1927857889GF
+[03.17 15:01:28] ┇ INFO    ┇                     gner ┇   train_loss               =        0.017
+[03.17 15:01:28] ┇ INFO    ┇                     gner ┇   train_runtime            =  15:50:48.13
+[03.17 15:01:28] ┇ INFO    ┇                     gner ┇   train_samples_per_second =       62.745
+[03.17 15:01:28] ┇ INFO    ┇                     gner ┇   train_steps_per_second   =         0.49
+[03.17 15:01:28] ┇ INFO    ┇             chrisbase.io ┇ Convert output-lfs/train_ZSE-HR298291-dgx-a100/FlanT5-Base-HR298291/runs/Mar16_23-08-39_dgx-a100/events.out.tfevents.1742134240.dgx-a100.1260426.0 to csv
+[03.17 15:01:30] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]   4%|▊                   |  1/25 [0:00:01<0:00:42, 0.57Hz]
+[03.17 15:01:37] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]   8%|█▌                  |  2/25 [0:00:08<0:01:34, 0.24Hz]
+[03.17 15:01:44] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  12%|██▍                 |  3/25 [0:00:15<0:01:50, 0.20Hz]
+[03.17 15:01:51] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  16%|███▏                |  4/25 [0:00:22<0:01:56, 0.18Hz]
+[03.17 15:01:59] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  20%|████                |  5/25 [0:00:30<0:02:03, 0.16Hz]
+[03.17 15:02:08] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  24%|████▊               |  6/25 [0:00:39<0:02:04, 0.15Hz]
+[03.17 15:02:11] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  36%|███████▏            |  9/25 [0:00:42<0:01:16, 0.21Hz]
+[03.17 15:02:15] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  44%|████████▊           | 11/25 [0:00:46<0:00:59, 0.23Hz]
+[03.17 15:02:19] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  48%|█████████▌          | 12/25 [0:00:50<0:00:54, 0.24Hz]
+[03.17 15:02:25] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  52%|██████████▍         | 13/25 [0:00:56<0:00:52, 0.23Hz]
+[03.17 15:02:33] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  56%|███████████▏        | 14/25 [0:01:04<0:00:50, 0.22Hz]
+[03.17 15:02:38] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  60%|████████████        | 15/25 [0:01:09<0:00:46, 0.22Hz]
+[03.17 15:02:43] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  64%|████████████▊       | 16/25 [0:01:14<0:00:41, 0.21Hz]
+[03.17 15:02:49] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  68%|█████████████▌      | 17/25 [0:01:20<0:00:38, 0.21Hz]
+[03.17 15:02:58] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  72%|██████████████▍     | 18/25 [0:01:29<0:00:34, 0.20Hz]
+[03.17 15:03:04] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  76%|███████████████▏    | 19/25 [0:01:35<0:00:30, 0.20Hz]
+[03.17 15:03:12] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  80%|████████████████    | 20/25 [0:01:43<0:00:25, 0.19Hz]
+[03.17 15:03:19] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  84%|████████████████▊   | 21/25 [0:01:50<0:00:21, 0.19Hz]
+[03.17 15:03:25] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  88%|█████████████████▌  | 22/25 [0:01:56<0:00:15, 0.19Hz]
+[03.17 15:03:29] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  92%|██████████████████▍ | 23/25 [0:02:00<0:00:10, 0.19Hz]
+[03.17 15:03:34] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  96%|███████████████████▏| 24/25 [0:02:05<0:00:05, 0.19Hz]
+[03.17 15:03:38] ┇ INFO    ┇        gner.gner_trainer ┇ [checking] 100%|████████████████████| 25/25 [0:02:09<0:00:00, 0.19Hz]
+[03.17 15:03:42] ┇ INFO    ┇                     gner ┇ ***** eval metrics *****
+[03.17 15:03:42] ┇ INFO    ┇                     gner ┇   epoch                    =       12.0
+[03.17 15:03:42] ┇ INFO    ┇                     gner ┇   eval_average             =     0.5651
+[03.17 15:03:42] ┇ INFO    ┇                     gner ┇   eval_crossner_ai         =     0.5425
+[03.17 15:03:42] ┇ INFO    ┇                     gner ┇   eval_crossner_literature =      0.604
+[03.17 15:03:42] ┇ INFO    ┇                     gner ┇   eval_crossner_music      =     0.6529
+[03.17 15:03:42] ┇ INFO    ┇                     gner ┇   eval_crossner_politics   =     0.6112
+[03.17 15:03:42] ┇ INFO    ┇                     gner ┇   eval_crossner_science    =     0.6194
+[03.17 15:03:42] ┇ INFO    ┇                     gner ┇   eval_mit-movie           =     0.5464
+[03.17 15:03:42] ┇ INFO    ┇                     gner ┇   eval_mit-restaurant      =     0.3797
+[03.17 15:03:42] ┇ INFO    ┇                     gner ┇   eval_runtime             = 0:02:13.56
+[03.17 15:03:42] ┇ INFO    ┇                     gner ┇   eval_samples_per_second  =     23.209
+[03.17 15:03:42] ┇ INFO    ┇                     gner ┇   eval_steps_per_second    =      0.187
+[03.17 15:03:44] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]   1%|▎                   |  1/79 [0:00:01<0:01:52, 0.70Hz]
+[03.17 15:03:48] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]   4%|▊                   |  3/79 [0:00:05<0:02:18, 0.55Hz]
+[03.17 15:03:55] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]   6%|█▎                  |  5/79 [0:00:12<0:03:08, 0.39Hz]
+[03.17 15:04:01] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]   8%|█▌                  |  6/79 [0:00:19<0:03:53, 0.31Hz]
+[03.17 15:04:09] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]   9%|█▊                  |  7/79 [0:00:27<0:04:38, 0.26Hz]
+[03.17 15:04:16] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  10%|██                  |  8/79 [0:00:34<0:05:02, 0.24Hz]
+[03.17 15:04:22] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  11%|██▎                 |  9/79 [0:00:40<0:05:13, 0.22Hz]
+[03.17 15:04:30] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  13%|██▌                 | 10/79 [0:00:48<0:05:32, 0.21Hz]
+[03.17 15:04:38] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  14%|██▊                 | 11/79 [0:00:56<0:05:47, 0.20Hz]
+[03.17 15:04:45] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  15%|███                 | 12/79 [0:01:03<0:05:52, 0.19Hz]
+[03.17 15:04:52] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  16%|███▎                | 13/79 [0:01:10<0:05:57, 0.18Hz]
+[03.17 15:05:01] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  18%|███▌                | 14/79 [0:01:18<0:06:04, 0.18Hz]
+[03.17 15:05:08] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  19%|███▊                | 15/79 [0:01:26<0:06:08, 0.17Hz]
+[03.17 15:05:17] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  20%|████                | 16/79 [0:01:34<0:06:13, 0.17Hz]
+[03.17 15:05:24] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  22%|████▎               | 17/79 [0:01:41<0:06:10, 0.17Hz]
+[03.17 15:05:27] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  25%|█████               | 20/79 [0:01:44<0:05:08, 0.19Hz]
+[03.17 15:05:30] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  28%|█████▌              | 22/79 [0:01:47<0:04:38, 0.20Hz]
+[03.17 15:05:33] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  30%|██████              | 24/79 [0:01:50<0:04:13, 0.22Hz]
+[03.17 15:05:37] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  34%|██████▊             | 27/79 [0:01:54<0:03:41, 0.23Hz]
+[03.17 15:05:40] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  38%|███████▌            | 30/79 [0:01:58<0:03:13, 0.25Hz]
+[03.17 15:05:47] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  42%|████████▎           | 33/79 [0:02:05<0:02:54, 0.26Hz]
+[03.17 15:05:50] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  43%|████████▌           | 34/79 [0:02:08<0:02:49, 0.26Hz]
+[03.17 15:05:54] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  44%|████████▊           | 35/79 [0:02:12<0:02:46, 0.26Hz]
+[03.17 15:05:58] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  46%|█████████           | 36/79 [0:02:16<0:02:42, 0.26Hz]
+[03.17 15:06:03] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  47%|█████████▎          | 37/79 [0:02:20<0:02:39, 0.26Hz]
+[03.17 15:06:07] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  48%|█████████▌          | 38/79 [0:02:25<0:02:36, 0.26Hz]
+[03.17 15:06:12] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  49%|█████████▊          | 39/79 [0:02:29<0:02:33, 0.26Hz]
+[03.17 15:06:18] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  51%|██████████▏         | 40/79 [0:02:36<0:02:32, 0.26Hz]
+[03.17 15:06:22] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  52%|██████████▍         | 41/79 [0:02:39<0:02:27, 0.26Hz]
+[03.17 15:06:26] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  53%|██████████▋         | 42/79 [0:02:43<0:02:24, 0.26Hz]
+[03.17 15:06:31] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  54%|██████████▉         | 43/79 [0:02:49<0:02:21, 0.25Hz]
+[03.17 15:06:35] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  56%|███████████▏        | 44/79 [0:02:53<0:02:17, 0.25Hz]
+[03.17 15:06:39] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  57%|███████████▍        | 45/79 [0:02:57<0:02:13, 0.25Hz]
+[03.17 15:06:45] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  58%|███████████▋        | 46/79 [0:03:02<0:02:10, 0.25Hz]
+[03.17 15:06:50] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  59%|███████████▉        | 47/79 [0:03:07<0:02:07, 0.25Hz]
+[03.17 15:06:56] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  61%|████████████▏       | 48/79 [0:03:13<0:02:04, 0.25Hz]
+[03.17 15:07:01] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  62%|████████████▍       | 49/79 [0:03:18<0:02:01, 0.25Hz]
+[03.17 15:07:07] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  63%|████████████▋       | 50/79 [0:03:24<0:01:58, 0.24Hz]
+[03.17 15:07:13] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  65%|████████████▉       | 51/79 [0:03:30<0:01:55, 0.24Hz]
+[03.17 15:07:19] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  66%|█████████████▏      | 52/79 [0:03:37<0:01:52, 0.24Hz]
+[03.17 15:07:25] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  67%|█████████████▍      | 53/79 [0:03:42<0:01:49, 0.24Hz]
+[03.17 15:07:31] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  68%|█████████████▋      | 54/79 [0:03:48<0:01:45, 0.24Hz]
+[03.17 15:07:40] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  70%|█████████████▉      | 55/79 [0:03:58<0:01:44, 0.23Hz]
+[03.17 15:07:46] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  71%|██████████████▏     | 56/79 [0:04:03<0:01:39, 0.23Hz]
+[03.17 15:07:51] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  72%|██████████████▍     | 57/79 [0:04:09<0:01:36, 0.23Hz]
+[03.17 15:07:57] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  73%|██████████████▋     | 58/79 [0:04:15<0:01:32, 0.23Hz]
+[03.17 15:08:03] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  75%|██████████████▉     | 59/79 [0:04:21<0:01:28, 0.23Hz]
+[03.17 15:08:10] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  76%|███████████████▏    | 60/79 [0:04:28<0:01:24, 0.22Hz]
+[03.17 15:08:17] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  77%|███████████████▍    | 61/79 [0:04:34<0:01:20, 0.22Hz]
+[03.17 15:08:22] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  78%|███████████████▋    | 62/79 [0:04:40<0:01:16, 0.22Hz]
+[03.17 15:08:28] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  80%|███████████████▉    | 63/79 [0:04:46<0:01:12, 0.22Hz]
+[03.17 15:08:35] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  81%|████████████████▏   | 64/79 [0:04:52<0:01:09, 0.22Hz]
+[03.17 15:08:43] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  82%|████████████████▍   | 65/79 [0:05:00<0:01:06, 0.21Hz]
+[03.17 15:08:50] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  84%|████████████████▋   | 66/79 [0:05:08<0:01:02, 0.21Hz]
+[03.17 15:08:55] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  85%|████████████████▉   | 67/79 [0:05:12<0:00:58, 0.21Hz]
+[03.17 15:08:59] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  86%|█████████████████▏  | 68/79 [0:05:17<0:00:53, 0.21Hz]
+[03.17 15:09:05] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  87%|█████████████████▍  | 69/79 [0:05:23<0:00:48, 0.21Hz]
+[03.17 15:09:11] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  89%|█████████████████▋  | 70/79 [0:05:29<0:00:43, 0.21Hz]
+[03.17 15:09:17] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  90%|█████████████████▉  | 71/79 [0:05:35<0:00:38, 0.21Hz]
+[03.17 15:09:22] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  91%|██████████████████▏ | 72/79 [0:05:40<0:00:33, 0.21Hz]
+[03.17 15:09:27] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  92%|██████████████████▍ | 73/79 [0:05:44<0:00:28, 0.21Hz]
+[03.17 15:09:32] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  94%|██████████████████▋ | 74/79 [0:05:49<0:00:23, 0.21Hz]
+[03.17 15:09:38] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  95%|██████████████████▉ | 75/79 [0:05:55<0:00:18, 0.22Hz]
+[03.17 15:09:43] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  96%|███████████████████▏| 76/79 [0:06:00<0:00:13, 0.22Hz]
+[03.17 15:09:50] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  97%|███████████████████▍| 77/79 [0:06:07<0:00:09, 0.22Hz]
+[03.17 15:09:54] ┇ INFO    ┇        gner.gner_trainer ┇ [checking]  99%|███████████████████▋| 78/79 [0:06:11<0:00:04, 0.22Hz]
+[03.17 15:09:59] ┇ INFO    ┇        gner.gner_trainer ┇ [checking] 100%|████████████████████| 79/79 [0:06:16<0:00:00, 0.22Hz]
+[03.17 15:10:11] ┇ INFO    ┇                     gner ┇ ***** pred metrics *****
+[03.17 15:10:11] ┇ INFO    ┇                     gner ┇   pred_average             =     0.5811
+[03.17 15:10:11] ┇ INFO    ┇                     gner ┇   pred_crossner_ai         =     0.5587
+[03.17 15:10:11] ┇ INFO    ┇                     gner ┇   pred_crossner_literature =      0.583
+[03.17 15:10:11] ┇ INFO    ┇                     gner ┇   pred_crossner_music      =     0.6565
+[03.17 15:10:11] ┇ INFO    ┇                     gner ┇   pred_crossner_politics   =     0.6473
+[03.17 15:10:11] ┇ INFO    ┇                     gner ┇   pred_crossner_science    =     0.6163
+[03.17 15:10:11] ┇ INFO    ┇                     gner ┇   pred_mit-movie           =     0.5985
+[03.17 15:10:11] ┇ INFO    ┇                     gner ┇   pred_mit-restaurant      =     0.4072
+[03.17 15:10:11] ┇ INFO    ┇                     gner ┇   pred_runtime             = 0:06:29.38
+[03.17 15:10:11] ┇ INFO    ┇                     gner ┇   pred_samples_per_second  =     25.939
+[03.17 15:10:11] ┇ INFO    ┇                     gner ┇   pred_steps_per_second    =      0.203
+[03.17 15:10:12] ┇ INFO    ┇           chrisbase.data ┇ =========================================================================================================================================
+[03.17 15:10:12] ┇ INFO    ┇           chrisbase.data ┇ [EXIT] python train_GNER.py --local_rank=0 --pred_file data/ZSE-test-sampled-N700-HR10100,2100,8000.jsonl --eval_file data/ZSE-validation-sampled-N210-HR3100,700,2400.jsonl --train_file data/pile-ner-sampled-N30129-HR298291,103814,194477.jsonl --output_file train-metrics-12ep.csv --logging_file train-loggings-12ep.out --output_name train_ZSE-HR298291-dgx-a100 --run_version FlanT5-Base-HR298291 --pretrained google/flan-t5-base --trainer_deepspeed configs/deepspeed/ds0_t5.json --num_train_epochs 12 --eval_epochs 0.5 --save_epochs 0.5 --learning_rate 5e-05 --logging_steps 10 --per_device_eval_batch_size 64 --per_device_train_batch_size 32 --gradient_accumulation_steps 2 --max_generation_tokens 640 --save_total_limit 3 --metric_for_best_model eval_average --no_use_flash_attention --no_debugging ($=16:01:31.432)
+[03.17 15:10:12] ┇ INFO    ┇           chrisbase.data ┇ =========================================================================================================================================
+[2025-03-17 15:10:14,890] [INFO] [launch.py:351:main] Process 1260427 exits successfully.
+[2025-03-17 15:10:14,890] [INFO] [launch.py:351:main] Process 1260426 exits successfully.
+************************************************************************************************************************
+[COMMAND] python -m deepspeed.launcher.runner --include=localhost:2,3 --master_port=28043 train_GNER.py --pred_file data/ZSE-test-sampled-N700-HR10100,2100,8000.jsonl --eval_file data/ZSE-validation-sampled-N210-HR3100,700,2400.jsonl --train_file data/pile-ner-sampled-N30129-HR298291,103814,194477.jsonl --output_file train-metrics-12ep.csv --logging_file train-loggings-12ep.out --output_name train_ZSE-HR298291-dgx-a100 --run_version FlanT5-Large-HR298291 --pretrained google/flan-t5-large --trainer_deepspeed configs/deepspeed/ds0_t5.json --num_train_epochs 12 --eval_epochs 0.5 --save_epochs 0.5 --learning_rate 5e-05 --logging_steps 10 --per_device_eval_batch_size 64 --per_device_train_batch_size 16 --gradient_accumulation_steps 4 --max_generation_tokens 640 --save_total_limit 3 --metric_for_best_model eval_average --no_use_flash_attention --no_debugging
+************************************************************************************************************************
+
+
+
+
+************************************************************************************************************************
+[COMMAND] python -m deepspeed.launcher.runner --include=localhost:2,3 --master_port=28043 train_GNER.py --pred_file data/ZSE-test-sampled-N700-HR10100,2100,8000.jsonl --eval_file data/ZSE-validation-sampled-N210-HR3100,700,2400.jsonl --train_file data/pile-ner-sampled-N30129-HR298291,103814,194477.jsonl --output_file train-metrics-12ep.csv --logging_file train-loggings-12ep.out --output_name train_ZSE-HR298291-dgx-a100 --run_version FlanT5-Base-HR298291 --pretrained google/flan-t5-base --trainer_deepspeed configs/deepspeed/ds0_t5.json --num_train_epochs 12 --eval_epochs 0.5 --save_epochs 0.5 --learning_rate 5e-05 --logging_steps 10 --per_device_eval_batch_size 64 --per_device_train_batch_size 32 --gradient_accumulation_steps 2 --max_generation_tokens 640 --save_total_limit 3 --metric_for_best_model eval_average --no_use_flash_attention --no_debugging
+************************************************************************************************************************
+
+
+
+
