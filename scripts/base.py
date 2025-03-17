@@ -3,6 +3,14 @@ model_specs_2gpu = [  # A100*2
     {"ds_config": "configs/deepspeed/ds0_t5.json", "run_prefix": "FlanT5-Base", "pretrained": "google/flan-t5-base", "train_batch": 32, "train_epochs": 12, "output_home": "output-lfs"},
 ]
 
+model_specs_2gpu_a = [  # H100*2
+    {"ds_config": "configs/deepspeed/ds0_t5.json", "run_prefix": "GnerT5-Base", "pretrained": "dyyyyyyyy/GNER-T5-base", "train_batch": 32, "train_epochs": 12, "output_home": "output-lfs-dl026"},
+]
+
+model_specs_2gpu_b = [  # H100*2
+    {"ds_config": "configs/deepspeed/ds0_t5.json", "run_prefix": "GnerT5-Large", "pretrained": "dyyyyyyyy/GNER-T5-large-v2", "train_batch": 32, "train_epochs": 12, "output_home": "output-lfs-dl026"},
+]
+
 model_specs_4gpu_a = [  # A100*4
     # {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "Llama3-1B", "pretrained": "meta-llama/Llama-3.2-1B", "train_batch": 2, "train_epochs": 10, "output_home": "output-lfs-dl012"},
     {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "Qwen2-1B", "pretrained": "Qwen/Qwen2.5-1.5B", "train_batch": 2, "train_epochs": 10, "output_home": "output-lfs-dl012"},

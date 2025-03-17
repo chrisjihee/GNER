@@ -31,7 +31,7 @@ eval_batch = int(total_batch / num_devices)
 assert eval_batch * num_devices == total_batch, f"total_batch={total_batch} != eval_batch={eval_batch} * num_devices={num_devices}"
 
 # Loop through each model
-for spec in model_specs_4gpu_b:
+for spec in model_specs_4gpu_a:
     # command = "rm -rf .cache_hf/datasets".strip().split()
     # print("*" * 120)
     # print("[COMMAND]", " ".join(command))
