@@ -34,6 +34,41 @@ logger: logging.Logger = logging.getLogger("gner")
 main = AppTyper()
 
 
+@main.command("generate_hybrid_prediction")
+def generate_hybrid_prediction(
+        device: Annotated[str, typer.Option("--device")] = ...,
+        input_file: Annotated[str, typer.Option("--input_file")] = ...,  # "data/ZSE-validation-sampled-N70.jsonl"
+        output_file: Annotated[str, typer.Option("--output_file")] = "hybrid_gen.jsonl",
+        mr_inst_file: Annotated[str, typer.Option("--mr_inst_file")] = "configs/instruction/GNER-EQ-MR.txt",  # "configs/instruction/GNER-EQ-MR.txt",
+        sr_inst_file: Annotated[str, typer.Option("--sr_inst_file")] = "configs/instruction/GNER-EQ-SR.txt",  # "configs/instruction/GNER-EQ-SR.txt"
+        generation_amount: Annotated[int, typer.Option("--generation_amount")] = ...,
+        generation_by_sample: Annotated[bool, typer.Option("--generation_by_sample/--generation_by_beam")] = ...,
+        generation_temp: Annotated[float, typer.Option("--temp")] = 1.5,
+        generation_top_p: Annotated[float, typer.Option("--top_p")] = 0.9,
+        generation_tokens: Annotated[int, typer.Option("--generation_tokens")] = 640,
+        logging_level: Annotated[int, typer.Option("--logging_level")] = logging.INFO,
+):
+    input_file = Path(input_file)
+    output_file = Path(output_file)
+    sr_inst_file = Path(sr_inst_file)
+    mr_inst_file = Path(mr_inst_file)
+    assert (generation_by_sample and generation_temp is not None and generation_top_p is not None) or (not generation_by_sample), f"Invalid generation parameters: by_sample={generation_by_sample}, temperature={generation_temp}, top_p={generation_top_p}"
+    assert sr_inst_file.is_file() and mr_inst_file.is_file(), f"Invalid instruction files: sr={sr_inst_file}, mr={mr_inst_file}"
+    assert input_file.is_file(), f"Invalid input file: {input_file}"
+    env = NewProjectEnv(logging_level=logging_level)
+    output_file = (input_file.parent if output_file.parent == Path() else output_file.parent) / new_path(
+        output_file.name,
+        pre=input_file.stem,
+        post=f'by_sample-amount={generation_amount}-temp={generation_temp}-top_p={generation_top_p}'
+        if generation_by_sample else f'by_beam-amount={generation_amount}'
+    )
+    sr_inst_temp = sr_inst_file.read_text()
+    mr_inst_temp = mr_inst_file.read_text()
+    print(f"output_file = {output_file}")
+    print(sr_inst_temp)
+    # output_file = new_path(input_file, post=post)
+
+
 @main.command("generate_prediction")
 def generate_prediction(
         device: Annotated[str, typer.Option("--device")] = ...,
