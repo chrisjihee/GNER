@@ -28,7 +28,8 @@ pip list | grep -E "torch|transformer|lightning |accelerate|deepspeed|flash_attn
 cd data; gzip -d -k pile-ner.jsonl.gz; cd ..
 python chrisdata/scripts/ner_sample_jsonl.py
 mkdir -p output; mkdir -p output-lfs
-rm -rf output-lfs; ln -s /dlfs/jhryu/GNER-output output-lfs  # for some servers only
+ln -s /dlfs/jhryu/GNER-output-dl012 output-lfs-dl012  # for dl012
+ln -s /dlfs/jhryu/GNER-output-dl026 output-lfs-dl026  # for dl026
 
 # 6. Login to Hugging Face and link the cache
 huggingface-cli whoami
