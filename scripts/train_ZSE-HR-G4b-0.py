@@ -40,9 +40,10 @@ for spec in model_specs_4gpu_b:
     # print("\n" * 3)
 
     suffix = f"-{experiment_type}"
+    output_home = spec['output_home'] if 'output_home' in spec else "output-lfs"
     run_version = f"{spec['run_prefix']}{suffix}"
     train_batch = spec['train_batch']
-    train_epochs = 1  # spec['train_epochs']
+    train_epochs = spec['train_epochs']
     gradient_steps = int(total_batch / num_devices / train_batch)
     assert gradient_steps * train_batch * num_devices == total_batch, f"total_batch={total_batch} != gradient_steps={gradient_steps} * train_batch={train_batch} * num_devices={num_devices}"
     use_flash_attention = spec['pretrained'].startswith("microsoft/Phi")
@@ -58,6 +59,7 @@ for spec in model_specs_4gpu_b:
                 --train_file {train_file}
                 --output_file train-metrics-{train_epochs}ep.csv
                 --logging_file train-loggings-{train_epochs}ep.out
+                --output_home {output_home}
                 --output_name {output_name}
                 --run_version {run_version}
                 --pretrained {spec['pretrained']}

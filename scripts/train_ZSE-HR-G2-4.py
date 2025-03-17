@@ -31,7 +31,7 @@ eval_batch = int(total_batch / num_devices)
 assert eval_batch * num_devices == total_batch, f"total_batch={total_batch} != eval_batch={eval_batch} * num_devices={num_devices}"
 
 # Loop through each model
-for spec in model_specs_2gpu:
+for spec in model_specs_4gpu_b:
     # command = "rm -rf .cache_hf/datasets".strip().split()
     # print("*" * 120)
     # print("[COMMAND]", " ".join(command))
@@ -40,6 +40,7 @@ for spec in model_specs_2gpu:
     # print("\n" * 3)
 
     suffix = f"-{experiment_type}"
+    output_home = spec['output_home'] if 'output_home' in spec else "output-lfs"
     run_version = f"{spec['run_prefix']}{suffix}"
     train_batch = spec['train_batch']
     train_epochs = spec['train_epochs']
@@ -58,6 +59,7 @@ for spec in model_specs_2gpu:
                 --train_file {train_file}
                 --output_file train-metrics-{train_epochs}ep.csv
                 --logging_file train-loggings-{train_epochs}ep.out
+                --output_home {output_home}
                 --output_name {output_name}
                 --run_version {run_version}
                 --pretrained {spec['pretrained']}
