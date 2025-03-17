@@ -169,3 +169,9 @@ output-*
 temp.*
 data-*
 *.out
+
+# library
+chrisbase
+chrisdata
+progiter
+transformers

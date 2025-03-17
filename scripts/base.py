@@ -11,8 +11,11 @@ model_specs_4gpu_a = [
 model_specs_4gpu_b = [
     {"ds_config": "configs/deepspeed/ds2_t5.json", "run_prefix": "FlanT5-3B", "pretrained": "google/flan-t5-xl", "train_batch": 8, "train_epochs": 10},
     {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "Phi3-4B", "pretrained": "microsoft/Phi-3-mini-4k-instruct", "train_batch": 8, "train_epochs": 10},  # modeling_phi3.py: get_max_length -> get_max_cache_shape
-    {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "Qwen2-3B", "pretrained": "Qwen/Qwen2.5-3B", "train_batch": 8, "train_epochs": 10},
+]
+
+model_specs_4gpu_c = [
     {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "Qwen2-1B", "pretrained": "Qwen/Qwen2.5-1.5B", "train_batch": 16, "train_epochs": 10},
+    {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "Qwen2-3B", "pretrained": "Qwen/Qwen2.5-3B", "train_batch": 8, "train_epochs": 10},
 ]
 
 model_specs_8gpu = [
