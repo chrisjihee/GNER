@@ -13,6 +13,7 @@ model_specs_2gpu_b = [  # H100*2
 
 model_specs_4gpu_a = [  # A100*4
     # {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "Llama3-1B", "pretrained": "meta-llama/Llama-3.2-1B", "train_batch": 2, "train_epochs": 10, "output_home": "output-lfs-dl012"},
+    {"ds_config": "configs/deepspeed/ds0_t5.json", "run_prefix": "GnerT5-Base", "pretrained": "dyyyyyyyy/GNER-T5-base", "train_batch": 32, "train_epochs": 12, "output_home": "output-lfs-dl012"},
     {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "Qwen2-1B", "pretrained": "Qwen/Qwen2.5-1.5B", "train_batch": 2, "train_epochs": 10, "output_home": "output-lfs-dl012"},
 ]
 
@@ -20,7 +21,6 @@ model_specs_4gpu_b = [  # H100*4
     # {"ds_config": "configs/deepspeed/ds2_t5.json", "run_prefix": "FlanT5-3B", "pretrained": "google/flan-t5-xl", "train_batch": 8, "train_epochs": 10, "output_home": "output-lfs-dl026"},
     # {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "Phi3-4B", "pretrained": "microsoft/Phi-3-mini-4k-instruct", "train_batch": 8, "train_epochs": 10, "output_home": "output-lfs-dl026"},  # modeling_phi3.py: get_max_length -> get_max_cache_shape
     {"ds_config": "configs/deepspeed/ds0_t5.json", "run_prefix": "GnerT5-Large", "pretrained": "dyyyyyyyy/GNER-T5-large-v2", "train_batch": 32, "train_epochs": 12, "output_home": "output-lfs-dl026"},
-    {"ds_config": "configs/deepspeed/ds0_t5.json", "run_prefix": "GnerT5-Base", "pretrained": "dyyyyyyyy/GNER-T5-base", "train_batch": 32, "train_epochs": 12, "output_home": "output-lfs-dl026"},
     # {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "Llama3-3B", "pretrained": "meta-llama/Llama-3.2-3B", "train_batch": 16, "train_epochs": 10, "output_home": "output-lfs-dl026"},
     # {"ds_config": "configs/deepspeed/ds2_llama.json", "run_prefix": "Qwen2-3B", "pretrained": "Qwen/Qwen2.5-3B", "train_batch": 16, "train_epochs": 10, "output_home": "output-lfs-dl026"},
 ]
