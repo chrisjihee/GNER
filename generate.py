@@ -128,7 +128,7 @@ def generate_hybrid_prediction(
         max_score: Annotated[float, typer.Option("--max_score")] = 5.0,
         random_seed: Annotated[int, typer.Option("--random_seed")] = 7,
         logging_file: Annotated[str, typer.Option("--logging_file")] = "generate_hybrid_prediction.out",
-        logging_level: Annotated[int, typer.Option("--logging_level")] = logging.DEBUG,
+        logging_level: Annotated[int, typer.Option("--logging_level")] = logging.INFO,
 ):
     input_file = Path(input_file)
     output_file = Path(output_file)
@@ -175,7 +175,7 @@ def generate_hybrid_prediction(
     ):
         input_data = input_opt.ready_inputs(input_file, total=len(input_file))
         with (
-            ProgIter(input_data.items, total=input_data.num_item, desc=f"Generating {input_file.path}:", stream=LoggerWriter(logger, level=logging_level), verbose=3) as progress,
+            ProgIter(input_data.items, total=input_data.num_item, desc=f"Generating to {output_file.path}:", stream=LoggerWriter(logger, level=logging_level), verbose=3) as progress,
             torch.no_grad(),
         ):
             f1_sum = F1()
