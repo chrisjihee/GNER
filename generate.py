@@ -1,3 +1,4 @@
+from gner.gner_evaluator import extract_predictions3, parser
 import json
 import math
 import time
@@ -62,6 +63,7 @@ def generate_hybrid_prediction(
         mr_inst_file: Annotated[str, typer.Option("--mr_inst_file")] = "configs/instruction/GNER-EQ-MR.txt",  # "configs/instruction/GNER-EQ-MR.txt",
         sr_inst_file: Annotated[str, typer.Option("--sr_inst_file")] = "configs/instruction/GNER-EQ-SR.txt",  # "configs/instruction/GNER-EQ-SR.txt"
         generation_amount: Annotated[int, typer.Option("--generation_amount")] = ...,
+        generation_factor: Annotated[int, typer.Option("--generation_factor")] = 3.0,
         generation_by_sample: Annotated[bool, typer.Option("--generation_by_sample/--generation_by_beam")] = ...,
         generation_temp: Annotated[float, typer.Option("--temp")] = 1.5,
         generation_top_p: Annotated[float, typer.Option("--top_p")] = 0.9,
@@ -127,59 +129,81 @@ def generate_hybrid_prediction(
                     instruction_inputs=instruction_inputs,
                 )
             )
-            logger.info(f"sr_sample.instance.prompt_label = {sr_sample.instance.prompt_labels}")
+            possible_labels = [tag for entity_type in sr_sample.label_list for tag in (f"B-{entity_type}", f"I-{entity_type}")] + ["O"]
 
             model_input = tokenizer(sr_sample.instance.instruction_inputs, return_tensors="pt").to(device)
             model_outputs = model.generate(
                 **model_input,
                 max_new_tokens=generation_tokens,
-                num_return_sequences=generation_amount,
+                num_return_sequences=generation_amount * generation_factor,
                 do_sample=generation_by_sample,
-                num_beams=1 if generation_by_sample else generation_amount,
+                num_beams=1 if generation_by_sample else generation_amount * generation_factor,
                 temperature=generation_temp if generation_by_sample else None,
                 top_p=generation_top_p if generation_by_sample else None,
             )
-            sr_sample.instance.prediction_outputs = [tokenizer.decode(x, skip_special_tokens=True).strip() for x in model_outputs]
-            for o in sr_sample.instance.prediction_outputs:
-                logger.info(f"sr_sample.instance.prediction_output = {o}")
+            decoded_outputs = [tokenizer.decode(x, skip_special_tokens=True).strip() for x in model_outputs]
+            if sr_sample.instance.prompt_labels == decoded_outputs[0]:
+                continue
 
-            for i, entity_type in enumerate(sample.label_list if mr_inst_temp else [], start=1):
-                logger.info(f"entity_type = {entity_type}")
-                possible_labels = [tag for tag in (f"B-{entity_type}", f"I-{entity_type}")] + ["O"]
-                final_words, final_labels = sample.instance.words, [x if x in possible_labels else "O" for x in sample.instance.labels]
-                prompt_labels = GenNERSample.get_prompt_labels(final_words, final_labels)
-                instruction_inputs = mr_inst_temp.format(entity_type=entity_type, sentence=sentence)
-                mr_sample = GenNERSampleWrapper(
-                    id=f"{sample.id}.M{i}",
-                    dataset=sample.dataset,
-                    split=sample.split,
-                    label_list=sample.label_list,
-                    instance=GenNERSample(
-                        id=f"{sample.id}.M{i}",
-                        group=f"{sample.id}",
-                        words=final_words,
-                        labels=final_labels,
-                        target_label=entity_type,
-                        prompt_labels=prompt_labels,
-                        instruction_inputs=instruction_inputs,
-                    )
-                )
-                logger.info(f"mr_sample.instance.prompt_labels = {mr_sample.instance.prompt_labels}")
+            logger.info(f"sr_sample.instance.prompt_labels = {sr_sample.instance.prompt_labels}")
+            logger.info(f"sr_sample.instance.labels = {sr_sample.instance.labels}")
+            valid_sr_prediction_labels = list()
+            for prediction_output in [tokenizer.decode(x, skip_special_tokens=True).strip() for x in model_outputs]:
+                prediction_labels = extract_predictions3(prediction_output, example=sr_sample, tokenizer=tokenizer)
+                if len(sr_sample.instance.words) != len(prediction_labels):
+                    continue
+                if any(label not in possible_labels for label in prediction_labels):
+                    continue
+                if prediction_labels not in valid_sr_prediction_labels:
+                    valid_sr_prediction_labels.append(prediction_labels)
+                if len(valid_sr_prediction_labels) >= generation_amount:
+                    break
+            assert len(valid_sr_prediction_labels) == generation_amount
+            sr_sample.instance.prediction_outputs = [GenNERSample.get_prompt_labels(sample.instance.words, labels) for labels in valid_sr_prediction_labels]
+            for prediction_output in sr_sample.instance.prediction_outputs:
+                logger.info(f"sr_sample.instance.prediction_output = {prediction_output}")
 
-                model_input = tokenizer(mr_sample.instance.instruction_inputs, return_tensors="pt").to(device)
-                model_outputs = model.generate(
-                    **model_input,
-                    max_new_tokens=generation_tokens,
-                    num_return_sequences=generation_amount,
-                    do_sample=generation_by_sample,
-                    num_beams=1 if generation_by_sample else generation_amount,
-                    temperature=generation_temp if generation_by_sample else None,
-                    top_p=generation_top_p if generation_by_sample else None,
-                )
-                mr_sample.instance.prediction_outputs = [tokenizer.decode(x, skip_special_tokens=True).strip() for x in model_outputs]
-                for o in mr_sample.instance.prediction_outputs:
-                    logger.info(f"mr_sample.instance.prediction_output = {o}")
-            exit(0)
+            # COMBINE!
+            # GPT, WRITE YOUR CODE HERE!
+
+            # for i, entity_type in enumerate(sample.label_list if mr_inst_temp else [], start=1):
+            #     logger.info(f"entity_type = {entity_type}")
+            #     possible_labels = [tag for tag in (f"B-{entity_type}", f"I-{entity_type}")] + ["O"]
+            #     final_words, final_labels = sample.instance.words, [x if x in possible_labels else "O" for x in sample.instance.labels]
+            #     prompt_labels = GenNERSample.get_prompt_labels(final_words, final_labels)
+            #     instruction_inputs = mr_inst_temp.format(entity_type=entity_type, sentence=sentence)
+            #     mr_sample = GenNERSampleWrapper(
+            #         id=f"{sample.id}.M{i}",
+            #         dataset=sample.dataset,
+            #         split=sample.split,
+            #         label_list=sample.label_list,
+            #         instance=GenNERSample(
+            #             id=f"{sample.id}.M{i}",
+            #             group=f"{sample.id}",
+            #             words=final_words,
+            #             labels=final_labels,
+            #             target_label=entity_type,
+            #             prompt_labels=prompt_labels,
+            #             instruction_inputs=instruction_inputs,
+            #         )
+            #     )
+            #     model_input = tokenizer(mr_sample.instance.instruction_inputs, return_tensors="pt").to(device)
+            #     model_outputs = model.generate(
+            #         **model_input,
+            #         max_new_tokens=generation_tokens,
+            #         num_return_sequences=generation_amount,
+            #         do_sample=generation_by_sample,
+            #         num_beams=1 if generation_by_sample else generation_amount,
+            #         temperature=generation_temp if generation_by_sample else None,
+            #         top_p=generation_top_p if generation_by_sample else None,
+            #     )
+            #     mr_sample.instance.prediction_outputs = [tokenizer.decode(x, skip_special_tokens=True).strip() for x in model_outputs]
+            #
+            #     logger.info(f"mr_sample.instance.prompt_labels = {mr_sample.instance.prompt_labels}")
+            #     for o in mr_sample.instance.prediction_outputs:
+            #         logger.info(f"mr_sample.instance.prediction_output = {o}")
+            logger.info("-" * 80)
+            logger.info("")
 
 
 @main.command("generate_prediction")
