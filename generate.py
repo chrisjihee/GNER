@@ -1,6 +1,7 @@
 import difflib
 import json
 import logging
+import random
 import re
 from collections import defaultdict, OrderedDict
 from operator import attrgetter
@@ -21,7 +22,7 @@ from chrisbase.data import FileOption, InputOption, JobTimer, FileStreamer, NewP
 from chrisbase.io import LoggingFormat, new_path, LoggerWriter, log_table, files, make_parent_dir, load_json
 from chrisbase.time import from_timestamp, now_stamp
 from chrisbase.util import grouped
-from chrisdata.learn import F1, RegressionSample
+from chrisdata.learn import F1, Sum, RegressionSample
 from chrisdata.ner import GenNERSampleWrapper, GenNERSample
 from gner import NEREvaluator
 from gner.gner_evaluator import extract_predictions3
@@ -38,22 +39,24 @@ main = AppTyper()
 
 
 class PredictionQuality(BaseModel):
+    id: str
+    dataset: str
     sentence: str
     prediction: str
     norm_dist: float
-    f1_score: float
+    f1_info: F1
     quality: Optional[float] = None
 
     def calc_quality(self, weight_f1: float = 0.7, weight_nd: float = 0.3, pow_weight: float = 2.0, max_score: float = 5.0):
         qe_score = sum([
-            weight_f1 * self.f1_score,
+            weight_f1 * self.f1_info.f1,
             weight_nd * (1.0 - self.norm_dist),
         ])
-        self.quality = round(pow(qe_score, pow_weight) * max_score, 2)
+        self.quality = round(pow(qe_score, pow_weight) * max_score, 1)
         return self
 
     def __str__(self):
-        return f"Q={self.quality:.2f}, F1={self.f1_score:.4f}, ND={self.norm_dist:.4f}, pred={self.prediction}"
+        return f"Q={self.quality:.2f}, F1={self.f1_info.f1:.4f}, ND={self.norm_dist:.4f}, pred={self.prediction}"
 
 
 def normalized_edit_distance(hyp_text: str, ref_text: str) -> float:
@@ -109,11 +112,12 @@ def generate_hybrid_prediction(
         output_file: Annotated[str, typer.Option("--output_file")] = "data/GNER-QE/hybrid_gen.jsonl",
         output_name: Annotated[str, typer.Option("--output_name")] = "GNER-QE",
         output_home: Annotated[str, typer.Option("--output_home")] = "data",
-        sr_inst_file: Annotated[str, typer.Option("--sr_inst_file")] = "configs/instruction/GNER-EQ-SR.txt",  # "configs/instruction/GNER-EQ-SR.txt"
-        mr_inst_file: Annotated[str, typer.Option("--mr_inst_file")] = "configs/instruction/GNER-EQ-MR.txt",  # "configs/instruction/GNER-EQ-MR.txt",
+        sr_inst_file: Annotated[str, typer.Option("--sr_inst_file")] = "configs/instruction/GNER-EQ-SR.txt",
+        mr_inst_file: Annotated[str, typer.Option("--mr_inst_file")] = "configs/instruction/GNER-EQ-MR.txt",
         sr_generation_amount: Annotated[int, typer.Option("--generation_amount")] = 5,
         mr_generation_amount: Annotated[int, typer.Option("--generation_amount")] = 10,
-        generation_factor: Annotated[int, typer.Option("--generation_factor")] = 3.0,
+        max_example_per_quality: Annotated[int, typer.Option("--max_example_per_quality")] = 20,
+        generation_factor: Annotated[int, typer.Option("--generation_factor")] = 3.0,  # TODO: remove this?
         generation_by_sample: Annotated[bool, typer.Option("--generation_by_sample/--generation_by_beam")] = ...,
         generation_temp: Annotated[float, typer.Option("--temp")] = 1.5,
         generation_top_p: Annotated[float, typer.Option("--top_p")] = 0.9,
@@ -169,97 +173,53 @@ def generate_hybrid_prediction(
         FileStreamer(input_opt.file) as input_file,
         FileStreamer(FileOption.from_path(path=output_file, mode="w")) as output_file,
     ):
-        new_idx = input_start
         input_data = input_opt.ready_inputs(input_file, total=len(input_file))
-        micro_avrerage = F1()
-        total_all_hyps = 0
-        total_examples = 0
-        for item in ProgIter(input_data.items, total=input_data.num_item, desc=f"Generating {input_file.path}:", stream=LoggerWriter(logger, level=logging_level), verbose=3):
-            example = GenNERSampleWrapper.model_validate_json(item)
-            example.instance.id = example.id = example.instance.id or example.id
-            example.label_list = [str(x).replace(" ", "_").upper() for x in example.label_list]
-            example.instance.labels = [str(x).replace(" ", "_").upper() for x in example.instance.labels]
-            possible_labels = [tag for entity_type in example.label_list for tag in (f"B-{entity_type}", f"I-{entity_type}")] + ["O"]
-            if len(example.instance.words) != len(example.instance.labels) or any(label not in possible_labels for label in example.instance.labels):
-                continue
-            sentence = " ".join(example.instance.words)
-            logger.debug("=" * 80)
-            logger.debug(f"[Sentence] {sentence}")
-
-            # Generate by single-round for all entity types
-            entity_types = ", ".join(example.label_list)
-            possible_labels = [tag for entity_type in example.label_list for tag in (f"B-{entity_type}", f"I-{entity_type}")] + ["O"]
-            final_words, final_labels = example.instance.words, [x if x in possible_labels else "O" for x in example.instance.labels]
-            prompt_labels = GenNERSample.get_prompt_labels(final_words, final_labels)
-            instruction_inputs = sr_inst_temp.format(entity_types=entity_types, sentence=sentence)
-            sr_example = GenNERSampleWrapper(
-                id=f"{example.id}.S",
-                dataset=example.dataset,
-                split=example.split,
-                label_list=example.label_list,
-                instance=GenNERSample(
-                    id=f"{example.id}.S",
-                    group=f"{example.id}",
-                    words=final_words,
-                    labels=final_labels,
-                    target_label="*",
-                    prompt_labels=prompt_labels,
-                    instruction_inputs=instruction_inputs,
-                )
-            )
-            model_input = tokenizer(sr_example.instance.instruction_inputs, return_tensors="pt").to(device)
-            model_outputs = model.generate(
-                **model_input,
-                max_new_tokens=generation_tokens,
-                num_return_sequences=sr_generation_amount * generation_factor,
-                do_sample=generation_by_sample,
-                num_beams=1 if generation_by_sample else sr_generation_amount * generation_factor,
-                temperature=generation_temp if generation_by_sample else None,
-                top_p=generation_top_p if generation_by_sample else None,
-            )
-
-            valid_prediction_labels = list()
-            for model_output in model_outputs:
-                decoded_output = tokenizer.decode(model_output, skip_special_tokens=True).strip()
-                prediction_labels = extract_predictions3(decoded_output, example=sr_example, tokenizer=tokenizer)
-                if len(sr_example.instance.words) != len(prediction_labels) or any(label not in possible_labels for label in prediction_labels):
+        with (
+            ProgIter(input_data.items, total=input_data.num_item, desc=f"Generating {input_file.path}:", stream=LoggerWriter(logger, level=logging_level), verbose=3) as progress,
+            torch.no_grad(),
+        ):
+            f1_sum = F1()
+            hyps_sum = Sum()
+            for line in progress:
+                example = GenNERSampleWrapper.model_validate_json(line)
+                example.instance.id = example.id = example.instance.id or example.id
+                example.label_list = [str(x).replace(" ", "_").upper() for x in example.label_list]
+                example.instance.labels = [str(x).replace(" ", "_").upper() for x in example.instance.labels]
+                possible_labels = [tag for entity_type in example.label_list for tag in (f"B-{entity_type}", f"I-{entity_type}")] + ["O"]
+                if len(example.instance.words) != len(example.instance.labels) or any(label not in possible_labels for label in example.instance.labels):
                     continue
-                if prediction_labels not in valid_prediction_labels:
-                    valid_prediction_labels.append(prediction_labels)
-                if len(valid_prediction_labels) >= sr_generation_amount:
-                    break
-            sr_example.instance.prediction_outputs = [GenNERSample.get_prompt_labels(example.instance.words, labels) for labels in valid_prediction_labels]
-            logger.debug(f"  * Generate {'single-round':20s} : {len(model_outputs):2d} -> {len(sr_example.instance.prediction_outputs):2d}")
+                sentence = " ".join(example.instance.words)
+                logger.debug("=" * 80)
+                logger.debug(f"[Sentence] {sentence}")
 
-            # Generate by multi-round for each entity type
-            mr_examples = []
-            for i, entity_type in enumerate(example.label_list if mr_inst_temp else [], start=1):
-                possible_labels = [tag for tag in (f"B-{entity_type}", f"I-{entity_type}")] + ["O"]
+                # Generate by single-round for all entity types
+                entity_types = ", ".join(example.label_list)
+                possible_labels = [tag for entity_type in example.label_list for tag in (f"B-{entity_type}", f"I-{entity_type}")] + ["O"]
                 final_words, final_labels = example.instance.words, [x if x in possible_labels else "O" for x in example.instance.labels]
                 prompt_labels = GenNERSample.get_prompt_labels(final_words, final_labels)
-                instruction_inputs = mr_inst_temp.format(entity_type=entity_type, sentence=sentence)
-                mr_example = GenNERSampleWrapper(
-                    id=f"{example.id}.M{i}",
+                instruction_inputs = sr_inst_temp.format(entity_types=entity_types, sentence=sentence)
+                sr_example = GenNERSampleWrapper(
+                    id=f"{example.id}.S",
                     dataset=example.dataset,
                     split=example.split,
                     label_list=example.label_list,
                     instance=GenNERSample(
-                        id=f"{example.id}.M{i}",
+                        id=f"{example.id}.S",
                         group=f"{example.id}",
                         words=final_words,
                         labels=final_labels,
-                        target_label=entity_type,
+                        target_label="*",
                         prompt_labels=prompt_labels,
                         instruction_inputs=instruction_inputs,
                     )
                 )
-                model_input = tokenizer(mr_example.instance.instruction_inputs, return_tensors="pt").to(device)
+                model_input = tokenizer(sr_example.instance.instruction_inputs, return_tensors="pt").to(device)
                 model_outputs = model.generate(
                     **model_input,
                     max_new_tokens=generation_tokens,
-                    num_return_sequences=mr_generation_amount * generation_factor,
+                    num_return_sequences=sr_generation_amount * generation_factor,
                     do_sample=generation_by_sample,
-                    num_beams=1 if generation_by_sample else mr_generation_amount * generation_factor,
+                    num_beams=1 if generation_by_sample else sr_generation_amount * generation_factor,
                     temperature=generation_temp if generation_by_sample else None,
                     top_p=generation_top_p if generation_by_sample else None,
                 )
@@ -267,66 +227,126 @@ def generate_hybrid_prediction(
                 valid_prediction_labels = list()
                 for model_output in model_outputs:
                     decoded_output = tokenizer.decode(model_output, skip_special_tokens=True).strip()
-                    prediction_labels = extract_predictions3(decoded_output, example=mr_example, tokenizer=tokenizer)
-                    if len(mr_example.instance.words) != len(prediction_labels) or any(label not in possible_labels for label in prediction_labels):
+                    prediction_labels = extract_predictions3(decoded_output, example=sr_example, tokenizer=tokenizer)
+                    if len(sr_example.instance.words) != len(prediction_labels) or any(label not in possible_labels for label in prediction_labels):
                         continue
                     if prediction_labels not in valid_prediction_labels:
                         valid_prediction_labels.append(prediction_labels)
-                    if len(valid_prediction_labels) >= mr_generation_amount:
+                    if len(valid_prediction_labels) >= sr_generation_amount:
                         break
-                mr_example.instance.prediction_outputs = [GenNERSample.get_prompt_labels(example.instance.words, labels) for labels in valid_prediction_labels]
-                logger.debug(f"  * Generate {entity_type:20s} : {len(model_outputs):2d} -> {len(mr_example.instance.prediction_outputs):2d}")
+                sr_example.instance.prediction_outputs = [GenNERSample.get_prompt_labels(example.instance.words, labels) for labels in valid_prediction_labels]
+                logger.debug(f"  * Generate {'single-round':20s} : {len(model_outputs):2d} -> {len(sr_example.instance.prediction_outputs):2d}")
 
-                mr_examples.append(mr_example)
+                # Generate by multi-round for each entity type
+                mr_examples = []
+                for i, entity_type in enumerate(example.label_list if mr_inst_temp else [], start=1):
+                    possible_labels = [tag for tag in (f"B-{entity_type}", f"I-{entity_type}")] + ["O"]
+                    final_words, final_labels = example.instance.words, [x if x in possible_labels else "O" for x in example.instance.labels]
+                    prompt_labels = GenNERSample.get_prompt_labels(final_words, final_labels)
+                    instruction_inputs = mr_inst_temp.format(entity_type=entity_type, sentence=sentence)
+                    mr_example = GenNERSampleWrapper(
+                        id=f"{example.id}.M{i}",
+                        dataset=example.dataset,
+                        split=example.split,
+                        label_list=example.label_list,
+                        instance=GenNERSample(
+                            id=f"{example.id}.M{i}",
+                            group=f"{example.id}",
+                            words=final_words,
+                            labels=final_labels,
+                            target_label=entity_type,
+                            prompt_labels=prompt_labels,
+                            instruction_inputs=instruction_inputs,
+                        )
+                    )
+                    model_input = tokenizer(mr_example.instance.instruction_inputs, return_tensors="pt").to(device)
+                    model_outputs = model.generate(
+                        **model_input,
+                        max_new_tokens=generation_tokens,
+                        num_return_sequences=mr_generation_amount * generation_factor,
+                        do_sample=generation_by_sample,
+                        num_beams=1 if generation_by_sample else mr_generation_amount * generation_factor,
+                        temperature=generation_temp if generation_by_sample else None,
+                        top_p=generation_top_p if generation_by_sample else None,
+                    )
 
-            # Combine the predictions by replacing the spans in the base prediction
-            all_hyps = list()
-            for base_idx in range(len(sr_example.instance.prediction_outputs)):
-                base_hyp = sr_example.instance.prediction_outputs[base_idx]
-                sr_hyps = [x for x in sr_example.instance.prediction_outputs if x != base_hyp]
-                if len(sr_hyps) > 0:
-                    for init_span, alter_spans in compute_diffs(base_hyp, sr_hyps):
-                        for span in alter_spans:
-                            new_hyp = base_hyp.replace(init_span, span)
-                            if new_hyp not in all_hyps:
-                                all_hyps.append(new_hyp)
-                for mr_example in mr_examples:
-                    mr_hyps = mr_example.instance.prediction_outputs
-                    for init_span, alter_spans in compute_diffs(base_hyp, mr_hyps):
-                        for span in alter_spans:
-                            new_hyp = base_hyp.replace(init_span, span)
-                            if new_hyp not in all_hyps:
-                                all_hyps.append(new_hyp)
-            logger.debug(f"  * Combined {'all candidates':20s} : {len(all_hyps):d}")
-            total_all_hyps += len(all_hyps)
-            total_examples += 1
-            all_hyps_met = {hyp: NEREvaluator().evaluate_prediction(hyp, example, tokenizer) for hyp in all_hyps}
-            top_hyps_met = sorted(all_hyps_met.items(), key=lambda x: x[1].f1, reverse=True)[:10]
-            for hyp, met in top_hyps_met:
-                logger.debug(f"    - {met.f1:.4f} {hyp}")
-            micro_avrerage += top_hyps_met[0][1]
-            logger.debug(f"    - Average so far: {micro_avrerage}, #all_hyps={total_all_hyps / total_examples:.2f}")
-            logger.debug("-" * 80)
-            logger.debug("")
+                    valid_prediction_labels = list()
+                    for model_output in model_outputs:
+                        decoded_output = tokenizer.decode(model_output, skip_special_tokens=True).strip()
+                        prediction_labels = extract_predictions3(decoded_output, example=mr_example, tokenizer=tokenizer)
+                        if len(mr_example.instance.words) != len(prediction_labels) or any(label not in possible_labels for label in prediction_labels):
+                            continue
+                        if prediction_labels not in valid_prediction_labels:
+                            valid_prediction_labels.append(prediction_labels)
+                        if len(valid_prediction_labels) >= mr_generation_amount:
+                            break
+                    mr_example.instance.prediction_outputs = [GenNERSample.get_prompt_labels(example.instance.words, labels) for labels in valid_prediction_labels]
+                    logger.debug(f"  * Generate {entity_type:20s} : {len(model_outputs):2d} -> {len(mr_example.instance.prediction_outputs):2d}")
 
-            # Calculate the quality of the predictions and save to output file
-            reference = GenNERSample.get_prompt_labels(sr_example.instance.words, sr_example.instance.labels)
-            for candidate in all_hyps:
-                new_idx += 1
-                prediction_quality = PredictionQuality(
-                    sentence=sentence,
-                    prediction=candidate,
-                    norm_dist=normalized_edit_distance(candidate, reference),
-                    f1_score=NEREvaluator().evaluate_prediction(candidate, example, tokenizer).f1
-                ).calc_quality(weight_f1=weight_f1, weight_nd=weight_nd, pow_weight=pow_weight, max_score=max_score)
-                output_file.fp.write(
-                    RegressionSample(
-                        sentence1=prediction_quality.prediction,
-                        sentence2=prediction_quality.sentence,
-                        label=prediction_quality.quality,
-                        idx=new_idx,
-                    ).model_dump_json() + "\n"
-                )
+                    mr_examples.append(mr_example)
+
+                # Combine the predictions by replacing the spans in the base prediction
+                all_hyps = list()
+                for base_idx in range(len(sr_example.instance.prediction_outputs)):
+                    base_hyp = sr_example.instance.prediction_outputs[base_idx]
+                    sr_hyps = [x for x in sr_example.instance.prediction_outputs if x != base_hyp]
+                    if len(sr_hyps) > 0:
+                        for init_span, alter_spans in compute_diffs(base_hyp, sr_hyps):
+                            for span in alter_spans:
+                                new_hyp = base_hyp.replace(init_span, span)
+                                if new_hyp not in all_hyps:
+                                    all_hyps.append(new_hyp)
+                    for mr_example in mr_examples:
+                        mr_hyps = mr_example.instance.prediction_outputs
+                        for init_span, alter_spans in compute_diffs(base_hyp, mr_hyps):
+                            for span in alter_spans:
+                                new_hyp = base_hyp.replace(init_span, span)
+                                if new_hyp not in all_hyps:
+                                    all_hyps.append(new_hyp)
+                logger.debug(f"  * Combined {'all candidates':20s} : {len(all_hyps):d}")
+
+                # Calculate the quality of the predictions
+                reference = GenNERSample.get_prompt_labels(sr_example.instance.words, sr_example.instance.labels)
+                quality_hyps = list()
+                for candidate in all_hyps:
+                    prediction_quality = PredictionQuality(
+                        id=example.id,
+                        dataset=example.dataset,
+                        sentence=sentence,
+                        prediction=candidate,
+                        norm_dist=normalized_edit_distance(candidate, reference),
+                        f1_info=NEREvaluator().evaluate_prediction(candidate, example, tokenizer)
+                    ).calc_quality(weight_f1=weight_f1, weight_nd=weight_nd, pow_weight=pow_weight, max_score=max_score)
+                    quality_hyps.append(prediction_quality)
+                quality_hyps = sorted(quality_hyps, key=lambda x: x.quality, reverse=True)
+                grouped_hyps = {k: list(vs) for k, vs in grouped(quality_hyps, key=lambda x: x.quality)}
+                sampled_hyps = list()
+                for quality in sorted(grouped_hyps.keys(), reverse=True):
+                    for hyp in random.sample(grouped_hyps[quality], min(len(grouped_hyps[quality]), max_example_per_quality)):
+                        sampled_hyps.append(hyp)
+                logger.debug(f"  * Sampled {'some candidates':21s} : {len(sampled_hyps):d}")
+                for hyp in sampled_hyps[:10]:
+                    logger.debug(f"    - {hyp}")
+                f1_sum += sampled_hyps[0].f1_info
+                hyps_sum += len(all_hyps)
+                logger.debug(f"    - Average F1 : {f1_sum}")
+                logger.debug(f"    - Average Hyp: {hyps_sum}")
+                progress.set_extra(f"| #avg_hyp={hyps_sum.avg:.1f}, #avg_f1={f1_sum.f1:.4f}")
+                progress.display_message()
+
+                # Save to output file
+                for i, hyp in enumerate(sampled_hyps, start=1):
+                    output_file.fp.write(
+                        RegressionSample(
+                            sentence1=hyp.prediction,
+                            sentence2=hyp.sentence,
+                            label=hyp.quality,
+                            id=f"{example.id}.{i:d}",
+                        ).model_dump_json() + "\n"
+                    )
+                logger.debug(f"  * Saved {'some candidates':23s} : {len(sampled_hyps):d}")
+                logger.debug("-" * 80)
+                logger.debug("")
 
 
 @main.command("generate_prediction")
@@ -487,10 +507,12 @@ def convert_to_qe_data(
                     # print(f"prompt_labels: {reference}")
                     scored_candidates = [
                         PredictionQuality(
+                            id=example.id,
+                            dataset=example.dataset,
                             sentence=sentence,
                             prediction=candidate,
                             norm_dist=normalized_edit_distance(candidate, reference),
-                            f1_score=NEREvaluator().evaluate_prediction(candidate, example, tokenizer).f1
+                            f1_info=NEREvaluator().evaluate_prediction(candidate, example, tokenizer).f1
                         ).calc_quality(weight_f1=weight_f1, weight_nd=weight_nd, pow_weight=pow_weight, max_score=max_score)
                         for candidate in candiates
                     ]
