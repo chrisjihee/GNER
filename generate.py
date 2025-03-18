@@ -1,7 +1,8 @@
+import difflib
 import json
 import logging
 import re
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from operator import attrgetter
 from pathlib import Path
 from typing import List, Optional
@@ -26,7 +27,6 @@ from chrisdata.ner.gner import ner_samples
 from gner import NEREvaluator
 from gner.gner_evaluator import extract_predictions3
 from progiter import ProgIter
-from select_outputs import combine_hyps
 from transformers import (
     AutoTokenizer,
     AutoModelForSeq2SeqLM,
@@ -35,6 +35,43 @@ from transformers import (
 # Global settings
 logger: logging.Logger = logging.getLogger("gner")
 main = AppTyper()
+
+
+def compute_diffs(base_sent, alter_sents, ws=1):
+    """
+    Function to compute the differing spans between the base sentence and the other candidates
+    :param base_sent: base sentence
+    :param alter_sents: list of candidate sentences
+    """
+    edits = OrderedDict()
+    edit_positions = OrderedDict()
+    base_hyp = base_sent.split(" ")
+    for candidate in alter_sents:
+        alter_hyp = candidate.split(" ")
+        # compute the differing spans between the base sentence and the candidate
+        s = difflib.SequenceMatcher(None, base_hyp, alter_hyp)
+        for op, s_start_ind, s_end_ind, t_start_ind, t_end_ind in s.get_opcodes():
+            if op != "equal":
+                # if op != "replace":
+                s_start_ind -= ws
+                t_start_ind -= ws
+                s_end_ind += ws
+                t_end_ind += ws
+                source_span = " ".join(base_hyp[max(s_start_ind, 0): s_end_ind])
+                target_span = " ".join(alter_hyp[max(t_start_ind, 0): t_end_ind])
+                # add the differing spans to the edits dictionary
+                if source_span not in edits:
+                    edits[source_span] = [target_span]
+                    # save the start index of the initial span to the edit positions dictionary
+                    edit_positions[source_span] = [max(s_start_ind - 1, 0)]
+                else:
+                    if target_span not in edits[source_span]:
+                        edits[source_span].append(target_span)
+    # sort the edits based on the edit positions
+    sorted_positions = OrderedDict(sorted(edit_positions.items(), key=lambda item: item[1]))
+    # sorted_edits = OrderedDict((key, edits[key]) for key in sorted_positions)
+    sorted_edits = [(key, edits[key]) for key in sorted_positions]
+    return sorted_edits
 
 
 @main.command("generate_hybrid_prediction")
@@ -145,33 +182,12 @@ def generate_hybrid_prediction(
             for prediction_output in sr_sample.instance.prediction_outputs:
                 logger.info(f"sr_sample.instance.prediction_output = {prediction_output}")
 
-            outputs = [sr_sample.instance.prediction_outputs]  # 후보들이 들어있는 2차원 리스트
-            refs = [sr_sample.instance.prompt_labels]  # "gold" 레이블 시퀀스 (또는 비교 기준)
-            in_data = [sentence]  # 토큰들을 공백으로 join한 원본 문장
+            ws = 1
+            hyps = sr_sample.instance.prediction_outputs
+            all_diffs = compute_diffs(hyps[0], hyps[1:], ws=ws)
 
-            # 2) 결합(fusion)을 실행할 때의 파라미터 설정
-            beam_size = 5  # beam search 크기
-            metric = 'bleu'  # 예시로 BLEU 사용, 필요에 따라 'comet', 'cometqe' 등으로 교체
-            ws = 1  # diff 계산 시 주변 window 크기
-            keep_kbest = 0  # 0이면 후보 전부 사용
-
-            # 3) 여러 후보를 부분 스팬별로 조합하며 최적 결과를 골라내는 함수 호출
-            combined_results = combine_hyps(
-                outputs=outputs,
-                refs=refs,
-                in_data=in_data,
-                beam=beam_size,
-                metric=metric,
-                keep_kbest=keep_kbest,
-                ws=ws
-            )
-
-            # 4) 최종 결합된 1개 결과(문자열)를 꺼내고, 로그 남기기
-            #    combined_results는 문장 개수만큼의 리스트이므로, 여기서는 단일 문장 -> 인덱스 0
-            final_fused_output = combined_results[0]
-            logger.info(f"COMBINED prediction output = {final_fused_output}")
-            for combined_result in combined_results:
-                logger.info(f"combined_result = {combined_result}")
+            for x in all_diffs:
+                print(x)
             exit(1)
 
             # for i, entity_type in enumerate(sample.label_list if mr_inst_temp else [], start=1):
