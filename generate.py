@@ -177,29 +177,9 @@ def generate_hybrid_prediction(
                     break
             assert len(valid_sr_prediction_labels) == generation_amount
             sr_sample.instance.prediction_outputs = [GenNERSample.get_prompt_labels(sample.instance.words, labels) for labels in valid_sr_prediction_labels]
-            logger.info("-" * 80)
-            for prediction_output in sr_sample.instance.prediction_outputs:
-                logger.info(f"sr_sample.instance.prediction_output = {prediction_output}")
 
-            base_hyp = sr_sample.instance.prediction_outputs[0]
-            hyps = sr_sample.instance.prediction_outputs
-            all_diffs = compute_diffs(base_hyp, hyps[1:])
-            logger.info("-" * 80)
-            for diff in all_diffs:
-                logger.info(f"diff = {diff}")
-            all_hyps = []
-            for init_span, alter_spans in all_diffs:
-                for span in alter_spans:
-                    new_hyp = base_hyp.replace(init_span, span)
-                    if new_hyp not in all_hyps:
-                        all_hyps.append(new_hyp)
-            logger.info("-" * 80)
-            for hyp in all_hyps:
-                logger.info(f"hyp = {hyp}")
-
+            mr_samples = []
             for i, entity_type in enumerate(sample.label_list if mr_inst_temp else [], start=1):
-                logger.info("=" * 80)
-                logger.info(f"entity_type = {entity_type}")
                 possible_labels = [tag for tag in (f"B-{entity_type}", f"I-{entity_type}")] + ["O"]
                 final_words, final_labels = sample.instance.words, [x if x in possible_labels else "O" for x in sample.instance.labels]
                 prompt_labels = GenNERSample.get_prompt_labels(final_words, final_labels)
@@ -231,8 +211,6 @@ def generate_hybrid_prediction(
                 )
                 decoded_outputs = [tokenizer.decode(x, skip_special_tokens=True).strip() for x in model_outputs]
 
-                logger.info(f"mr_sample.instance.prompt_labels = {mr_sample.instance.prompt_labels}")
-                logger.info(f"mr_sample.instance.labels = {mr_sample.instance.labels}")
                 valid_mr_prediction_labels = list()
                 for decoded_output in decoded_outputs:
                     prediction_labels = extract_predictions3(decoded_output, example=mr_sample, tokenizer=tokenizer)
@@ -244,25 +222,28 @@ def generate_hybrid_prediction(
                         break
                 assert len(valid_mr_prediction_labels) == generation_amount
                 mr_sample.instance.prediction_outputs = [GenNERSample.get_prompt_labels(sample.instance.words, labels) for labels in valid_mr_prediction_labels]
-                logger.info("-" * 80)
-                for prediction_output in mr_sample.instance.prediction_outputs:
-                    logger.info(f"mr_sample.instance.prediction_output = {prediction_output}")
+                mr_samples.append(mr_sample)
 
-                hyps = mr_sample.instance.prediction_outputs
-                all_diffs = compute_diffs(base_hyp, hyps)
-                logger.info("-" * 80)
-                for diff in all_diffs:
-                    logger.info(f"diff = {diff}")
-                all_hyps = []
-                for init_span, alter_spans in all_diffs:
-                    for span in alter_spans:
-                        new_hyp = base_hyp.replace(init_span, span)
-                        if new_hyp not in all_hyps:
-                            all_hyps.append(new_hyp)
-                logger.info("-" * 80)
-                for hyp in all_hyps:
-                    logger.info(f"hyp = {hyp}")
+            # ALL HYBRIDS
+            all_hyps = list()
+            for base_idx in range(len(sr_sample.instance.prediction_outputs)):
+                base_hyp = sr_sample.instance.prediction_outputs[base_idx]
+                sr_hyps = [x for x in sr_sample.instance.prediction_outputs if x != base_hyp]
+                if len(sr_hyps) > 0:
+                    for init_span, alter_spans in compute_diffs(base_hyp, sr_hyps):
+                        for span in alter_spans:
+                            new_hyp = base_hyp.replace(init_span, span)
+                            if new_hyp not in all_hyps:
+                                all_hyps.append(new_hyp)
+                for mr_sample in mr_samples:
+                    mr_hyps = mr_sample.instance.prediction_outputs
+                    for init_span, alter_spans in compute_diffs(base_hyp, mr_hyps):
+                        for span in alter_spans:
+                            new_hyp = base_hyp.replace(init_span, span)
+                            if new_hyp not in all_hyps:
+                                all_hyps.append(new_hyp)
 
+            print(len(all_hyps))
             exit(0)
             logger.info("-" * 80)
             logger.info("")
