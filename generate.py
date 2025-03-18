@@ -1,7 +1,6 @@
 import difflib
 import json
 import logging
-import random
 import re
 from collections import defaultdict, OrderedDict
 from operator import attrgetter
@@ -117,7 +116,6 @@ def generate_hybrid_prediction(
         sr_generation_amount: Annotated[int, typer.Option("--generation_amount")] = 5,
         mr_generation_amount: Annotated[int, typer.Option("--generation_amount")] = 10,
         max_example_per_quality: Annotated[int, typer.Option("--max_example_per_quality")] = 20,
-        generation_factor: Annotated[int, typer.Option("--generation_factor")] = 1.0,  # TODO: remove this?
         generation_by_sample: Annotated[bool, typer.Option("--generation_by_sample/--generation_by_beam")] = ...,
         generation_temp: Annotated[float, typer.Option("--temp")] = 1.5,
         generation_top_p: Annotated[float, typer.Option("--top_p")] = 0.9,
@@ -219,9 +217,9 @@ def generate_hybrid_prediction(
                 model_outputs = model.generate(
                     **model_input,
                     max_new_tokens=generation_tokens,
-                    num_return_sequences=sr_generation_amount * generation_factor,
+                    num_return_sequences=sr_generation_amount,
                     do_sample=generation_by_sample,
-                    num_beams=1 if generation_by_sample else sr_generation_amount * generation_factor,
+                    num_beams=1 if generation_by_sample else sr_generation_amount,
                     temperature=generation_temp if generation_by_sample else None,
                     top_p=generation_top_p if generation_by_sample else None,
                 )
@@ -234,8 +232,6 @@ def generate_hybrid_prediction(
                         continue
                     if prediction_labels not in valid_prediction_labels:
                         valid_prediction_labels.append(prediction_labels)
-                    if len(valid_prediction_labels) >= sr_generation_amount:
-                        break
                 sr_example.instance.prediction_outputs = [GenNERSample.get_prompt_labels(example.instance.words, labels) for labels in valid_prediction_labels]
                 logger.debug(f"  * Generate {'single-round':20s} : {len(model_outputs):2d} -> {len(sr_example.instance.prediction_outputs):2d}")
 
@@ -265,9 +261,9 @@ def generate_hybrid_prediction(
                     model_outputs = model.generate(
                         **model_input,
                         max_new_tokens=generation_tokens,
-                        num_return_sequences=mr_generation_amount * generation_factor,
+                        num_return_sequences=mr_generation_amount,
                         do_sample=generation_by_sample,
-                        num_beams=1 if generation_by_sample else mr_generation_amount * generation_factor,
+                        num_beams=1 if generation_by_sample else mr_generation_amount,
                         temperature=generation_temp if generation_by_sample else None,
                         top_p=generation_top_p if generation_by_sample else None,
                     )
@@ -280,8 +276,6 @@ def generate_hybrid_prediction(
                             continue
                         if prediction_labels not in valid_prediction_labels:
                             valid_prediction_labels.append(prediction_labels)
-                        if len(valid_prediction_labels) >= mr_generation_amount:
-                            break
                     mr_example.instance.prediction_outputs = [GenNERSample.get_prompt_labels(example.instance.words, labels) for labels in valid_prediction_labels]
                     logger.debug(f"  * Generate {entity_type:20s} : {len(model_outputs):2d} -> {len(mr_example.instance.prediction_outputs):2d}")
 
