@@ -1,4 +1,24 @@
 import json
+import math
+import time
+from concurrent.futures import ProcessPoolExecutor
+from contextlib import nullcontext
+from enum import Enum
+from itertools import groupby, islice
+from typing import Iterable
+from urllib.parse import urljoin
+
+import httpx
+import typer
+from bs4 import BeautifulSoup
+from typing_extensions import Annotated
+
+from chrisbase.data import ProjectEnv, InputOption, FileOption, OutputOption, IOArguments, JobTimer, FileStreamer, TableOption, MongoStreamer, NewProjectEnv
+from chrisbase.io import LoggingFormat, new_path, merge_dicts, normalize_simple_list_in_json, LoggerWriter, dirs, text_blocks
+from chrisbase.util import mute_tqdm_cls, shuffled
+from progiter import ProgIter
+from chrisdata.ner.gner import ner_samples
+import json
 import logging
 import re
 from collections import defaultdict
@@ -46,6 +66,7 @@ def generate_hybrid_prediction(
         generation_temp: Annotated[float, typer.Option("--temp")] = 1.5,
         generation_top_p: Annotated[float, typer.Option("--top_p")] = 0.9,
         generation_tokens: Annotated[int, typer.Option("--generation_tokens")] = 640,
+        pretrained: Annotated[str, typer.Option("--pretrained")] = "output-lfs/train_ZSE-HR207842/GnerT5-Base-HR207842/checkpoint-17052",
         logging_level: Annotated[int, typer.Option("--logging_level")] = logging.INFO,
 ):
     input_file = Path(input_file)
@@ -64,9 +85,101 @@ def generate_hybrid_prediction(
     )
     sr_inst_temp = sr_inst_file.read_text()
     mr_inst_temp = mr_inst_file.read_text()
-    print(f"output_file = {output_file}")
-    print(sr_inst_temp)
-    # output_file = new_path(input_file, post=post)
+    tokenizer = AutoTokenizer.from_pretrained(pretrained)
+    model = AutoModelForSeq2SeqLM.from_pretrained(pretrained, torch_dtype=torch.bfloat16).to(device)
+    logger.info(f"output_file = {output_file}")
+    logger.info(f"tokenizer = {type(tokenizer)}")
+    logger.info(f"model = {type(model)}")
+
+    with (
+        JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=logging_level <= logging.INFO),
+        FileStreamer(FileOption.from_path(path=input_file, required=True)) as input_file,
+    ):
+        for sample in ProgIter(ner_samples(input_file), total=len(input_file), desc=f"Converting {input_file.path}:", stream=LoggerWriter(logger, level=logging_level), verbose=3):
+            sample.instance.id = sample.id = sample.instance.id or sample.id
+            sample.label_list = [str(x).replace(" ", "_").upper() for x in sample.label_list]  # for easy post-processing
+            sample.instance.labels = [str(x).replace(" ", "_").upper() for x in sample.instance.labels]  # for easy post-processing
+            if len(sample.instance.words) != len(sample.instance.labels):
+                continue
+            possible_labels = [tag for entity_type in sample.label_list for tag in (f"B-{entity_type}", f"I-{entity_type}")] + ["O"]
+            if any(label not in possible_labels for label in sample.instance.labels):
+                continue
+            sentence = " ".join(sample.instance.words)
+            logger.info(f"sentence = {sentence}")
+
+            entity_types = ", ".join(sample.label_list)
+            possible_labels = [tag for entity_type in sample.label_list for tag in (f"B-{entity_type}", f"I-{entity_type}")] + ["O"]
+            final_words, final_labels = sample.instance.words, [x if x in possible_labels else "O" for x in sample.instance.labels]
+            prompt_labels = GenNERSample.get_prompt_labels(final_words, final_labels)
+            instruction_inputs = sr_inst_temp.format(entity_types=entity_types, sentence=sentence)
+            sr_sample = GenNERSampleWrapper(
+                id=f"{sample.id}.S",
+                dataset=sample.dataset,
+                split=sample.split,
+                label_list=sample.label_list,
+                instance=GenNERSample(
+                    id=f"{sample.id}.S",
+                    group=f"{sample.id}",
+                    words=final_words,
+                    labels=final_labels,
+                    target_label="*",
+                    prompt_labels=prompt_labels,
+                    instruction_inputs=instruction_inputs,
+                )
+            )
+            logger.info(f"sr_sample.instance.prompt_label = {sr_sample.instance.prompt_labels}")
+
+            model_input = tokenizer(sr_sample.instance.instruction_inputs, return_tensors="pt").to(device)
+            model_outputs = model.generate(
+                **model_input,
+                max_new_tokens=generation_tokens,
+                num_return_sequences=generation_amount,
+                do_sample=generation_by_sample,
+                num_beams=1 if generation_by_sample else generation_amount,
+                temperature=generation_temp if generation_by_sample else None,
+                top_p=generation_top_p if generation_by_sample else None,
+            )
+            sr_sample.instance.prediction_outputs = [tokenizer.decode(x, skip_special_tokens=True).strip() for x in model_outputs]
+            for o in sr_sample.instance.prediction_outputs:
+                logger.info(f"sr_sample.instance.prediction_output = {o}")
+
+            for i, entity_type in enumerate(sample.label_list if mr_inst_temp else [], start=1):
+                logger.info(f"entity_type = {entity_type}")
+                possible_labels = [tag for tag in (f"B-{entity_type}", f"I-{entity_type}")] + ["O"]
+                final_words, final_labels = sample.instance.words, [x if x in possible_labels else "O" for x in sample.instance.labels]
+                prompt_labels = GenNERSample.get_prompt_labels(final_words, final_labels)
+                instruction_inputs = mr_inst_temp.format(entity_type=entity_type, sentence=sentence)
+                mr_sample = GenNERSampleWrapper(
+                    id=f"{sample.id}.M{i}",
+                    dataset=sample.dataset,
+                    split=sample.split,
+                    label_list=sample.label_list,
+                    instance=GenNERSample(
+                        id=f"{sample.id}.M{i}",
+                        group=f"{sample.id}",
+                        words=final_words,
+                        labels=final_labels,
+                        target_label=entity_type,
+                        prompt_labels=prompt_labels,
+                        instruction_inputs=instruction_inputs,
+                    )
+                )
+                logger.info(f"mr_sample.instance.prompt_labels = {mr_sample.instance.prompt_labels}")
+
+                model_input = tokenizer(mr_sample.instance.instruction_inputs, return_tensors="pt").to(device)
+                model_outputs = model.generate(
+                    **model_input,
+                    max_new_tokens=generation_tokens,
+                    num_return_sequences=generation_amount,
+                    do_sample=generation_by_sample,
+                    num_beams=1 if generation_by_sample else generation_amount,
+                    temperature=generation_temp if generation_by_sample else None,
+                    top_p=generation_top_p if generation_by_sample else None,
+                )
+                mr_sample.instance.prediction_outputs = [tokenizer.decode(x, skip_special_tokens=True).strip() for x in model_outputs]
+                for o in mr_sample.instance.prediction_outputs:
+                    logger.info(f"mr_sample.instance.prediction_output = {o}")
+            exit(0)
 
 
 @main.command("generate_prediction")
