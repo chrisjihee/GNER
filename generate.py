@@ -1,24 +1,3 @@
-from gner.gner_evaluator import extract_predictions3, parser
-import json
-import math
-import time
-from concurrent.futures import ProcessPoolExecutor
-from contextlib import nullcontext
-from enum import Enum
-from itertools import groupby, islice
-from typing import Iterable
-from urllib.parse import urljoin
-
-import httpx
-import typer
-from bs4 import BeautifulSoup
-from typing_extensions import Annotated
-
-from chrisbase.data import ProjectEnv, InputOption, FileOption, OutputOption, IOArguments, JobTimer, FileStreamer, TableOption, MongoStreamer, NewProjectEnv
-from chrisbase.io import LoggingFormat, new_path, merge_dicts, normalize_simple_list_in_json, LoggerWriter, dirs, text_blocks
-from chrisbase.util import mute_tqdm_cls, shuffled
-from progiter import ProgIter
-from chrisdata.ner.gner import ner_samples
 import json
 import logging
 import re
@@ -37,14 +16,17 @@ from pydantic import BaseModel
 from sklearn.model_selection import train_test_split
 from typing_extensions import Annotated
 
-from chrisbase.data import AppTyper, JobTimer, NewProjectEnv
-from chrisbase.io import LoggingFormat, LoggerWriter, new_path, log_table, files, make_parent_dir, load_json
+from chrisbase.data import FileOption, JobTimer, FileStreamer, NewProjectEnv, AppTyper
+from chrisbase.io import LoggingFormat, new_path, LoggerWriter, log_table, files, make_parent_dir, load_json
 from chrisbase.time import from_timestamp, now_stamp
 from chrisbase.util import grouped
 from chrisdata.learn import F1, RegressionSample
 from chrisdata.ner import GenNERSampleWrapper, GenNERSample
+from chrisdata.ner.gner import ner_samples
 from gner import NEREvaluator
+from gner.gner_evaluator import extract_predictions3
 from progiter import ProgIter
+from select_outputs import combine_hyps
 from transformers import (
     AutoTokenizer,
     AutoModelForSeq2SeqLM,
@@ -163,8 +145,34 @@ def generate_hybrid_prediction(
             for prediction_output in sr_sample.instance.prediction_outputs:
                 logger.info(f"sr_sample.instance.prediction_output = {prediction_output}")
 
-            # COMBINE!
-            # GPT, WRITE YOUR CODE HERE!
+            outputs = [sr_sample.instance.prediction_outputs]  # 후보들이 들어있는 2차원 리스트
+            refs = [sr_sample.instance.prompt_labels]  # "gold" 레이블 시퀀스 (또는 비교 기준)
+            in_data = [sentence]  # 토큰들을 공백으로 join한 원본 문장
+
+            # 2) 결합(fusion)을 실행할 때의 파라미터 설정
+            beam_size = 5  # beam search 크기
+            metric = 'bleu'  # 예시로 BLEU 사용, 필요에 따라 'comet', 'cometqe' 등으로 교체
+            ws = 1  # diff 계산 시 주변 window 크기
+            keep_kbest = 0  # 0이면 후보 전부 사용
+
+            # 3) 여러 후보를 부분 스팬별로 조합하며 최적 결과를 골라내는 함수 호출
+            combined_results = combine_hyps(
+                outputs=outputs,
+                refs=refs,
+                in_data=in_data,
+                beam=beam_size,
+                metric=metric,
+                keep_kbest=keep_kbest,
+                ws=ws
+            )
+
+            # 4) 최종 결합된 1개 결과(문자열)를 꺼내고, 로그 남기기
+            #    combined_results는 문장 개수만큼의 리스트이므로, 여기서는 단일 문장 -> 인덱스 0
+            final_fused_output = combined_results[0]
+            logger.info(f"COMBINED prediction output = {final_fused_output}")
+            for combined_result in combined_results:
+                logger.info(f"combined_result = {combined_result}")
+            exit(1)
 
             # for i, entity_type in enumerate(sample.label_list if mr_inst_temp else [], start=1):
             #     logger.info(f"entity_type = {entity_type}")
