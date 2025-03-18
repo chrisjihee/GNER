@@ -109,10 +109,11 @@ def generate_hybrid_prediction(
         output_file: Annotated[str, typer.Option("--output_file")] = "data/GNER-QE/hybrid_gen.jsonl",
         output_name: Annotated[str, typer.Option("--output_name")] = "GNER-QE",
         output_home: Annotated[str, typer.Option("--output_home")] = "data",
-        sr_inst_file: Annotated[str, typer.Option("--sr_inst_file")] = "configs/instruction/GNER-EQ-SR.txt",
-        mr_inst_file: Annotated[str, typer.Option("--mr_inst_file")] = "configs/instruction/GNER-EQ-MR.txt",
-        sr_generation_amount: Annotated[int, typer.Option("--sr_generation_amount")] = 3,
-        mr_generation_amount: Annotated[int, typer.Option("--mr_generation_amount")] = 12,
+        sr_inst_file: Annotated[str, typer.Option("--sr_inst_file")] = "configs/instruction/GNER-EQ-SR.txt",  # "configs/instruction/GNER-EQ-SR.txt"
+        mr_inst_file: Annotated[str, typer.Option("--mr_inst_file")] = "configs/instruction/GNER-EQ-MR.txt",  # "configs/instruction/GNER-EQ-MR.txt",
+        sr_generation_amount: Annotated[int, typer.Option("--generation_amount")] = 5,
+        mr_generation_amount: Annotated[int, typer.Option("--generation_amount")] = 10,
+        generation_factor: Annotated[int, typer.Option("--generation_factor")] = 3.0,
         generation_by_sample: Annotated[bool, typer.Option("--generation_by_sample/--generation_by_beam")] = ...,
         generation_temp: Annotated[float, typer.Option("--temp")] = 1.5,
         generation_top_p: Annotated[float, typer.Option("--top_p")] = 0.9,
@@ -156,7 +157,7 @@ def generate_hybrid_prediction(
     )
     sr_inst_temp = sr_inst_file.read_text()
     mr_inst_temp = mr_inst_file.read_text()
-    set_seed(random_seed)
+    set_seed(env.random_seed)
     tokenizer = AutoTokenizer.from_pretrained(pretrained)
     model = AutoModelForSeq2SeqLM.from_pretrained(pretrained, torch_dtype=torch.bfloat16).to(device)
     logger.debug(f"output_file = {output_file}")
@@ -210,24 +211,25 @@ def generate_hybrid_prediction(
             model_outputs = model.generate(
                 **model_input,
                 max_new_tokens=generation_tokens,
-                num_return_sequences=sr_generation_amount,
+                num_return_sequences=sr_generation_amount * generation_factor,
                 do_sample=generation_by_sample,
-                num_beams=1 if generation_by_sample else sr_generation_amount,
+                num_beams=1 if generation_by_sample else sr_generation_amount * generation_factor,
                 temperature=generation_temp if generation_by_sample else None,
                 top_p=generation_top_p if generation_by_sample else None,
             )
-            decoded_outputs = [tokenizer.decode(x, skip_special_tokens=True).strip() for x in model_outputs]
 
-            possible_labels = [tag for entity_type in sr_example.label_list for tag in (f"B-{entity_type}", f"I-{entity_type}")] + ["O"]
-            valid_sr_prediction_labels = list()
-            for decoded_output in decoded_outputs:
+            valid_prediction_labels = list()
+            for model_output in model_outputs:
+                decoded_output = tokenizer.decode(model_output, skip_special_tokens=True).strip()
                 prediction_labels = extract_predictions3(decoded_output, example=sr_example, tokenizer=tokenizer)
                 if len(sr_example.instance.words) != len(prediction_labels) or any(label not in possible_labels for label in prediction_labels):
                     continue
-                if prediction_labels not in valid_sr_prediction_labels:
-                    valid_sr_prediction_labels.append(prediction_labels)
-            sr_example.instance.prediction_outputs = [GenNERSample.get_prompt_labels(example.instance.words, labels) for labels in valid_sr_prediction_labels]
-            logger.debug(f"  * Generate {'single-round':20s} : {len(decoded_outputs):2d} -> {len(sr_example.instance.prediction_outputs):2d}")
+                if prediction_labels not in valid_prediction_labels:
+                    valid_prediction_labels.append(prediction_labels)
+                if len(valid_prediction_labels) >= sr_generation_amount:
+                    break
+            sr_example.instance.prediction_outputs = [GenNERSample.get_prompt_labels(example.instance.words, labels) for labels in valid_prediction_labels]
+            logger.debug(f"  * Generate {'single-round':20s} : {len(model_outputs):2d} -> {len(sr_example.instance.prediction_outputs):2d}")
 
             # Generate by multi-round for each entity type
             mr_examples = []
@@ -255,23 +257,25 @@ def generate_hybrid_prediction(
                 model_outputs = model.generate(
                     **model_input,
                     max_new_tokens=generation_tokens,
-                    num_return_sequences=mr_generation_amount,
+                    num_return_sequences=mr_generation_amount * generation_factor,
                     do_sample=generation_by_sample,
-                    num_beams=1 if generation_by_sample else mr_generation_amount,
+                    num_beams=1 if generation_by_sample else mr_generation_amount * generation_factor,
                     temperature=generation_temp if generation_by_sample else None,
                     top_p=generation_top_p if generation_by_sample else None,
                 )
-                decoded_outputs = [tokenizer.decode(x, skip_special_tokens=True).strip() for x in model_outputs]
 
-                valid_mr_prediction_labels = list()
-                for decoded_output in decoded_outputs:
+                valid_prediction_labels = list()
+                for model_output in model_outputs:
+                    decoded_output = tokenizer.decode(model_output, skip_special_tokens=True).strip()
                     prediction_labels = extract_predictions3(decoded_output, example=mr_example, tokenizer=tokenizer)
                     if len(mr_example.instance.words) != len(prediction_labels) or any(label not in possible_labels for label in prediction_labels):
                         continue
-                    if prediction_labels not in valid_mr_prediction_labels:
-                        valid_mr_prediction_labels.append(prediction_labels)
-                mr_example.instance.prediction_outputs = [GenNERSample.get_prompt_labels(example.instance.words, labels) for labels in valid_mr_prediction_labels]
-                logger.debug(f"  * Generate {entity_type:20s} : {len(decoded_outputs):2d} -> {len(mr_example.instance.prediction_outputs):2d}")
+                    if prediction_labels not in valid_prediction_labels:
+                        valid_prediction_labels.append(prediction_labels)
+                    if len(valid_prediction_labels) >= mr_generation_amount:
+                        break
+                mr_example.instance.prediction_outputs = [GenNERSample.get_prompt_labels(example.instance.words, labels) for labels in valid_prediction_labels]
+                logger.debug(f"  * Generate {entity_type:20s} : {len(model_outputs):2d} -> {len(mr_example.instance.prediction_outputs):2d}")
 
                 mr_examples.append(mr_example)
 
@@ -280,11 +284,12 @@ def generate_hybrid_prediction(
             for base_idx in range(len(sr_example.instance.prediction_outputs)):
                 base_hyp = sr_example.instance.prediction_outputs[base_idx]
                 sr_hyps = [x for x in sr_example.instance.prediction_outputs if x != base_hyp]
-                for init_span, alter_spans in compute_diffs(base_hyp, sr_hyps):
-                    for span in alter_spans:
-                        new_hyp = base_hyp.replace(init_span, span)
-                        if new_hyp not in all_hyps:
-                            all_hyps.append(new_hyp)
+                if len(sr_hyps) > 0:
+                    for init_span, alter_spans in compute_diffs(base_hyp, sr_hyps):
+                        for span in alter_spans:
+                            new_hyp = base_hyp.replace(init_span, span)
+                            if new_hyp not in all_hyps:
+                                all_hyps.append(new_hyp)
                 for mr_example in mr_examples:
                     mr_hyps = mr_example.instance.prediction_outputs
                     for init_span, alter_spans in compute_diffs(base_hyp, mr_hyps):
