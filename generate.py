@@ -17,13 +17,12 @@ from pydantic import BaseModel
 from sklearn.model_selection import train_test_split
 from typing_extensions import Annotated
 
-from chrisbase.data import FileOption, JobTimer, FileStreamer, NewProjectEnv, AppTyper
+from chrisbase.data import FileOption, InputOption, JobTimer, FileStreamer, NewProjectEnv, AppTyper
 from chrisbase.io import LoggingFormat, new_path, LoggerWriter, log_table, files, make_parent_dir, load_json
 from chrisbase.time import from_timestamp, now_stamp
 from chrisbase.util import grouped
 from chrisdata.learn import F1, RegressionSample
 from chrisdata.ner import GenNERSampleWrapper, GenNERSample
-from chrisdata.ner.gner import ner_samples
 from gner import NEREvaluator
 from gner.gner_evaluator import extract_predictions3
 from progiter import ProgIter
@@ -104,7 +103,11 @@ def compute_diffs(base_sent, alter_sents, ws=1):
 def generate_hybrid_prediction(
         device: Annotated[str, typer.Option("--device")] = ...,
         input_file: Annotated[str, typer.Option("--input_file")] = ...,  # "data/ZSE-validation-sampled-N70.jsonl"
+        input_start: Annotated[int, typer.Option("--input_start")] = 10,
+        input_limit: Annotated[int, typer.Option("--input_limit")] = 10,
         output_file: Annotated[str, typer.Option("--output_file")] = "data/GNER-QE/hybrid_gen.jsonl",
+        output_name: Annotated[str, typer.Option("--output_name")] = "GNER-QE",
+        output_home: Annotated[str, typer.Option("--output_home")] = "data",
         sr_inst_file: Annotated[str, typer.Option("--sr_inst_file")] = "configs/instruction/GNER-EQ-SR.txt",  # "configs/instruction/GNER-EQ-SR.txt"
         mr_inst_file: Annotated[str, typer.Option("--mr_inst_file")] = "configs/instruction/GNER-EQ-MR.txt",  # "configs/instruction/GNER-EQ-MR.txt",
         sr_generation_amount: Annotated[int, typer.Option("--generation_amount")] = 5,
@@ -119,6 +122,7 @@ def generate_hybrid_prediction(
         weight_nd: Annotated[float, typer.Option("--weight_nd")] = 0.3,
         pow_weight: Annotated[float, typer.Option("--pow_weight")] = 2.0,
         max_score: Annotated[float, typer.Option("--max_score")] = 5.0,
+        logging_file: Annotated[str, typer.Option("--logging_file")] = "generate_hybrid_prediction.out",
         logging_level: Annotated[int, typer.Option("--logging_level")] = logging.INFO,
 ):
     input_file = Path(input_file)
@@ -128,10 +132,23 @@ def generate_hybrid_prediction(
     assert (generation_by_sample and generation_temp is not None and generation_top_p is not None) or (not generation_by_sample), f"Invalid generation parameters: by_sample={generation_by_sample}, temperature={generation_temp}, top_p={generation_top_p}"
     assert sr_inst_file.is_file() and mr_inst_file.is_file(), f"Invalid instruction files: sr={sr_inst_file}, mr={mr_inst_file}"
     assert input_file.is_file(), f"Invalid input file: {input_file}"
-    env = NewProjectEnv(logging_level=logging_level)
-    output_file = (input_file.parent if output_file.parent == Path() else output_file.parent) / new_path(
+    stamp = now_stamp()
+    env = NewProjectEnv(
+        time_stamp=from_timestamp(stamp, fmt='%m%d-%H%M%S'),
+        output_name=output_name,
+        output_home=output_home,
+        logging_file=new_path(logging_file, post=from_timestamp(stamp, fmt='%m%d-%H%M%S')),
+        logging_level=logging_level,
+        logging_format=LoggingFormat.CHECK_24,
+    )
+    input_opt = InputOption(
+        start=input_start,
+        limit=input_limit,
+        file=FileOption.from_path(path=input_file, required=True),
+    )
+    output_file = (env.output_dir if output_file.parent == Path() else output_file.parent) / new_path(
         output_file.name,
-        pre=input_file.stem,
+        pre=f'{input_file.stem}-from-{input_start:05d}-to-{input_start + input_limit:05d}',
         post=f'by_sample-amount={sr_generation_amount}x{mr_generation_amount}-temp={generation_temp}-top_p={generation_top_p}'
         if generation_by_sample else f'by_beam-amount={sr_generation_amount}x{mr_generation_amount}'
     )
@@ -139,16 +156,19 @@ def generate_hybrid_prediction(
     mr_inst_temp = mr_inst_file.read_text()
     tokenizer = AutoTokenizer.from_pretrained(pretrained)
     model = AutoModelForSeq2SeqLM.from_pretrained(pretrained, torch_dtype=torch.bfloat16).to(device)
-    logger.info(f"output_file = {output_file}")
-    logger.info(f"tokenizer = {type(tokenizer)}")
-    logger.info(f"model = {type(model)}")
+    logger.debug(f"output_file = {output_file}")
+    logger.debug(f"tokenizer = {type(tokenizer)}")
+    logger.debug(f"model = {type(model)}")
 
     with (
         JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=logging_level <= logging.INFO),
-        FileStreamer(FileOption.from_path(path=input_file, required=True)) as input_file,
+        FileStreamer(input_opt.file) as input_file,
+        FileStreamer(FileOption.from_path(path=output_file, mode="w")) as output_file,
     ):
-        all_scored_candidates = list()
-        for example in ProgIter(ner_samples(input_file), total=len(input_file), desc=f"Generating {input_file.path}:", stream=LoggerWriter(logger, level=logging_level), verbose=3):
+        new_idx = input_start
+        input_data = input_opt.ready_inputs(input_file, total=len(input_file))
+        for item in ProgIter(input_data.items, total=input_data.num_item, desc=f"Generating {input_file.path}:", stream=LoggerWriter(logger, level=logging_level), verbose=3):
+            example = GenNERSampleWrapper.model_validate_json(item)
             example.instance.id = example.id = example.instance.id or example.id
             example.label_list = [str(x).replace(" ", "_").upper() for x in example.label_list]
             example.instance.labels = [str(x).replace(" ", "_").upper() for x in example.instance.labels]
@@ -156,8 +176,8 @@ def generate_hybrid_prediction(
             if len(example.instance.words) != len(example.instance.labels) or any(label not in possible_labels for label in example.instance.labels):
                 continue
             sentence = " ".join(example.instance.words)
-            logger.info("=" * 80)
-            logger.info(f"sentence = {sentence}")
+            logger.debug("=" * 80)
+            logger.debug(f"sentence = {sentence}")
 
             # Generate by single-round for all entity types
             entity_types = ", ".join(example.label_list)
@@ -191,9 +211,7 @@ def generate_hybrid_prediction(
                 top_p=generation_top_p if generation_by_sample else None,
             )
             decoded_outputs = [tokenizer.decode(x, skip_special_tokens=True).strip() for x in model_outputs]
-            if sr_example.instance.prompt_labels == decoded_outputs[0]:  # TODO: REMOVE THIS!
-                continue
-            logger.info(f"[OK] Generate by single-round for all entity types")
+            logger.debug(f"[OK] Generate by single-round for all entity types")
 
             possible_labels = [tag for entity_type in sr_example.label_list for tag in (f"B-{entity_type}", f"I-{entity_type}")] + ["O"]
             valid_sr_prediction_labels = list()
@@ -254,7 +272,7 @@ def generate_hybrid_prediction(
                 # assert len(valid_mr_prediction_labels) == generation_amount, f"#valid_mr_prediction_labels({len(valid_mr_prediction_labels)}) != generation_amount({generation_amount})"
                 mr_example.instance.prediction_outputs = [GenNERSample.get_prompt_labels(example.instance.words, labels) for labels in valid_mr_prediction_labels]
                 mr_examples.append(mr_example)
-            logger.info(f"[OK] Generate by multi-round for each entity type")
+            logger.debug(f"[OK] Generate by multi-round for each entity type")
 
             # Combine the predictions by replacing the spans in the base prediction
             all_hyps = list()
@@ -274,36 +292,27 @@ def generate_hybrid_prediction(
                             new_hyp = base_hyp.replace(init_span, span)
                             if new_hyp not in all_hyps:
                                 all_hyps.append(new_hyp)
-            logger.info(f"[OK] Combine the predictions by replacing the spans in the base prediction")
+            logger.debug(f"[OK] Combine the predictions by replacing the spans in the base prediction")
 
-            # Calculate the quality of the predictions
+            # Calculate the quality of the predictions and save to output file
             reference = GenNERSample.get_prompt_labels(sr_example.instance.words, sr_example.instance.labels)
             for candidate in all_hyps:
-                scored_candidate = PredictionQuality(
+                new_idx += 1
+                prediction_quality = PredictionQuality(
                     sentence=sentence,
                     prediction=candidate,
                     norm_dist=normalized_edit_distance(candidate, reference),
                     f1_score=NEREvaluator().evaluate_prediction(candidate, example, tokenizer).f1
                 ).calc_quality(weight_f1=weight_f1, weight_nd=weight_nd, pow_weight=pow_weight, max_score=max_score)
-                all_scored_candidates.append(scored_candidate)
-            logger.info(f"[OK] Calculate the quality of the predictions")
-
-        # Save to output file as a regression dataset
-        idx = 0
-        regression_dataset = list()
-        for scored_candidate in all_scored_candidates:
-            regression_dataset.append(
-                RegressionSample(
-                    sentence1=scored_candidate.prediction,
-                    sentence2=scored_candidate.sentence,
-                    label=scored_candidate.quality,
-                    idx=idx,
+                output_file.fp.write(
+                    RegressionSample(
+                        sentence1=prediction_quality.prediction,
+                        sentence2=prediction_quality.sentence,
+                        label=prediction_quality.quality,
+                        idx=new_idx,
+                    ).model_dump_json() + "\n"
                 )
-            )
-            idx += 1
-        with make_parent_dir(output_file).open("w") as out:
-            for x in regression_dataset:
-                out.write(x.model_dump_json() + "\n")
+            logger.debug(f"[OK] Calculate the quality of the predictions and save to output file")
 
 
 @main.command("generate_prediction")
