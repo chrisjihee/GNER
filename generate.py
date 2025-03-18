@@ -121,7 +121,7 @@ def generate_hybrid_prediction(
         generation_top_p: Annotated[float, typer.Option("--top_p")] = 0.9,
         generation_tokens: Annotated[int, typer.Option("--generation_tokens")] = 640,
         pretrained: Annotated[str, typer.Option("--pretrained")] = "output-lfs/train_ZSE-HR207842/GnerT5-Base-HR207842/checkpoint-17052",
-        do_check_possibility: Annotated[bool, typer.Option("--do_check_possibility")] = True,
+        do_check_possibility: Annotated[bool, typer.Option("--do_check_possibility/--no_check_possibility")] = True,
         weight_f1: Annotated[float, typer.Option("--weight_f1")] = 0.7,
         weight_nd: Annotated[float, typer.Option("--weight_nd")] = 0.3,
         pow_weight: Annotated[float, typer.Option("--pow_weight")] = 2.0,
@@ -301,7 +301,7 @@ def generate_hybrid_prediction(
                                     all_hyps.append(new_hyp)
                 logger.debug(f"  * Combined {'all candidates':20s} : {len(all_hyps):d}")
                 hyps_sum += len(all_hyps)
-                progress.set_extra(f"| #avg_hyp={hyps_sum.avg:.1f}")
+                progress.set_extra(f"| avg_hyp={hyps_sum.avg:.0f}")
                 example.instance.prediction_outputs = all_hyps
                 output_file.fp.write(example.model_dump_json() + "\n")
 
@@ -323,7 +323,7 @@ def generate_hybrid_prediction(
                     for hyp in quality_hyps[:5]:
                         logger.debug(f"    - {hyp}")
                     f1_sum += quality_hyps[0].f1_info
-                    progress.set_extra(f"| #avg_hyp={hyps_sum.avg:.1f}, #avg_f1={f1_sum.f1:.4f}")
+                    progress.set_extra(f"| avg_hyp={hyps_sum.avg:.0f}, max_f1={f1_sum.f1:.3f}")
                     # grouped_hyps = {k: list(vs) for k, vs in grouped(quality_hyps, key=lambda x: x.quality)}
                     # sampled_hyps = list()
                     # for quality in sorted(grouped_hyps.keys(), reverse=True):
@@ -346,7 +346,7 @@ def generate_hybrid_prediction(
                 # logger.debug("")
                 progress.display_message()
 
-        logger.info(f"Saved generated predictions to {output_file.path}: #example={hyps_sum.count}, #hypothesis={hyps_sum.sum}, #average={hyps_sum.avg:.1f}, #f1={f1_sum.f1:.4f}")
+        logger.info(f"Saved generated and combined predictions to {output_file.path}: #example={hyps_sum.count}, sum_hyp={hyps_sum.sum:.0f}, avg_hyp={hyps_sum.avg:.0f}, max_f1={f1_sum.f1:.3f}")
 
 
 @main.command("generate_prediction")
