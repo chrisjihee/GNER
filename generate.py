@@ -126,6 +126,7 @@ def generate_hybrid_prediction(
             if any(label not in possible_labels for label in sample.instance.labels):
                 continue
             sentence = " ".join(sample.instance.words)
+            logger.info("=" * 80)
             logger.info(f"sentence = {sentence}")
 
             entity_types = ", ".join(sample.label_list)
@@ -148,8 +149,6 @@ def generate_hybrid_prediction(
                     instruction_inputs=instruction_inputs,
                 )
             )
-            possible_labels = [tag for entity_type in sr_sample.label_list for tag in (f"B-{entity_type}", f"I-{entity_type}")] + ["O"]
-
             model_input = tokenizer(sr_sample.instance.instruction_inputs, return_tensors="pt").to(device)
             model_outputs = model.generate(
                 **model_input,
@@ -161,17 +160,16 @@ def generate_hybrid_prediction(
                 top_p=generation_top_p if generation_by_sample else None,
             )
             decoded_outputs = [tokenizer.decode(x, skip_special_tokens=True).strip() for x in model_outputs]
-            if sr_sample.instance.prompt_labels == decoded_outputs[0]:
+            if sr_sample.instance.prompt_labels == decoded_outputs[0]:  # TODO: REMOVE THIS!
                 continue
 
             logger.info(f"sr_sample.instance.prompt_labels = {sr_sample.instance.prompt_labels}")
             logger.info(f"sr_sample.instance.labels = {sr_sample.instance.labels}")
+            possible_labels = [tag for entity_type in sr_sample.label_list for tag in (f"B-{entity_type}", f"I-{entity_type}")] + ["O"]
             valid_sr_prediction_labels = list()
-            for prediction_output in [tokenizer.decode(x, skip_special_tokens=True).strip() for x in model_outputs]:
-                prediction_labels = extract_predictions3(prediction_output, example=sr_sample, tokenizer=tokenizer)
-                if len(sr_sample.instance.words) != len(prediction_labels):
-                    continue
-                if any(label not in possible_labels for label in prediction_labels):
+            for decoded_output in decoded_outputs:
+                prediction_labels = extract_predictions3(decoded_output, example=sr_sample, tokenizer=tokenizer)
+                if len(sr_sample.instance.words) != len(prediction_labels) or any(label not in possible_labels for label in prediction_labels):
                     continue
                 if prediction_labels not in valid_sr_prediction_labels:
                     valid_sr_prediction_labels.append(prediction_labels)
@@ -179,53 +177,93 @@ def generate_hybrid_prediction(
                     break
             assert len(valid_sr_prediction_labels) == generation_amount
             sr_sample.instance.prediction_outputs = [GenNERSample.get_prompt_labels(sample.instance.words, labels) for labels in valid_sr_prediction_labels]
+            logger.info("-" * 80)
             for prediction_output in sr_sample.instance.prediction_outputs:
                 logger.info(f"sr_sample.instance.prediction_output = {prediction_output}")
 
-            ws = 1
+            base_hyp = sr_sample.instance.prediction_outputs[0]
             hyps = sr_sample.instance.prediction_outputs
-            all_diffs = compute_diffs(hyps[0], hyps[1:], ws=ws)
+            all_diffs = compute_diffs(base_hyp, hyps[1:])
+            logger.info("-" * 80)
+            for diff in all_diffs:
+                logger.info(f"diff = {diff}")
+            all_hyps = []
+            for init_span, alter_spans in all_diffs:
+                for span in alter_spans:
+                    new_hyp = base_hyp.replace(init_span, span)
+                    if new_hyp not in all_hyps:
+                        all_hyps.append(new_hyp)
+            logger.info("-" * 80)
+            for hyp in all_hyps:
+                logger.info(f"hyp = {hyp}")
 
-            for x in all_diffs:
-                print(x)
-            exit(1)
+            for i, entity_type in enumerate(sample.label_list if mr_inst_temp else [], start=1):
+                logger.info("=" * 80)
+                logger.info(f"entity_type = {entity_type}")
+                possible_labels = [tag for tag in (f"B-{entity_type}", f"I-{entity_type}")] + ["O"]
+                final_words, final_labels = sample.instance.words, [x if x in possible_labels else "O" for x in sample.instance.labels]
+                prompt_labels = GenNERSample.get_prompt_labels(final_words, final_labels)
+                instruction_inputs = mr_inst_temp.format(entity_type=entity_type, sentence=sentence)
+                mr_sample = GenNERSampleWrapper(
+                    id=f"{sample.id}.M{i}",
+                    dataset=sample.dataset,
+                    split=sample.split,
+                    label_list=sample.label_list,
+                    instance=GenNERSample(
+                        id=f"{sample.id}.M{i}",
+                        group=f"{sample.id}",
+                        words=final_words,
+                        labels=final_labels,
+                        target_label=entity_type,
+                        prompt_labels=prompt_labels,
+                        instruction_inputs=instruction_inputs,
+                    )
+                )
+                model_input = tokenizer(mr_sample.instance.instruction_inputs, return_tensors="pt").to(device)
+                model_outputs = model.generate(
+                    **model_input,
+                    max_new_tokens=generation_tokens,
+                    num_return_sequences=generation_amount * generation_factor,
+                    do_sample=generation_by_sample,
+                    num_beams=1 if generation_by_sample else generation_amount * generation_factor,
+                    temperature=generation_temp if generation_by_sample else None,
+                    top_p=generation_top_p if generation_by_sample else None,
+                )
+                decoded_outputs = [tokenizer.decode(x, skip_special_tokens=True).strip() for x in model_outputs]
 
-            # for i, entity_type in enumerate(sample.label_list if mr_inst_temp else [], start=1):
-            #     logger.info(f"entity_type = {entity_type}")
-            #     possible_labels = [tag for tag in (f"B-{entity_type}", f"I-{entity_type}")] + ["O"]
-            #     final_words, final_labels = sample.instance.words, [x if x in possible_labels else "O" for x in sample.instance.labels]
-            #     prompt_labels = GenNERSample.get_prompt_labels(final_words, final_labels)
-            #     instruction_inputs = mr_inst_temp.format(entity_type=entity_type, sentence=sentence)
-            #     mr_sample = GenNERSampleWrapper(
-            #         id=f"{sample.id}.M{i}",
-            #         dataset=sample.dataset,
-            #         split=sample.split,
-            #         label_list=sample.label_list,
-            #         instance=GenNERSample(
-            #             id=f"{sample.id}.M{i}",
-            #             group=f"{sample.id}",
-            #             words=final_words,
-            #             labels=final_labels,
-            #             target_label=entity_type,
-            #             prompt_labels=prompt_labels,
-            #             instruction_inputs=instruction_inputs,
-            #         )
-            #     )
-            #     model_input = tokenizer(mr_sample.instance.instruction_inputs, return_tensors="pt").to(device)
-            #     model_outputs = model.generate(
-            #         **model_input,
-            #         max_new_tokens=generation_tokens,
-            #         num_return_sequences=generation_amount,
-            #         do_sample=generation_by_sample,
-            #         num_beams=1 if generation_by_sample else generation_amount,
-            #         temperature=generation_temp if generation_by_sample else None,
-            #         top_p=generation_top_p if generation_by_sample else None,
-            #     )
-            #     mr_sample.instance.prediction_outputs = [tokenizer.decode(x, skip_special_tokens=True).strip() for x in model_outputs]
-            #
-            #     logger.info(f"mr_sample.instance.prompt_labels = {mr_sample.instance.prompt_labels}")
-            #     for o in mr_sample.instance.prediction_outputs:
-            #         logger.info(f"mr_sample.instance.prediction_output = {o}")
+                logger.info(f"mr_sample.instance.prompt_labels = {mr_sample.instance.prompt_labels}")
+                logger.info(f"mr_sample.instance.labels = {mr_sample.instance.labels}")
+                valid_mr_prediction_labels = list()
+                for decoded_output in decoded_outputs:
+                    prediction_labels = extract_predictions3(decoded_output, example=mr_sample, tokenizer=tokenizer)
+                    if len(mr_sample.instance.words) != len(prediction_labels) or any(label not in possible_labels for label in prediction_labels):
+                        continue
+                    if prediction_labels not in valid_mr_prediction_labels:
+                        valid_mr_prediction_labels.append(prediction_labels)
+                    if len(valid_mr_prediction_labels) >= generation_amount:
+                        break
+                assert len(valid_mr_prediction_labels) == generation_amount
+                mr_sample.instance.prediction_outputs = [GenNERSample.get_prompt_labels(sample.instance.words, labels) for labels in valid_mr_prediction_labels]
+                logger.info("-" * 80)
+                for prediction_output in mr_sample.instance.prediction_outputs:
+                    logger.info(f"mr_sample.instance.prediction_output = {prediction_output}")
+
+                hyps = mr_sample.instance.prediction_outputs
+                all_diffs = compute_diffs(base_hyp, hyps)
+                logger.info("-" * 80)
+                for diff in all_diffs:
+                    logger.info(f"diff = {diff}")
+                all_hyps = []
+                for init_span, alter_spans in all_diffs:
+                    for span in alter_spans:
+                        new_hyp = base_hyp.replace(init_span, span)
+                        if new_hyp not in all_hyps:
+                            all_hyps.append(new_hyp)
+                logger.info("-" * 80)
+                for hyp in all_hyps:
+                    logger.info(f"hyp = {hyp}")
+
+            exit(0)
             logger.info("-" * 80)
             logger.info("")
 
