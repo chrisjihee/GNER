@@ -111,7 +111,7 @@ def generate_hybrid_prediction(
         output_home: Annotated[str, typer.Option("--output_home")] = "data",
         sr_inst_file: Annotated[str, typer.Option("--sr_inst_file")] = "configs/instruction/GNER-EQ-SR.txt",
         mr_inst_file: Annotated[str, typer.Option("--mr_inst_file")] = "configs/instruction/GNER-EQ-MR.txt",
-        sr_generation_amount: Annotated[int, typer.Option("--sr_generation_amount")] = 7,
+        sr_generation_amount: Annotated[int, typer.Option("--sr_generation_amount")] = 3,
         mr_generation_amount: Annotated[int, typer.Option("--mr_generation_amount")] = 12,
         generation_by_sample: Annotated[bool, typer.Option("--generation_by_sample/--generation_by_beam")] = ...,
         generation_temp: Annotated[float, typer.Option("--temp")] = 1.5,
@@ -292,7 +292,7 @@ def generate_hybrid_prediction(
                             new_hyp = base_hyp.replace(init_span, span)
                             if new_hyp not in all_hyps:
                                 all_hyps.append(new_hyp)
-            logger.debug(f"  * Combined {'all candidates':20s} : {len(all_hyps):3d}")
+            logger.debug(f"  * Combined {'all candidates':20s} : {len(all_hyps):d}")
             total_all_hyps += len(all_hyps)
             total_examples += 1
             all_hyps_met = {hyp: NEREvaluator().evaluate_prediction(hyp, example, tokenizer) for hyp in all_hyps}
