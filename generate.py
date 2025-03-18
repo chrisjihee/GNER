@@ -37,6 +37,31 @@ logger: logging.Logger = logging.getLogger("gner")
 main = AppTyper()
 
 
+class PredictionQuality(BaseModel):
+    prediction: str
+    norm_dist: float
+    f1_score: float
+    quality: Optional[float] = None
+
+    def calc_quality(self, weight_f1: float = 0.7, weight_nd: float = 0.3, pow_weight: float = 2.0, max_score: float = 5.0):
+        qe_score = sum([
+            weight_f1 * self.f1_score,
+            weight_nd * (1.0 - self.norm_dist),
+        ])
+        self.quality = round(pow(qe_score, pow_weight) * max_score, 2)
+        return self
+
+    def __str__(self):
+        return f"Q={self.quality:.2f}, F1={self.f1_score:.4f}, ND={self.norm_dist:.4f}, pred={self.prediction}"
+
+
+def normalized_edit_distance(hyp_text: str, ref_text: str) -> float:
+    dist = edit_distance(ref_text, hyp_text)
+    max_len = max(len(ref_text), len(hyp_text))
+    norm_dist = dist / max_len if max_len else 0.0
+    return norm_dist
+
+
 def compute_diffs(base_sent, alter_sents, ws=1):
     """
     Function to compute the differing spans between the base sentence and the other candidates
@@ -332,31 +357,6 @@ def find_increasing_indices(lst):
             prev_value = lst[i]  # Update previous value to the new threshold
 
     return indices
-
-
-def normalized_edit_distance(hyp_text: str, ref_text: str) -> float:
-    dist = edit_distance(ref_text, hyp_text)
-    max_len = max(len(ref_text), len(hyp_text))
-    norm_dist = dist / max_len if max_len else 0.0
-    return norm_dist
-
-
-class PredictionQuality(BaseModel):
-    prediction: str
-    norm_dist: float
-    f1_score: float
-    quality: Optional[float] = None
-
-    def calc_quality(self, weight_f1: float = 0.7, weight_nd: float = 0.3, pow_weight: float = 2.0, max_score: float = 5.0):
-        qe_score = sum([
-            weight_f1 * self.f1_score,
-            weight_nd * (1.0 - self.norm_dist),
-        ])
-        self.quality = round(pow(qe_score, pow_weight) * max_score, 2)
-        return self
-
-    def __str__(self):
-        return f"Q={self.quality:.2f}, F1={self.f1_score:.4f}, ND={self.norm_dist:.4f}, pred={self.prediction}"
 
 
 @main.command("convert_to_qe_data")
