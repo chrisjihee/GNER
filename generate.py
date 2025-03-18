@@ -27,6 +27,7 @@ from gner import NEREvaluator
 from gner.gner_evaluator import extract_predictions3
 from progiter import ProgIter
 from transformers import (
+    set_seed,
     AutoTokenizer,
     AutoModelForSeq2SeqLM,
 )
@@ -104,15 +105,14 @@ def generate_hybrid_prediction(
         device: Annotated[str, typer.Option("--device")] = ...,
         input_file: Annotated[str, typer.Option("--input_file")] = ...,  # "data/ZSE-validation-sampled-N70.jsonl"
         input_start: Annotated[int, typer.Option("--input_start")] = 10,
-        input_limit: Annotated[int, typer.Option("--input_limit")] = 10,
+        input_limit: Annotated[int, typer.Option("--input_limit")] = 20,
         output_file: Annotated[str, typer.Option("--output_file")] = "data/GNER-QE/hybrid_gen.jsonl",
         output_name: Annotated[str, typer.Option("--output_name")] = "GNER-QE",
         output_home: Annotated[str, typer.Option("--output_home")] = "data",
-        sr_inst_file: Annotated[str, typer.Option("--sr_inst_file")] = "configs/instruction/GNER-EQ-SR.txt",  # "configs/instruction/GNER-EQ-SR.txt"
-        mr_inst_file: Annotated[str, typer.Option("--mr_inst_file")] = "configs/instruction/GNER-EQ-MR.txt",  # "configs/instruction/GNER-EQ-MR.txt",
-        sr_generation_amount: Annotated[int, typer.Option("--generation_amount")] = 5,
-        mr_generation_amount: Annotated[int, typer.Option("--generation_amount")] = 10,
-        generation_factor: Annotated[int, typer.Option("--generation_factor")] = 3.0,
+        sr_inst_file: Annotated[str, typer.Option("--sr_inst_file")] = "configs/instruction/GNER-EQ-SR.txt",
+        mr_inst_file: Annotated[str, typer.Option("--mr_inst_file")] = "configs/instruction/GNER-EQ-MR.txt",
+        sr_generation_amount: Annotated[int, typer.Option("--sr_generation_amount")] = 7,
+        mr_generation_amount: Annotated[int, typer.Option("--mr_generation_amount")] = 12,
         generation_by_sample: Annotated[bool, typer.Option("--generation_by_sample/--generation_by_beam")] = ...,
         generation_temp: Annotated[float, typer.Option("--temp")] = 1.5,
         generation_top_p: Annotated[float, typer.Option("--top_p")] = 0.9,
@@ -122,8 +122,9 @@ def generate_hybrid_prediction(
         weight_nd: Annotated[float, typer.Option("--weight_nd")] = 0.3,
         pow_weight: Annotated[float, typer.Option("--pow_weight")] = 2.0,
         max_score: Annotated[float, typer.Option("--max_score")] = 5.0,
+        random_seed: Annotated[int, typer.Option("--random_seed")] = 7,
         logging_file: Annotated[str, typer.Option("--logging_file")] = "generate_hybrid_prediction.out",
-        logging_level: Annotated[int, typer.Option("--logging_level")] = logging.INFO,
+        logging_level: Annotated[int, typer.Option("--logging_level")] = logging.DEBUG,
 ):
     input_file = Path(input_file)
     output_file = Path(output_file)
@@ -140,6 +141,7 @@ def generate_hybrid_prediction(
         logging_file=new_path(logging_file, post=from_timestamp(stamp, fmt='%m%d-%H%M%S')),
         logging_level=logging_level,
         logging_format=LoggingFormat.CHECK_24,
+        random_seed=random_seed,
     )
     input_opt = InputOption(
         start=input_start,
@@ -154,6 +156,7 @@ def generate_hybrid_prediction(
     )
     sr_inst_temp = sr_inst_file.read_text()
     mr_inst_temp = mr_inst_file.read_text()
+    set_seed(random_seed)
     tokenizer = AutoTokenizer.from_pretrained(pretrained)
     model = AutoModelForSeq2SeqLM.from_pretrained(pretrained, torch_dtype=torch.bfloat16).to(device)
     logger.debug(f"output_file = {output_file}")
@@ -167,6 +170,9 @@ def generate_hybrid_prediction(
     ):
         new_idx = input_start
         input_data = input_opt.ready_inputs(input_file, total=len(input_file))
+        micro_avrerage = F1()
+        total_all_hyps = 0
+        total_examples = 0
         for item in ProgIter(input_data.items, total=input_data.num_item, desc=f"Generating {input_file.path}:", stream=LoggerWriter(logger, level=logging_level), verbose=3):
             example = GenNERSampleWrapper.model_validate_json(item)
             example.instance.id = example.id = example.instance.id or example.id
@@ -177,7 +183,7 @@ def generate_hybrid_prediction(
                 continue
             sentence = " ".join(example.instance.words)
             logger.debug("=" * 80)
-            logger.debug(f"sentence = {sentence}")
+            logger.debug(f"[Sentence] {sentence}")
 
             # Generate by single-round for all entity types
             entity_types = ", ".join(example.label_list)
@@ -204,14 +210,13 @@ def generate_hybrid_prediction(
             model_outputs = model.generate(
                 **model_input,
                 max_new_tokens=generation_tokens,
-                num_return_sequences=sr_generation_amount * generation_factor,
+                num_return_sequences=sr_generation_amount,
                 do_sample=generation_by_sample,
-                num_beams=1 if generation_by_sample else sr_generation_amount * generation_factor,
+                num_beams=1 if generation_by_sample else sr_generation_amount,
                 temperature=generation_temp if generation_by_sample else None,
                 top_p=generation_top_p if generation_by_sample else None,
             )
             decoded_outputs = [tokenizer.decode(x, skip_special_tokens=True).strip() for x in model_outputs]
-            logger.debug(f"[OK] Generate by single-round for all entity types")
 
             possible_labels = [tag for entity_type in sr_example.label_list for tag in (f"B-{entity_type}", f"I-{entity_type}")] + ["O"]
             valid_sr_prediction_labels = list()
@@ -221,10 +226,8 @@ def generate_hybrid_prediction(
                     continue
                 if prediction_labels not in valid_sr_prediction_labels:
                     valid_sr_prediction_labels.append(prediction_labels)
-                if len(valid_sr_prediction_labels) >= sr_generation_amount:
-                    break
-            # assert len(valid_sr_prediction_labels) == generation_amount, f"#valid_sr_prediction_labels({len(valid_sr_prediction_labels)}) != generation_amount({generation_amount})"
             sr_example.instance.prediction_outputs = [GenNERSample.get_prompt_labels(example.instance.words, labels) for labels in valid_sr_prediction_labels]
+            logger.debug(f"  * Generate {'single-round':20s} : {len(decoded_outputs):2d} -> {len(sr_example.instance.prediction_outputs):2d}")
 
             # Generate by multi-round for each entity type
             mr_examples = []
@@ -252,9 +255,9 @@ def generate_hybrid_prediction(
                 model_outputs = model.generate(
                     **model_input,
                     max_new_tokens=generation_tokens,
-                    num_return_sequences=mr_generation_amount * generation_factor,
+                    num_return_sequences=mr_generation_amount,
                     do_sample=generation_by_sample,
-                    num_beams=1 if generation_by_sample else mr_generation_amount * generation_factor,
+                    num_beams=1 if generation_by_sample else mr_generation_amount,
                     temperature=generation_temp if generation_by_sample else None,
                     top_p=generation_top_p if generation_by_sample else None,
                 )
@@ -267,24 +270,21 @@ def generate_hybrid_prediction(
                         continue
                     if prediction_labels not in valid_mr_prediction_labels:
                         valid_mr_prediction_labels.append(prediction_labels)
-                    if len(valid_mr_prediction_labels) >= mr_generation_amount:
-                        break
-                # assert len(valid_mr_prediction_labels) == generation_amount, f"#valid_mr_prediction_labels({len(valid_mr_prediction_labels)}) != generation_amount({generation_amount})"
                 mr_example.instance.prediction_outputs = [GenNERSample.get_prompt_labels(example.instance.words, labels) for labels in valid_mr_prediction_labels]
+                logger.debug(f"  * Generate {entity_type:20s} : {len(decoded_outputs):2d} -> {len(mr_example.instance.prediction_outputs):2d}")
+
                 mr_examples.append(mr_example)
-            logger.debug(f"[OK] Generate by multi-round for each entity type")
 
             # Combine the predictions by replacing the spans in the base prediction
             all_hyps = list()
             for base_idx in range(len(sr_example.instance.prediction_outputs)):
                 base_hyp = sr_example.instance.prediction_outputs[base_idx]
                 sr_hyps = [x for x in sr_example.instance.prediction_outputs if x != base_hyp]
-                if len(sr_hyps) > 0:
-                    for init_span, alter_spans in compute_diffs(base_hyp, sr_hyps):
-                        for span in alter_spans:
-                            new_hyp = base_hyp.replace(init_span, span)
-                            if new_hyp not in all_hyps:
-                                all_hyps.append(new_hyp)
+                for init_span, alter_spans in compute_diffs(base_hyp, sr_hyps):
+                    for span in alter_spans:
+                        new_hyp = base_hyp.replace(init_span, span)
+                        if new_hyp not in all_hyps:
+                            all_hyps.append(new_hyp)
                 for mr_example in mr_examples:
                     mr_hyps = mr_example.instance.prediction_outputs
                     for init_span, alter_spans in compute_diffs(base_hyp, mr_hyps):
@@ -292,7 +292,17 @@ def generate_hybrid_prediction(
                             new_hyp = base_hyp.replace(init_span, span)
                             if new_hyp not in all_hyps:
                                 all_hyps.append(new_hyp)
-            logger.debug(f"[OK] Combine the predictions by replacing the spans in the base prediction")
+            logger.debug(f"  * Combined {'all candidates':20s} : {len(all_hyps):3d}")
+            total_all_hyps += len(all_hyps)
+            total_examples += 1
+            all_hyps_met = {hyp: NEREvaluator().evaluate_prediction(hyp, example, tokenizer) for hyp in all_hyps}
+            top_hyps_met = sorted(all_hyps_met.items(), key=lambda x: x[1].f1, reverse=True)[:10]
+            for hyp, met in top_hyps_met:
+                logger.debug(f"    - {met.f1:.4f} {hyp}")
+            micro_avrerage += top_hyps_met[0][1]
+            logger.debug(f"    - Average so far: {micro_avrerage}, #all_hyps={total_all_hyps / total_examples:.2f}")
+            logger.debug("-" * 80)
+            logger.debug("")
 
             # Calculate the quality of the predictions and save to output file
             reference = GenNERSample.get_prompt_labels(sr_example.instance.words, sr_example.instance.labels)
@@ -312,7 +322,6 @@ def generate_hybrid_prediction(
                         idx=new_idx,
                     ).model_dump_json() + "\n"
                 )
-            logger.debug(f"[OK] Calculate the quality of the predictions and save to output file")
 
 
 @main.command("generate_prediction")
