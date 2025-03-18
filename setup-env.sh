@@ -16,12 +16,12 @@ conda list > cuda_versions.txt
 
 # 4. Install the required packages
 pip install -r requirements.txt; pip list | grep torch
-export CUDA_HOME=""; DS_BUILD_FUSED_ADAM=1 pip install --no-cache deepspeed; ds_report
-MAX_JOBS=40 pip install --no-cache --no-build-isolation --upgrade flash-attn;  # for Micorsoft's models
 rm -rf transformers; git clone https://github.com/chrisjihee/transformers.git; pip install -U -e transformers
 rm -rf chrisbase;    git clone https://github.com/chrisjihee/chrisbase.git;    pip install -U -e chrisbase
 rm -rf chrisdata;    git clone https://github.com/chrisjihee/chrisdata.git;    pip install -U -e chrisdata
 rm -rf progiter;     git clone https://github.com/chrisjihee/progiter.git;     pip install -U -e progiter
+export CUDA_HOME=""; DS_BUILD_FUSED_ADAM=1 pip install --no-cache deepspeed; ds_report
+MAX_JOBS=40 pip install --no-cache --no-build-isolation --upgrade flash-attn;  # for Micorsoft's models
 pip list | grep -E "torch|transformer|lightning |accelerate|deepspeed|flash_attn|numpy|sentencepiece|eval|chris|prog|pydantic" > dep_versions.txt
 
 # 5. Unzip some archived data
