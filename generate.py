@@ -43,20 +43,20 @@ class PredictionQuality(BaseModel):
     dataset: str
     sentence: str
     prediction: str
-    norm_dist: float
+    edit_dist: float
     f1_info: F1
     quality: Optional[float] = None
 
     def calc_quality(self, weight_f1: float = 0.7, weight_nd: float = 0.3, pow_weight: float = 2.0, max_score: float = 5.0):
         qe_score = sum([
             weight_f1 * self.f1_info.f1,
-            weight_nd * (1.0 - self.norm_dist),
+            weight_nd * (1.0 - self.edit_dist),
         ])
         self.quality = round(pow(qe_score, pow_weight) * max_score, 1)
         return self
 
     def __str__(self):
-        return f"Q={self.quality:.2f}, F1={self.f1_info.f1:.4f}, ND={self.norm_dist:.4f}, pred={self.prediction}"
+        return f"Q={self.quality:.2f}, F1={self.f1_info.f1:.4f}, ND={self.edit_dist:.4f}, pred={self.prediction}"
 
 
 def normalized_edit_distance(hyp_text: str, ref_text: str) -> float:
@@ -306,15 +306,13 @@ def generate_hybrid_prediction(
                                 if new_hyp not in all_hyps:
                                     all_hyps.append(new_hyp)
                 logger.debug(f"  * Combined {'all candidates':20s} : {len(all_hyps):d}")
+                hyps_sum += len(all_hyps)
+                progress.set_extra(f"| #avg_hyp={hyps_sum.avg:.1f}")
                 example.instance.prediction_outputs = all_hyps
                 output_file.fp.write(example.model_dump_json() + "\n")
-                hyps_sum += len(all_hyps)
-                logger.debug(f"    - Average Hyp: {hyps_sum}")
-                progress.set_extra(f"| #avg_hyp={hyps_sum.avg:.1f}")
-                progress.display_message()
 
+                # Calculate the quality of the predictions (if necessary)
                 if do_check_possibility:
-                    # Calculate the quality of the predictions
                     reference = GenNERSample.get_prompt_labels(sr_example.instance.words, sr_example.instance.labels)
                     quality_hyps = list()
                     for candidate in all_hyps:
@@ -323,23 +321,21 @@ def generate_hybrid_prediction(
                             dataset=example.dataset,
                             sentence=sentence,
                             prediction=candidate,
-                            norm_dist=normalized_edit_distance(candidate, reference),
+                            edit_dist=normalized_edit_distance(candidate, reference),
                             f1_info=NEREvaluator().evaluate_prediction(candidate, example, tokenizer)
                         ).calc_quality(weight_f1=weight_f1, weight_nd=weight_nd, pow_weight=pow_weight, max_score=max_score)
                         quality_hyps.append(prediction_quality)
                     quality_hyps = sorted(quality_hyps, key=lambda x: x.quality, reverse=True)
-                    grouped_hyps = {k: list(vs) for k, vs in grouped(quality_hyps, key=lambda x: x.quality)}
-                    sampled_hyps = list()
-                    for quality in sorted(grouped_hyps.keys(), reverse=True):
-                        for hyp in random.sample(grouped_hyps[quality], min(len(grouped_hyps[quality]), max_example_per_quality)):
-                            sampled_hyps.append(hyp)
-                    logger.debug(f"  * Sampled {'some candidates':21s} : {len(sampled_hyps):d}")
-                    for hyp in sampled_hyps[:10]:
+                    for hyp in quality_hyps[:5]:
                         logger.debug(f"    - {hyp}")
-                    f1_sum += sampled_hyps[0].f1_info
-                    logger.debug(f"    - Average F1 : {f1_sum}")
+                    f1_sum += quality_hyps[0].f1_info
                     progress.set_extra(f"| #avg_hyp={hyps_sum.avg:.1f}, #avg_f1={f1_sum.f1:.4f}")
-                    progress.display_message()
+                    # grouped_hyps = {k: list(vs) for k, vs in grouped(quality_hyps, key=lambda x: x.quality)}
+                    # sampled_hyps = list()
+                    # for quality in sorted(grouped_hyps.keys(), reverse=True):
+                    #     for hyp in random.sample(grouped_hyps[quality], min(len(grouped_hyps[quality]), max_example_per_quality)):
+                    #         sampled_hyps.append(hyp)
+                    # logger.debug(f"  * Sampled {'some candidates':21s} : {len(sampled_hyps):d}")
 
                 # # Save to output file
                 # for i, hyp in enumerate(sampled_hyps, start=1):
@@ -354,6 +350,7 @@ def generate_hybrid_prediction(
                 # logger.debug(f"  * Saved {'some candidates':23s} : {len(sampled_hyps):d}")
                 # logger.debug("-" * 80)
                 # logger.debug("")
+                progress.display_message()
 
         logger.info(f"Saved generated predictions to {output_file.path}: #example={hyps_sum.count}, #hypothesis={hyps_sum.sum}, #average={hyps_sum.avg:.1f}, #f1={f1_sum.f1:.4f}")
 
@@ -520,7 +517,7 @@ def convert_to_qe_data(
                             dataset=example.dataset,
                             sentence=sentence,
                             prediction=candidate,
-                            norm_dist=normalized_edit_distance(candidate, reference),
+                            edit_dist=normalized_edit_distance(candidate, reference),
                             f1_info=NEREvaluator().evaluate_prediction(candidate, example, tokenizer).f1
                         ).calc_quality(weight_f1=weight_f1, weight_nd=weight_nd, pow_weight=pow_weight, max_score=max_score)
                         for candidate in candiates
