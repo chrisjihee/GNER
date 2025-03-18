@@ -115,7 +115,7 @@ def generate_hybrid_prediction(
         mr_inst_file: Annotated[str, typer.Option("--mr_inst_file")] = "configs/instruction/GNER-EQ-MR.txt",
         sr_generation_amount: Annotated[int, typer.Option("--generation_amount")] = 5,
         mr_generation_amount: Annotated[int, typer.Option("--generation_amount")] = 10,
-        max_example_per_quality: Annotated[int, typer.Option("--max_example_per_quality")] = 20,
+        # max_example_per_quality: Annotated[int, typer.Option("--max_example_per_quality")] = 20,
         generation_by_sample: Annotated[bool, typer.Option("--generation_by_sample/--generation_by_beam")] = ...,
         generation_temp: Annotated[float, typer.Option("--temp")] = 1.5,
         generation_top_p: Annotated[float, typer.Option("--top_p")] = 0.9,
