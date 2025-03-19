@@ -297,26 +297,6 @@ def generate_hybrid_prediction(
                         logger.debug(f"    - {hyp}")
                     f1_sum += quality_hyps[0].f1_info
                     progress.set_extra(f"| avg_hyp={hyps_sum.avg:.0f}, max_f1={f1_sum.f1:.3f}")
-                    # grouped_hyps = {k: list(vs) for k, vs in grouped(quality_hyps, key=lambda x: x.quality)}
-                    # sampled_hyps = list()
-                    # for quality in sorted(grouped_hyps.keys(), reverse=True):
-                    #     for hyp in random.sample(grouped_hyps[quality], min(len(grouped_hyps[quality]), max_example_per_quality)):
-                    #         sampled_hyps.append(hyp)
-                    # logger.debug(f"  * Sampled {'some candidates':21s} : {len(sampled_hyps):d}")
-
-                # # Save to output file
-                # for i, hyp in enumerate(sampled_hyps, start=1):
-                #     output_file.fp.write(
-                #         RegressionSample(
-                #             sentence1=hyp.prediction,
-                #             sentence2=hyp.sentence,
-                #             label=hyp.quality,
-                #             id=f"{example.id}.{i:d}",
-                #         ).model_dump_json() + "\n"
-                #     )
-                # logger.debug(f"  * Saved {'some candidates':23s} : {len(sampled_hyps):d}")
-                # logger.debug("-" * 80)
-                # logger.debug("")
                 progress.display_message()
 
         logger.info(f"Saved generated and combined predictions to {output_file.path}: #example={hyps_sum.count}, sum_hyp={hyps_sum.sum:.0f}, avg_hyp={hyps_sum.avg:.0f}, max_f1={f1_sum.f1:.3f}")
@@ -329,7 +309,7 @@ def convert_to_qe_data(
         output_name: Annotated[str, typer.Option("--output_name")] = "GNER-QE",
         output_home: Annotated[str, typer.Option("--output_home")] = "data",
         pretrained: Annotated[str, typer.Option("--pretrained")] = "output-lfs/train_ZSE-HR207842/GnerT5-Base-HR207842/checkpoint-17052",
-        max_sample_per_quality: Annotated[int, typer.Option("--max_sample_per_quality")] = 10,
+        max_sample_per_quality: Annotated[int, typer.Option("--max_sample_per_quality")] = 3,
         weight_f1: Annotated[float, typer.Option("--weight_f1")] = 0.7,
         weight_ed: Annotated[float, typer.Option("--weight_ed")] = 0.3,
         pow_weight: Annotated[float, typer.Option("--pow_weight")] = 2.0,
@@ -386,10 +366,10 @@ def convert_to_qe_data(
 
                         # Calculate the quality of the predictions
                         quality_hyps = Dataset.from_dict({
-                            "id": [f"{example.id}.{i}" for i, _ in enumerate(combined_hyps, start=1)],
                             "prediction": combined_hyps,
                             "sentence": [sentence] * len(combined_hyps),
                             "dataset": [example.dataset] * len(combined_hyps),
+                            "id": [example.id] * len(combined_hyps),
                         })
 
                         def calc_metrics(row):
@@ -404,21 +384,33 @@ def convert_to_qe_data(
                             }
 
                         quality_hyps = quality_hyps.map(calc_metrics, num_proc=env.max_workers, desc="Calculating metrics").sort("quality", reverse=True)
-                        for hyp in quality_hyps.select(range(50)):
-                            hyp = PredictionQuality.model_validate(hyp)
-                            logger.debug(f"  = hyp : {hyp}")
-
-                        grouped_hyps = {k: list(vs) for k, vs in grouped([PredictionQuality.model_validate(hyp) for hyp in quality_hyps], key=lambda x: x.quality)}
+                        quality_hyps = [PredictionQuality.model_validate(hyp) for hyp in quality_hyps]
+                        grouped_hyps = {k: list(vs) for k, vs in grouped(quality_hyps, key=lambda x: x.quality)}
                         sampled_hyps = list()
                         for quality in sorted(grouped_hyps.keys(), reverse=True):
                             for hyp in random.sample(grouped_hyps[quality], min(len(grouped_hyps[quality]), max_sample_per_quality)):
                                 sampled_hyps.append(hyp)
-                        logger.debug(f"  * Sampled {'some candidates':21s} : {len(sampled_hyps):d}")
-                        for hyp in sampled_hyps:
-                            logger.debug(f"  - Sampled hyp : {hyp}")
+                        sampled_sum += len(sampled_hyps)
+                        for hyp in sampled_hyps[:10]:
+                            logger.debug(f"  = Hypo : {hyp}")
+                        logger.debug(f"  = #Sampled : {len(sampled_hyps)}")
 
                         f1_sum += sampled_hyps[0].f1_info
-                        progress.set_extra(f"| avg_combined={combined_sum.avg:.0f}, max_f1={f1_sum.f1:.3f}")
+                        progress.set_extra(f"| avg_combined={combined_sum.avg:.0f}, avg_sampled={sampled_sum.avg:.0f}, max_f1={f1_sum.f1:.3f}")
+
+                        for i, hyp in enumerate(sampled_hyps, start=1):
+                            output_file.fp.write(
+                                RegressionSample(
+                                    sentence1=hyp.prediction,
+                                    sentence2=hyp.sentence,
+                                    label=hyp.quality,
+                                    id=f"{example.id}.{i:d}",
+                                ).model_dump_json() + "\n"
+                            )
+                        logger.debug(f"  = #Saved : {len(sampled_hyps)}")
+                        logger.debug("-" * 80)
+                        logger.debug("")
+                        progress.display_message()
                         exit(0)
 
 

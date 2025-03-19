@@ -357,10 +357,10 @@ def normalized_edit_distance(hyp_text: str, ref_text: str) -> float:
 
 
 class PredictionQuality(BaseModel):
-    id: str
     prediction: str
     sentence: Optional[str] = None
     dataset: Optional[str] = None
+    id: Optional[str] = None
     f1_info: Optional[F1] = None
     edit_dist: Optional[float] = None
     quality: Optional[float] = None
