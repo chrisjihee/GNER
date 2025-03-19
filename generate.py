@@ -313,7 +313,7 @@ def convert_to_qe_data(
         pow_weight: Annotated[float, typer.Option("--pow_weight")] = 2.0,
         max_score: Annotated[float, typer.Option("--max_score")] = 5.0,
         random_seed: Annotated[int, typer.Option("--random_seed")] = 7,
-        max_workers: Annotated[int, typer.Option("--max_workers")] = int(os.cpu_count() / 2),
+        max_workers: Annotated[int, typer.Option("--max_workers")] = os.cpu_count(),
         logging_file: Annotated[str, typer.Option("--logging_file")] = "convert_to_qe_data.out",
         logging_level: Annotated[int, typer.Option("--logging_level")] = logging.INFO,
 ):
@@ -345,10 +345,10 @@ def convert_to_qe_data(
         JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=logging_level <= logging.INFO),
         FileStreamer(FileOption.from_path(path=output_file, mode="w")) as output_file,
     ):
-        for input_file in input_file_list[:1]:  # TODO: remove [:1]
+        for input_file in input_file_list:
             with FileStreamer(FileOption.from_path(path=input_file)) as input_file:
                 logger.info(f"[input_file] {input_file.path}: #item={len(input_file)}")
-                with ProgIter(input_file, total=len(input_file), desc=f"Converting {input_file.path}:", stream=LoggerWriter(logger, level=logging_level), verbose=3) as progress:
+                with ProgIter(input_file, total=len(input_file), desc=f"  - Converting {input_file.path.stem}:", stream=LoggerWriter(logger, level=logging_level), verbose=3) as progress:
                     f1_sum = F1()
                     combined_sum = Sum()
                     sampled_sum = Sum()
@@ -410,7 +410,6 @@ def convert_to_qe_data(
                         logger.debug(f"  = #Saved : {len(sampled_hyps)}")
                         logger.debug("-" * 80)
                         logger.debug("")
-                        progress.display_message()
 
 
 def find_increasing_indices(lst):
