@@ -325,12 +325,11 @@ def generate_hybrid_prediction(
 @main.command("convert_to_qe_data")
 def convert_to_qe_data(
         input_files: Annotated[str, typer.Option("--input_file")] = "data/GNER-QE/pile-ner-sampled-N19988-*-hybrid_gen-by_beam-amount=5x10.jsonl",  # "data/GNER-QE/pile-ner-sampled-N19988-*-hybrid_gen-by_beam-amount=5x10.jsonl"
-        input_batch: Annotated[int, typer.Option("--input_start")] = 10,
         output_file: Annotated[str, typer.Option("--output_file")] = "data/GNER-QE/quality_est.jsonl",
         output_name: Annotated[str, typer.Option("--output_name")] = "GNER-QE",
         output_home: Annotated[str, typer.Option("--output_home")] = "data",
         pretrained: Annotated[str, typer.Option("--pretrained")] = "output-lfs/train_ZSE-HR207842/GnerT5-Base-HR207842/checkpoint-17052",
-        max_sample_per_quality: Annotated[int, typer.Option("--max_sample_per_quality")] = 20,
+        max_sample_per_quality: Annotated[int, typer.Option("--max_sample_per_quality")] = 10,
         weight_f1: Annotated[float, typer.Option("--weight_f1")] = 0.7,
         weight_ed: Annotated[float, typer.Option("--weight_ed")] = 0.3,
         pow_weight: Annotated[float, typer.Option("--pow_weight")] = 2.0,
@@ -368,80 +367,59 @@ def convert_to_qe_data(
         FileStreamer(FileOption.from_path(path=output_file, mode="w")) as output_file,
     ):
         for input_file in input_file_list[:1]:  # TODO: remove [:1]
-            input_opt = InputOption(
-                file=FileOption.from_path(path=input_file),
-                batch=input_batch,
-            )
             with FileStreamer(FileOption.from_path(path=input_file)) as input_file:
-                input_data = input_opt.ready_inputs(input_file, total=len(input_file))
                 logger.info(f"[input_file] {input_file.path}: #item={len(input_file)}")
-                with ProgIter(input_data.items, total=input_data.num_item, desc=f"Converting {input_file.path}:", stream=LoggerWriter(logger, level=logging_level), verbose=3) as progress:
+                with ProgIter(input_file, total=len(input_file), desc=f"Converting {input_file.path}:", stream=LoggerWriter(logger, level=logging_level), verbose=3) as progress:
                     f1_sum = F1()
                     combined_sum = Sum()
                     sampled_sum = Sum()
-                    for batch in progress:
-                        for line in batch:
-                            example = GenNERSampleWrapper.model_validate_json(line)
-                            sentence = " ".join(example.instance.words)
-                            reference = GenNERSample.get_prompt_labels(example.instance.words, example.instance.labels)
-                            logger.debug("=" * 80)
-                            logger.debug(f"[Sentence] {sentence}")
-                            logger.debug(f"  - Gold : {reference}")
-                            logger.debug(f"  - #Combined : {len(example.instance.prediction_outputs)}")
-                            combined_sum += len(example.instance.prediction_outputs)
-                            combined_hyps = [PredictionQuality(id=f"{example.id}.{i}", dataset=example.dataset, sentence=sentence, prediction=x) for i, x in enumerate(example.instance.prediction_outputs, start=1)]
-                            combined_hyps_ds = Dataset.from_dict({
-                                "id": [hyp.id for hyp in combined_hyps],
-                                "dataset": [hyp.dataset for hyp in combined_hyps],
-                                "sentence": [hyp.sentence for hyp in combined_hyps],
-                                "prediction": [hyp.prediction for hyp in combined_hyps],
-                            })
+                    for line in progress:
+                        example = GenNERSampleWrapper.model_validate_json(line)
+                        sentence = " ".join(example.instance.words)
+                        reference = GenNERSample.get_prompt_labels(example.instance.words, example.instance.labels)
+                        combined_hyps = example.instance.prediction_outputs
+                        logger.debug("=" * 80)
+                        logger.debug(f"[Sentence] {sentence}")
+                        logger.debug(f"  = #Combined : {len(combined_hyps)}")
+                        logger.debug(f"  = Gold : {reference}")
+                        combined_sum += len(combined_hyps)
 
-                            def calc_metrics(row):
-                                prediction = row["prediction"]
-                                f1_info = PredictionQuality.calc_f1_info(prediction, example, tokenizer)
-                                edit_dist = PredictionQuality.calc_edit_dist(prediction, reference)
-                                quality = PredictionQuality.calc_quality(f1_info.f1, edit_dist, weight_f1, weight_ed, pow_weight, max_score)
-                                return {
-                                    "f1_info": f1_info.model_dump(),
-                                    "edit_dist": edit_dist,
-                                    "quality": quality,
-                                }
+                        # Calculate the quality of the predictions
+                        quality_hyps = Dataset.from_dict({
+                            "id": [f"{example.id}.{i}" for i, _ in enumerate(combined_hyps, start=1)],
+                            "prediction": combined_hyps,
+                            "sentence": [sentence] * len(combined_hyps),
+                            "dataset": [example.dataset] * len(combined_hyps),
+                        })
 
-                            combined_hyps_ds = combined_hyps_ds.map(calc_metrics, num_proc=env.max_workers, desc="Calculating metrics")
-                            for x in combined_hyps_ds:
-                                x = PredictionQuality.model_validate(x)
-                                print(x)
-                            exit(0)
+                        def calc_metrics(row):
+                            prediction = row["prediction"]
+                            f1_info = PredictionQuality.calc_f1_info(prediction, example, tokenizer)
+                            edit_dist = PredictionQuality.calc_edit_dist(prediction, reference)
+                            quality = PredictionQuality.calc_quality(f1_info.f1, edit_dist, weight_f1, weight_ed, pow_weight, max_score)
+                            return {
+                                "f1_info": f1_info.model_dump(),
+                                "edit_dist": edit_dist,
+                                "quality": quality,
+                            }
 
-                            # Make quality_hyps
-                            quality_hyps = list()
-                            for candidate in combined_hyps[:30]:  # TODO: remove [:3]
-                                quality_hyp = PredictionQuality(
-                                    id=example.id,
-                                    dataset=example.dataset,
-                                    sentence=sentence,
-                                    prediction=candidate,
-                                    edit_dist=normalized_edit_distance(candidate, reference),
-                                    f1_info=NEREvaluator().evaluate_prediction(candidate, example, tokenizer)
-                                ).calc_quality(weight_f1=weight_f1, weight_ed=weight_ed, pow_weight=pow_weight, max_score=max_score)
-                                quality_hyps.append(quality_hyp)
-                            quality_hyps = sorted(quality_hyps, key=lambda x: x.quality, reverse=True)
-                            for hyp in quality_hyps[:5]:
-                                logger.debug(f"  - Quality hyp : {hyp}")
+                        quality_hyps = quality_hyps.map(calc_metrics, num_proc=env.max_workers, desc="Calculating metrics").sort("quality", reverse=True)
+                        for hyp in quality_hyps.select(range(50)):
+                            hyp = PredictionQuality.model_validate(hyp)
+                            logger.debug(f"  = hyp : {hyp}")
 
-                            grouped_hyps = {k: list(vs) for k, vs in grouped(quality_hyps, key=lambda x: x.quality)}
-                            sampled_hyps = list()
-                            for quality in sorted(grouped_hyps.keys(), reverse=True):
-                                for hyp in random.sample(grouped_hyps[quality], min(len(grouped_hyps[quality]), max_sample_per_quality)):
-                                    sampled_hyps.append(hyp)
-                            logger.debug(f"  * Sampled {'some candidates':21s} : {len(sampled_hyps):d}")
-                            for hyp in sampled_hyps:
-                                logger.debug(f"  - Sampled hyp : {hyp}")
+                        grouped_hyps = {k: list(vs) for k, vs in grouped([PredictionQuality.model_validate(hyp) for hyp in quality_hyps], key=lambda x: x.quality)}
+                        sampled_hyps = list()
+                        for quality in sorted(grouped_hyps.keys(), reverse=True):
+                            for hyp in random.sample(grouped_hyps[quality], min(len(grouped_hyps[quality]), max_sample_per_quality)):
+                                sampled_hyps.append(hyp)
+                        logger.debug(f"  * Sampled {'some candidates':21s} : {len(sampled_hyps):d}")
+                        for hyp in sampled_hyps:
+                            logger.debug(f"  - Sampled hyp : {hyp}")
 
-                            f1_sum += sampled_hyps[0].f1_info
-                            progress.set_extra(f"| avg_combined={combined_sum.avg:.0f}, max_f1={f1_sum.f1:.3f}")
-                            exit(0)
+                        f1_sum += sampled_hyps[0].f1_info
+                        progress.set_extra(f"| avg_combined={combined_sum.avg:.0f}, max_f1={f1_sum.f1:.3f}")
+                        exit(0)
 
 
 def find_increasing_indices(lst):

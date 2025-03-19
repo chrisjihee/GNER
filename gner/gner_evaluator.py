@@ -358,9 +358,9 @@ def normalized_edit_distance(hyp_text: str, ref_text: str) -> float:
 
 class PredictionQuality(BaseModel):
     id: str
-    dataset: str
-    sentence: str
     prediction: str
+    sentence: Optional[str] = None
+    dataset: Optional[str] = None
     f1_info: Optional[F1] = None
     edit_dist: Optional[float] = None
     quality: Optional[float] = None
@@ -375,11 +375,14 @@ class PredictionQuality(BaseModel):
 
     @staticmethod
     def calc_quality(f1: float, edit_dist: float, weight_f1: float = 0.7, weight_ed: float = 0.3, pow_weight: float = 2.0, max_score: float = 5.0):
-        qe_score = sum([
+        score = sum([
             weight_f1 * f1,
             weight_ed * (1.0 - edit_dist),
         ])
-        return round(pow(qe_score, pow_weight) * max_score, 1)
+        return round(pow(score, pow_weight) * max_score, 1)
+
+    def __str__(self):
+        return f"Q={self.quality:.2f}, F1={self.f1_info.f1:.4f}, ED={self.edit_dist:.4f}, pred={self.prediction}"
 
 
 def main():
