@@ -350,8 +350,44 @@ def generate_hybrid_prediction(
 
 @main.command("convert_to_qe_data")
 def convert_to_qe_data(
+        input_files: Annotated[str, typer.Option("--input_file")] = "data/GNER-QE/pile-ner-sampled-N19988-*-hybrid_gen-by_beam-amount=5x10.jsonl",  # "data/GNER-QE/pile-ner-sampled-N19988-*-hybrid_gen-by_beam-amount=5x10.jsonl"
+        output_file: Annotated[str, typer.Option("--output_file")] = "data/GNER-QE/quality_est.jsonl",
+        output_name: Annotated[str, typer.Option("--output_name")] = "GNER-QE",
+        output_home: Annotated[str, typer.Option("--output_home")] = "data",
+        pretrained: Annotated[str, typer.Option("--pretrained")] = "output-lfs/train_ZSE-HR207842/GnerT5-Base-HR207842/checkpoint-17052",
+        max_sample_per_quality: Annotated[int, typer.Option("--max_sample_per_quality")] = 20,
+        do_check_possibility: Annotated[bool, typer.Option("--do_check_possibility/--no_check_possibility")] = False,
+        weight_f1: Annotated[float, typer.Option("--weight_f1")] = 0.7,
+        weight_nd: Annotated[float, typer.Option("--weight_nd")] = 0.3,
+        pow_weight: Annotated[float, typer.Option("--pow_weight")] = 2.0,
+        max_score: Annotated[float, typer.Option("--max_score")] = 5.0,
+        random_seed: Annotated[int, typer.Option("--random_seed")] = 7,
+        logging_file: Annotated[str, typer.Option("--logging_file")] = "convert_to_qe_data.out",
+        logging_level: Annotated[int, typer.Option("--logging_level")] = logging.INFO,
 ):
-    pass
+    input_files = Path(input_files)
+    output_file = Path(output_file)
+    input_file_list = files(input_files)
+    assert input_file_list, f"Invalid input files: {input_files}"
+    stamp = now_stamp()
+    env = NewProjectEnv(
+        time_stamp=from_timestamp(stamp, fmt='%m%d-%H%M%S'),
+        output_name=output_name,
+        output_home=output_home,
+        logging_file=new_path(logging_file, post=from_timestamp(stamp, fmt='%m%d-%H%M%S')),
+        logging_level=logging_level,
+        logging_format=LoggingFormat.CHECK_24,
+        random_seed=random_seed,
+    )
+    output_file = (env.output_dir if output_file.parent == Path() else output_file.parent) / new_path(
+        output_file.name,
+        pre=f"{input_files.stem.split('-*')[0]}",
+        post=f"max_sampled={max_sample_per_quality}"
+    )
+    logger.info(f"Convert {input_files}[{len(input_file_list)}] => {output_file}")
+
+    set_seed(env.random_seed)
+    logger.info(f"Set random seed to {env.random_seed}")
 
 
 def find_increasing_indices(lst):
