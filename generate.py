@@ -13,9 +13,7 @@ import datasets
 import pandas as pd
 import torch
 import typer
-from datasets import Dataset
-from datasets import load_dataset
-from sklearn.model_selection import train_test_split
+from datasets import Dataset, load_dataset
 from typing_extensions import Annotated
 
 from chrisbase.data import FileOption, InputOption, JobTimer, FileStreamer, NewProjectEnv, AppTyper
@@ -317,7 +315,7 @@ def convert_to_qe_data(
         random_seed: Annotated[int, typer.Option("--random_seed")] = 7,
         max_workers: Annotated[int, typer.Option("--max_workers")] = int(os.cpu_count() / 2),
         logging_file: Annotated[str, typer.Option("--logging_file")] = "convert_to_qe_data.out",
-        logging_level: Annotated[int, typer.Option("--logging_level")] = logging.DEBUG,
+        logging_level: Annotated[int, typer.Option("--logging_level")] = logging.INFO,
 ):
     input_files = Path(input_files)
     output_file = Path(output_file)
@@ -340,6 +338,7 @@ def convert_to_qe_data(
         post=f"max_sampled={max_sample_per_quality}"
     )
     tokenizer = AutoTokenizer.from_pretrained(pretrained)
+    datasets.disable_progress_bar()
     logger.info(f"Convert {input_files}[{len(input_file_list)}] => {output_file}")
 
     with (
@@ -383,7 +382,8 @@ def convert_to_qe_data(
                                 "quality": quality,
                             }
 
-                        quality_hyps = quality_hyps.map(calc_metrics, num_proc=env.max_workers, desc="Calculating metrics").sort("quality", reverse=True)
+                        quality_hyps = quality_hyps.map(calc_metrics, num_proc=min(env.max_workers, len(quality_hyps)), desc="Calculating metrics")
+                        quality_hyps = quality_hyps.sort("quality", reverse=True)
                         quality_hyps = [PredictionQuality.model_validate(hyp) for hyp in quality_hyps]
                         grouped_hyps = {k: list(vs) for k, vs in grouped(quality_hyps, key=lambda x: x.quality)}
                         sampled_hyps = list()
@@ -411,7 +411,6 @@ def convert_to_qe_data(
                         logger.debug("-" * 80)
                         logger.debug("")
                         progress.display_message()
-                        exit(0)
 
 
 def find_increasing_indices(lst):
