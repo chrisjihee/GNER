@@ -357,6 +357,8 @@ def convert_to_qe_data(
                         sentence = " ".join(example.instance.words)
                         reference = GenNERSample.get_prompt_labels(example.instance.words, example.instance.labels)
                         combined_hyps = example.instance.prediction_outputs
+                        if len(combined_hyps) == 0:
+                            continue
                         logger.debug("=" * 80)
                         logger.debug(f"[Sentence] {sentence}")
                         logger.debug(f"  = #Combined : {len(combined_hyps)}")
