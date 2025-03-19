@@ -331,12 +331,12 @@ def convert_to_qe_data(
         output_home: Annotated[str, typer.Option("--output_home")] = "data",
         pretrained: Annotated[str, typer.Option("--pretrained")] = "output-lfs/train_ZSE-HR207842/GnerT5-Base-HR207842/checkpoint-17052",
         max_sample_per_quality: Annotated[int, typer.Option("--max_sample_per_quality")] = 20,
-        do_check_possibility: Annotated[bool, typer.Option("--do_check_possibility/--no_check_possibility")] = False,
         weight_f1: Annotated[float, typer.Option("--weight_f1")] = 0.7,
         weight_ed: Annotated[float, typer.Option("--weight_ed")] = 0.3,
         pow_weight: Annotated[float, typer.Option("--pow_weight")] = 2.0,
         max_score: Annotated[float, typer.Option("--max_score")] = 5.0,
         random_seed: Annotated[int, typer.Option("--random_seed")] = 7,
+        max_workers: Annotated[int, typer.Option("--max_workers")] = int(os.cpu_count() / 2),
         logging_file: Annotated[str, typer.Option("--logging_file")] = "convert_to_qe_data.out",
         logging_level: Annotated[int, typer.Option("--logging_level")] = logging.DEBUG,
 ):
@@ -353,6 +353,7 @@ def convert_to_qe_data(
         logging_level=logging_level,
         logging_format=LoggingFormat.CHECK_24,
         random_seed=random_seed,
+        max_workers=max_workers,
     )
     output_file = (env.output_dir if output_file.parent == Path() else output_file.parent) / new_path(
         output_file.name,
@@ -383,12 +384,35 @@ def convert_to_qe_data(
                             example = GenNERSampleWrapper.model_validate_json(line)
                             sentence = " ".join(example.instance.words)
                             reference = GenNERSample.get_prompt_labels(example.instance.words, example.instance.labels)
-                            combined_hyps = example.instance.prediction_outputs
                             logger.debug("=" * 80)
                             logger.debug(f"[Sentence] {sentence}")
                             logger.debug(f"  - Gold : {reference}")
-                            logger.debug(f"  - #Combined : {len(combined_hyps)}")
-                            combined_sum += len(combined_hyps)
+                            logger.debug(f"  - #Combined : {len(example.instance.prediction_outputs)}")
+                            combined_sum += len(example.instance.prediction_outputs)
+                            combined_hyps = [PredictionQuality(id=f"{example.id}.{i}", dataset=example.dataset, sentence=sentence, prediction=x) for i, x in enumerate(example.instance.prediction_outputs, start=1)]
+                            combined_hyps_ds = Dataset.from_dict({
+                                "id": [hyp.id for hyp in combined_hyps],
+                                "dataset": [hyp.dataset for hyp in combined_hyps],
+                                "sentence": [hyp.sentence for hyp in combined_hyps],
+                                "prediction": [hyp.prediction for hyp in combined_hyps],
+                            })
+
+                            def calc_metrics(row):
+                                prediction = row["prediction"]
+                                f1_info = PredictionQuality.calc_f1_info(prediction, example, tokenizer)
+                                edit_dist = PredictionQuality.calc_edit_dist(prediction, reference)
+                                quality = PredictionQuality.calc_quality(f1_info.f1, edit_dist, weight_f1, weight_ed, pow_weight, max_score)
+                                return {
+                                    "f1_info": f1_info.model_dump(),
+                                    "edit_dist": edit_dist,
+                                    "quality": quality,
+                                }
+
+                            combined_hyps_ds = combined_hyps_ds.map(calc_metrics, num_proc=env.max_workers, desc="Calculating metrics")
+                            for x in combined_hyps_ds:
+                                x = PredictionQuality.model_validate(x)
+                                print(x)
+                            exit(0)
 
                             # Make quality_hyps
                             quality_hyps = list()
