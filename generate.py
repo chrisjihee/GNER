@@ -154,19 +154,18 @@ def generate_hybrid_prediction(
     )
     output_file = (env.output_dir if output_file.parent == Path() else output_file.parent) / new_path(
         output_file.name,
-        pre=f'{input_file.stem}-from-{input_start:05d}-to-{input_start + input_limit:05d}',
-        post=f'by_sample-amount={sr_generation_amount}x{mr_generation_amount}-temp={generation_temp}-top_p={generation_top_p}'
-        if generation_by_sample else f'by_beam-amount={sr_generation_amount}x{mr_generation_amount}'
+        pre=f"{input_file.stem}{f'-from-{input_start:05d}' if input_start > 0 else ''}{f'-to-{input_start + input_limit:05d}' if input_limit > 0 else ''}",
+        post=f"by_sample-amount={sr_generation_amount}x{mr_generation_amount}-temp={generation_temp}-top_p={generation_top_p}"
+        if generation_by_sample else f"by_beam-amount={sr_generation_amount}x{mr_generation_amount}"
     )
     sr_inst_temp = sr_inst_file.read_text()
     mr_inst_temp = mr_inst_file.read_text()
+
     set_seed(env.random_seed)
     tokenizer = AutoTokenizer.from_pretrained(pretrained)
     model = AutoModelForSeq2SeqLM.from_pretrained(pretrained, torch_dtype=torch.bfloat16).to(device)
     model.eval()
-    logger.debug(f"output_file = {output_file}")
-    logger.debug(f"tokenizer = {type(tokenizer)}")
-    logger.debug(f"model = {type(model)}")
+    logger.info(f"Set random seed to {env.random_seed}")
 
     with (
         JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=logging_level <= logging.INFO),
