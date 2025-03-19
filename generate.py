@@ -348,6 +348,12 @@ def generate_hybrid_prediction(
         logger.info(f"Saved generated and combined predictions to {output_file.path}: #example={hyps_sum.count}, sum_hyp={hyps_sum.sum:.0f}, avg_hyp={hyps_sum.avg:.0f}, max_f1={f1_sum.f1:.3f}")
 
 
+@main.command("convert_to_qe_data")
+def convert_to_qe_data(
+):
+    pass
+
+
 def find_increasing_indices(lst):
     if not lst:
         return []
@@ -363,8 +369,8 @@ def find_increasing_indices(lst):
     return indices
 
 
-@main.command("convert_to_qe_data")
-def convert_to_qe_data(
+@main.command("convert_to_qe_data_1")
+def convert_to_qe_data_1(
         generation_file: Annotated[str, typer.Option("--generation_file")] = "output/ZSE-generate/ZSE-test-pred-by_beam-num=100.jsonl",  # "output/ZSE-generate/ZSE-test-pred-by_beam-num=100.jsonl", "output/ZSE-generate/ZSE-validation-pred-by_beam-num=100.jsonl"
         output_file: Annotated[str, typer.Option("--output_file")] = None,
         pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
