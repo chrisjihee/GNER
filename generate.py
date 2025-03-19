@@ -302,7 +302,7 @@ def generate_hybrid_prediction(
 
 @main.command("convert_to_qe_data")
 def convert_to_qe_data(
-        input_files: Annotated[str, typer.Option("--input_file")] = "data/GNER-QE/pile-ner-sampled-N19988-*-hybrid_gen-by_beam-amount=5x10.jsonl",  # "data/GNER-QE/pile-ner-sampled-N19988-*-hybrid_gen-by_beam-amount=5x10.jsonl"
+        input_files: Annotated[str, typer.Option("--input_file")] = "data/GNER-QE/pile-ner-sampled-N19988-part1/*.jsonl",
         output_file: Annotated[str, typer.Option("--output_file")] = "data/GNER-QE/quality_est.jsonl",
         output_name: Annotated[str, typer.Option("--output_name")] = "GNER-QE",
         output_home: Annotated[str, typer.Option("--output_home")] = "data",
@@ -334,7 +334,7 @@ def convert_to_qe_data(
     )
     output_file = (env.output_dir if output_file.parent == Path() else output_file.parent) / new_path(
         output_file.name,
-        pre=f"{input_files.stem.split('-*')[0]}",
+        pre=input_files.parent.name,
         post=f"max_sampled={max_sample_per_quality}"
     )
     tokenizer = AutoTokenizer.from_pretrained(pretrained)
