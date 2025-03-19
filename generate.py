@@ -313,7 +313,7 @@ def convert_to_qe_data(
         pow_weight: Annotated[float, typer.Option("--pow_weight")] = 2.0,
         max_score: Annotated[float, typer.Option("--max_score")] = 5.0,
         random_seed: Annotated[int, typer.Option("--random_seed")] = 7,
-        max_workers: Annotated[int, typer.Option("--max_workers")] = os.cpu_count(),
+        max_workers: Annotated[int, typer.Option("--max_workers")] = int(os.cpu_count() / 4),
         logging_file: Annotated[str, typer.Option("--logging_file")] = "convert_to_qe_data.out",
         logging_level: Annotated[int, typer.Option("--logging_level")] = logging.INFO,
 ):
