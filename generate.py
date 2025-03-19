@@ -1,20 +1,20 @@
 import difflib
 import json
 import logging
+import os
 import random
 import re
 from collections import defaultdict, OrderedDict
 from operator import attrgetter
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 
 import datasets
 import pandas as pd
 import torch
 import typer
+from datasets import Dataset
 from datasets import load_dataset
-from nltk.metrics.distance import edit_distance
-from pydantic import BaseModel
 from sklearn.model_selection import train_test_split
 from typing_extensions import Annotated
 
@@ -25,7 +25,7 @@ from chrisbase.util import grouped
 from chrisdata.learn import F1, Sum, RegressionSample
 from chrisdata.ner import GenNERSampleWrapper, GenNERSample
 from gner import NEREvaluator
-from gner.gner_evaluator import extract_predictions3
+from gner.gner_evaluator import extract_predictions3, PredictionQuality
 from progiter import ProgIter
 from transformers import (
     AutoTokenizer,
@@ -35,34 +35,6 @@ from transformers import (
 # Global settings
 logger: logging.Logger = logging.getLogger("gner")
 main = AppTyper()
-
-
-class PredictionQuality(BaseModel):
-    id: str
-    dataset: str
-    sentence: str
-    prediction: str
-    edit_dist: float
-    f1_info: F1
-    quality: Optional[float] = None
-
-    def calc_quality(self, weight_f1: float = 0.7, weight_ed: float = 0.3, pow_weight: float = 2.0, max_score: float = 5.0):
-        qe_score = sum([
-            weight_f1 * self.f1_info.f1,
-            weight_ed * (1.0 - self.edit_dist),
-        ])
-        self.quality = round(pow(qe_score, pow_weight) * max_score, 1)
-        return self
-
-    def __str__(self):
-        return f"Q={self.quality:.2f}, F1={self.f1_info.f1:.4f}, ED={self.edit_dist:.4f}, pred={self.prediction}"
-
-
-def normalized_edit_distance(hyp_text: str, ref_text: str) -> float:
-    dist = edit_distance(ref_text, hyp_text)
-    max_len = max(len(ref_text), len(hyp_text))
-    norm_dist = dist / max_len if max_len else 0.0
-    return norm_dist
 
 
 def compute_diffs(base_sent, alter_sents, ws=1):
