@@ -106,8 +106,8 @@ def compute_diffs(base_sent, alter_sents, ws=1):
 def generate_hybrid_prediction(
         device: Annotated[str, typer.Option("--device")] = ...,
         input_file: Annotated[str, typer.Option("--input_file")] = ...,  # "data/ZSE-validation-sampled-N70.jsonl"
-        input_start: Annotated[int, typer.Option("--input_start")] = 10,
-        input_limit: Annotated[int, typer.Option("--input_limit")] = 20,
+        input_start: Annotated[int, typer.Option("--input_start")] = 0,
+        input_limit: Annotated[int, typer.Option("--input_limit")] = -1,
         output_file: Annotated[str, typer.Option("--output_file")] = "data/GNER-QE/hybrid_gen.jsonl",
         output_name: Annotated[str, typer.Option("--output_name")] = "GNER-QE",
         output_home: Annotated[str, typer.Option("--output_home")] = "data",
