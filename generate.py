@@ -1,6 +1,7 @@
 import difflib
 import json
 import logging
+import random
 import re
 from collections import defaultdict, OrderedDict
 from operator import attrgetter
@@ -27,7 +28,6 @@ from gner import NEREvaluator
 from gner.gner_evaluator import extract_predictions3
 from progiter import ProgIter
 from transformers import (
-    set_seed,
     AutoTokenizer,
     AutoModelForSeq2SeqLM,
 )
@@ -46,16 +46,16 @@ class PredictionQuality(BaseModel):
     f1_info: F1
     quality: Optional[float] = None
 
-    def calc_quality(self, weight_f1: float = 0.7, weight_nd: float = 0.3, pow_weight: float = 2.0, max_score: float = 5.0):
+    def calc_quality(self, weight_f1: float = 0.7, weight_ed: float = 0.3, pow_weight: float = 2.0, max_score: float = 5.0):
         qe_score = sum([
             weight_f1 * self.f1_info.f1,
-            weight_nd * (1.0 - self.edit_dist),
+            weight_ed * (1.0 - self.edit_dist),
         ])
         self.quality = round(pow(qe_score, pow_weight) * max_score, 1)
         return self
 
     def __str__(self):
-        return f"Q={self.quality:.2f}, F1={self.f1_info.f1:.4f}, ND={self.edit_dist:.4f}, pred={self.prediction}"
+        return f"Q={self.quality:.2f}, F1={self.f1_info.f1:.4f}, ED={self.edit_dist:.4f}, pred={self.prediction}"
 
 
 def normalized_edit_distance(hyp_text: str, ref_text: str) -> float:
@@ -123,7 +123,7 @@ def generate_hybrid_prediction(
         pretrained: Annotated[str, typer.Option("--pretrained")] = "output-lfs/train_ZSE-HR207842/GnerT5-Base-HR207842/checkpoint-17052",
         do_check_possibility: Annotated[bool, typer.Option("--do_check_possibility/--no_check_possibility")] = False,
         weight_f1: Annotated[float, typer.Option("--weight_f1")] = 0.7,
-        weight_nd: Annotated[float, typer.Option("--weight_nd")] = 0.3,
+        weight_ed: Annotated[float, typer.Option("--weight_ed")] = 0.3,
         pow_weight: Annotated[float, typer.Option("--pow_weight")] = 2.0,
         max_score: Annotated[float, typer.Option("--max_score")] = 5.0,
         random_seed: Annotated[int, typer.Option("--random_seed")] = 7,
@@ -307,15 +307,15 @@ def generate_hybrid_prediction(
                     reference = GenNERSample.get_prompt_labels(sr_example.instance.words, sr_example.instance.labels)
                     quality_hyps = list()
                     for candidate in all_hyps:
-                        prediction_quality = PredictionQuality(
+                        quality_hyp = PredictionQuality(
                             id=example.id,
                             dataset=example.dataset,
                             sentence=sentence,
                             prediction=candidate,
                             edit_dist=normalized_edit_distance(candidate, reference),
                             f1_info=NEREvaluator().evaluate_prediction(candidate, example, tokenizer)
-                        ).calc_quality(weight_f1=weight_f1, weight_nd=weight_nd, pow_weight=pow_weight, max_score=max_score)
-                        quality_hyps.append(prediction_quality)
+                        ).calc_quality(weight_f1=weight_f1, weight_ed=weight_ed, pow_weight=pow_weight, max_score=max_score)
+                        quality_hyps.append(quality_hyp)
                     quality_hyps = sorted(quality_hyps, key=lambda x: x.quality, reverse=True)
                     for hyp in quality_hyps[:5]:
                         logger.debug(f"    - {hyp}")
@@ -349,6 +349,7 @@ def generate_hybrid_prediction(
 @main.command("convert_to_qe_data")
 def convert_to_qe_data(
         input_files: Annotated[str, typer.Option("--input_file")] = "data/GNER-QE/pile-ner-sampled-N19988-*-hybrid_gen-by_beam-amount=5x10.jsonl",  # "data/GNER-QE/pile-ner-sampled-N19988-*-hybrid_gen-by_beam-amount=5x10.jsonl"
+        input_batch: Annotated[int, typer.Option("--input_start")] = 10,
         output_file: Annotated[str, typer.Option("--output_file")] = "data/GNER-QE/quality_est.jsonl",
         output_name: Annotated[str, typer.Option("--output_name")] = "GNER-QE",
         output_home: Annotated[str, typer.Option("--output_home")] = "data",
@@ -356,12 +357,12 @@ def convert_to_qe_data(
         max_sample_per_quality: Annotated[int, typer.Option("--max_sample_per_quality")] = 20,
         do_check_possibility: Annotated[bool, typer.Option("--do_check_possibility/--no_check_possibility")] = False,
         weight_f1: Annotated[float, typer.Option("--weight_f1")] = 0.7,
-        weight_nd: Annotated[float, typer.Option("--weight_nd")] = 0.3,
+        weight_ed: Annotated[float, typer.Option("--weight_ed")] = 0.3,
         pow_weight: Annotated[float, typer.Option("--pow_weight")] = 2.0,
         max_score: Annotated[float, typer.Option("--max_score")] = 5.0,
         random_seed: Annotated[int, typer.Option("--random_seed")] = 7,
         logging_file: Annotated[str, typer.Option("--logging_file")] = "convert_to_qe_data.out",
-        logging_level: Annotated[int, typer.Option("--logging_level")] = logging.INFO,
+        logging_level: Annotated[int, typer.Option("--logging_level")] = logging.DEBUG,
 ):
     input_files = Path(input_files)
     output_file = Path(output_file)
@@ -382,7 +383,65 @@ def convert_to_qe_data(
         pre=f"{input_files.stem.split('-*')[0]}",
         post=f"max_sampled={max_sample_per_quality}"
     )
+    tokenizer = AutoTokenizer.from_pretrained(pretrained)
     logger.info(f"Convert {input_files}[{len(input_file_list)}] => {output_file}")
+
+    with (
+        JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=logging_level <= logging.INFO),
+        FileStreamer(FileOption.from_path(path=output_file, mode="w")) as output_file,
+    ):
+        for input_file in input_file_list[:1]:  # TODO: remove [:1]
+            input_opt = InputOption(
+                file=FileOption.from_path(path=input_file),
+                batch=input_batch,
+            )
+            with FileStreamer(FileOption.from_path(path=input_file)) as input_file:
+                input_data = input_opt.ready_inputs(input_file, total=len(input_file))
+                logger.info(f"[input_file] {input_file.path}: #item={len(input_file)}")
+                with ProgIter(input_data.items, total=input_data.num_item, desc=f"Converting {input_file.path}:", stream=LoggerWriter(logger, level=logging_level), verbose=3) as progress:
+                    f1_sum = F1()
+                    combined_sum = Sum()
+                    sampled_sum = Sum()
+                    for batch in progress:
+                        for line in batch:
+                            example = GenNERSampleWrapper.model_validate_json(line)
+                            sentence = " ".join(example.instance.words)
+                            reference = GenNERSample.get_prompt_labels(example.instance.words, example.instance.labels)
+                            combined_hyps = example.instance.prediction_outputs
+                            logger.debug("=" * 80)
+                            logger.debug(f"[Sentence] {sentence}")
+                            logger.debug(f"  - Gold : {reference}")
+                            logger.debug(f"  - #Combined : {len(combined_hyps)}")
+                            combined_sum += len(combined_hyps)
+
+                            # Make quality_hyps
+                            quality_hyps = list()
+                            for candidate in combined_hyps[:30]:  # TODO: remove [:3]
+                                quality_hyp = PredictionQuality(
+                                    id=example.id,
+                                    dataset=example.dataset,
+                                    sentence=sentence,
+                                    prediction=candidate,
+                                    edit_dist=normalized_edit_distance(candidate, reference),
+                                    f1_info=NEREvaluator().evaluate_prediction(candidate, example, tokenizer)
+                                ).calc_quality(weight_f1=weight_f1, weight_ed=weight_ed, pow_weight=pow_weight, max_score=max_score)
+                                quality_hyps.append(quality_hyp)
+                            quality_hyps = sorted(quality_hyps, key=lambda x: x.quality, reverse=True)
+                            for hyp in quality_hyps[:5]:
+                                logger.debug(f"  - Quality hyp : {hyp}")
+
+                            grouped_hyps = {k: list(vs) for k, vs in grouped(quality_hyps, key=lambda x: x.quality)}
+                            sampled_hyps = list()
+                            for quality in sorted(grouped_hyps.keys(), reverse=True):
+                                for hyp in random.sample(grouped_hyps[quality], min(len(grouped_hyps[quality]), max_sample_per_quality)):
+                                    sampled_hyps.append(hyp)
+                            logger.debug(f"  * Sampled {'some candidates':21s} : {len(sampled_hyps):d}")
+                            for hyp in sampled_hyps:
+                                logger.debug(f"  - Sampled hyp : {hyp}")
+
+                            f1_sum += sampled_hyps[0].f1_info
+                            progress.set_extra(f"| avg_combined={combined_sum.avg:.0f}, max_f1={f1_sum.f1:.3f}")
+                            exit(0)
 
 
 def find_increasing_indices(lst):
@@ -411,7 +470,7 @@ def convert_to_qe_data_1(
         test_ratio: Annotated[float, typer.Option("--test_ratio")] = 1.0,
         test_split: Annotated[str, typer.Option("--test_split")] = "test",
         weight_f1: Annotated[float, typer.Option("--weight_f1")] = 0.7,
-        weight_nd: Annotated[float, typer.Option("--weight_nd")] = 0.3,
+        weight_ed: Annotated[float, typer.Option("--weight_ed")] = 0.3,
         pow_weight: Annotated[float, typer.Option("--pow_weight")] = 2.0,
         max_score: Annotated[float, typer.Option("--max_score")] = 5.0,
         output_home: Annotated[str, typer.Option("--output_home")] = "data",
@@ -433,7 +492,6 @@ def convert_to_qe_data_1(
         logging_level=logging.INFO,
         logging_format=LoggingFormat.CHECK_24,
     )
-    env.setup_logger(env.logging_level)
 
     with (JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=verbose)):
         tokenizer = AutoTokenizer.from_pretrained(pretrained)
@@ -480,7 +538,7 @@ def convert_to_qe_data_1(
                             prediction=candidate,
                             edit_dist=normalized_edit_distance(candidate, reference),
                             f1_info=NEREvaluator().evaluate_prediction(candidate, example, tokenizer).f1
-                        ).calc_quality(weight_f1=weight_f1, weight_nd=weight_nd, pow_weight=pow_weight, max_score=max_score)
+                        ).calc_quality(weight_f1=weight_f1, weight_ed=weight_ed, pow_weight=pow_weight, max_score=max_score)
                         for candidate in candiates
                     ]
                     # for j, x in enumerate(sorted(scored_candidates, key=attrgetter('quality'), reverse=True), start=1):
