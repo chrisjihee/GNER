@@ -161,11 +161,9 @@ def generate_hybrid_prediction(
     sr_inst_temp = sr_inst_file.read_text()
     mr_inst_temp = mr_inst_file.read_text()
 
-    set_seed(env.random_seed)
     tokenizer = AutoTokenizer.from_pretrained(pretrained)
     model = AutoModelForSeq2SeqLM.from_pretrained(pretrained, torch_dtype=torch.bfloat16).to(device)
     model.eval()
-    logger.info(f"Set random seed to {env.random_seed}")
 
     with (
         JobTimer(f"python {env.current_file} {' '.join(env.command_args)}", rt=1, rb=1, rc='=', verbose=logging_level <= logging.INFO),
@@ -385,9 +383,6 @@ def convert_to_qe_data(
         post=f"max_sampled={max_sample_per_quality}"
     )
     logger.info(f"Convert {input_files}[{len(input_file_list)}] => {output_file}")
-
-    set_seed(env.random_seed)
-    logger.info(f"Set random seed to {env.random_seed}")
 
 
 def find_increasing_indices(lst):
