@@ -279,14 +279,18 @@ def generate_hybrid_prediction(
                     reference = GenNERSample.get_prompt_labels(sr_example.instance.words, sr_example.instance.labels)
                     quality_hyps = list()
                     for candidate in all_hyps:
+                        f1_info = PredictionQuality.calc_f1_info(candidate, example, tokenizer)
+                        edit_dist = PredictionQuality.calc_edit_dist(candidate, reference)
+                        quality = PredictionQuality.calc_quality(f1_info.f1, edit_dist, weight_f1=weight_f1, weight_ed=weight_ed, pow_weight=pow_weight, max_score=max_score)
                         quality_hyp = PredictionQuality(
                             id=example.id,
                             dataset=example.dataset,
                             sentence=sentence,
                             prediction=candidate,
-                            edit_dist=normalized_edit_distance(candidate, reference),
-                            f1_info=NEREvaluator().evaluate_prediction(candidate, example, tokenizer)
-                        ).calc_quality(weight_f1=weight_f1, weight_ed=weight_ed, pow_weight=pow_weight, max_score=max_score)
+                            f1_info=f1_info,
+                            edit_dist=edit_dist,
+                            quality=quality,
+                        )
                         quality_hyps.append(quality_hyp)
                     quality_hyps = sorted(quality_hyps, key=lambda x: x.quality, reverse=True)
                     for hyp in quality_hyps[:5]:
