@@ -3,7 +3,10 @@ import json
 import re
 import string
 from collections import defaultdict
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
+
+from nltk import edit_distance
+from pydantic import BaseModel
 
 from chrisdata.learn import F1
 from chrisdata.ner import GenNERSampleWrapper
@@ -344,6 +347,39 @@ def compute_metrics2(examples: List[GenNERSampleWrapper], tokenizer=None, averag
     else:
         results[average_key] = tot_f1 / tot_dataset
     return results
+
+
+def normalized_edit_distance(hyp_text: str, ref_text: str) -> float:
+    dist = edit_distance(ref_text, hyp_text)
+    max_len = max(len(ref_text), len(hyp_text))
+    norm_dist = dist / max_len if max_len else 0.0
+    return norm_dist
+
+
+class PredictionQuality(BaseModel):
+    id: str
+    dataset: str
+    sentence: str
+    prediction: str
+    f1_info: Optional[F1] = None
+    edit_dist: Optional[float] = None
+    quality: Optional[float] = None
+
+    @staticmethod
+    def calc_f1_info(prediction: str, example: GenNERSampleWrapper, tokenizer):
+        return NEREvaluator().evaluate_prediction(prediction, example, tokenizer)
+
+    @staticmethod
+    def calc_edit_dist(prediction: str, reference: str):
+        return normalized_edit_distance(prediction, reference)
+
+    @staticmethod
+    def calc_quality(f1: float, edit_dist: float, weight_f1: float = 0.7, weight_ed: float = 0.3, pow_weight: float = 2.0, max_score: float = 5.0):
+        qe_score = sum([
+            weight_f1 * f1,
+            weight_ed * (1.0 - edit_dist),
+        ])
+        return round(pow(qe_score, pow_weight) * max_score, 1)
 
 
 def main():
