@@ -3,12 +3,12 @@ set -x
 
 DEEPSPEED_CONFIG="configs/deepspeed/ds1_t5.json"
 DEEPSPEED_PORT=$(shuf -i 25000-30000 -n 1)
-CUDA_DEVICES=6,7
+CUDA_DEVICES=4,5,6,7
 SOURCE_FILE="run_glue.py"
 TRAIN_POSTFIX="max_sampled=3"
-TRAIN_FILE="data/GNER-QE/pile-ner-sampled-N19988-quality_est-max_sampled=3.jsonl"
-VALID_FILE="data/GNER-QE/ZSE-validation-sampled-N210-quality_est-max_sampled=10.jsonl"
-TEST_FILE="data/GNER-QE/ZSE-test-sampled-N700-quality_est-max_sampled=0.jsonl"
+TRAIN_FILE="data/GNER-QE/pile-ner-sampled-N19988-quality_est-max_sampled=3.json"
+VALID_FILE="data/GNER-QE/ZSE-validation-sampled-N210-quality_est-max_sampled=10.json"
+TEST_FILE="data/GNER-QE/ZSE-test-sampled-N700-quality_est-max_sampled=0.json"
 OUTPUT_NAME="GNER-QE-HR"
 OUTPUT_HOME="output-lfs"
 
