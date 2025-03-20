@@ -302,7 +302,7 @@ def generate_hybrid_prediction(
 
 @main.command("convert_to_qe_data")
 def convert_to_qe_data(
-        input_files: Annotated[str, typer.Argument()] = ...,  # "data/GNER-QE/pile-ner-sampled-N19988-part1/*.jsonl"
+        input_files: Annotated[str, typer.Argument()] = ...,  # "data/GNER-QE/pile-ner-sampled-N19988-part1/*.jsonl", "data/GNER-QE/ZSE-validation-sampled-N210/*.jsonl", "data/GNER-QE/ZSE-test-sampled-N700/*.jsonl"
         output_file: Annotated[str, typer.Option("--output_file")] = "data/GNER-QE/quality_est.jsonl",
         output_name: Annotated[str, typer.Option("--output_name")] = "GNER-QE",
         output_home: Annotated[str, typer.Option("--output_home")] = "data",
