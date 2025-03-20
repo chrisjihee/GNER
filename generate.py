@@ -390,7 +390,8 @@ def convert_to_qe_data(
                         grouped_hyps = {k: list(vs) for k, vs in grouped(quality_hyps, key=lambda x: x.quality)}
                         sampled_hyps = list()
                         for quality in sorted(grouped_hyps.keys(), reverse=True):
-                            for hyp in random.sample(grouped_hyps[quality], min(len(grouped_hyps[quality]), max_sample_per_quality)):
+                            num_sampling = min(len(grouped_hyps[quality]), max_sample_per_quality) if max_sample_per_quality > 0 else len(grouped_hyps[quality])
+                            for hyp in random.sample(grouped_hyps[quality], num_sampling):
                                 sampled_hyps.append(hyp)
                         sampled_sum += len(sampled_hyps)
                         for hyp in sampled_hyps[:10]:
