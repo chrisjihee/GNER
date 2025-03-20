@@ -5,11 +5,12 @@ DEEPSPEED_CONFIG="configs/deepspeed/ds1_t5.json"
 DEEPSPEED_PORT=$(shuf -i 25000-30000 -n 1)
 CUDA_DEVICES=6,7
 SOURCE_FILE="run_glue.py"
+TRAIN_POSTFIX="max_sampled=3"
 TRAIN_FILE="data/GNER-QE/pile-ner-sampled-N19988-quality_est-max_sampled=3.jsonl"
 VALID_FILE="data/GNER-QE/ZSE-validation-sampled-N210-quality_est-max_sampled=10.jsonl"
 TEST_FILE="data/GNER-QE/ZSE-test-sampled-N700-quality_est-max_sampled=0.jsonl"
 OUTPUT_NAME="GNER-QE-HR"
-OUTPUT_HOME="output"
+OUTPUT_HOME="output-lfs"
 
 MODEL_NAMES=(
 #  "FacebookAI/roberta-base"
@@ -28,7 +29,7 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
       --validation_file $VALID_FILE \
       --test_file $TEST_FILE \
       --model_name_or_path $MODEL_NAME \
-      --output_dir $OUTPUT_HOME/$OUTPUT_NAME/$MODEL_NAME-num=10 \
+      --output_dir $OUTPUT_HOME/$OUTPUT_NAME/$MODEL_NAME-$TRAIN_POSTFIX \
       --cache_dir .cache \
       --do_train \
       --do_eval \
