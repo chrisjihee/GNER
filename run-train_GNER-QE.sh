@@ -9,14 +9,14 @@ TRAIN_POSTFIX="max_sampled=3"
 TRAIN_FILE="data/GNER-QE/pile-ner-sampled-N19988-quality_est-${TRAIN_POSTFIX}.json"
 VALID_FILE="data/GNER-QE/ZSE-validation-sampled-N210-quality_est-max_sampled=10.json"
 TEST_FILE="data/GNER-QE/ZSE-test-sampled-N700-quality_est-max_sampled=0.json"
-OUTPUT_NAME="GNER-QE-HR"
+OUTPUT_NAME="GNER-QE-HR-ep1"
 OUTPUT_HOME="output-lfs"
 
 MODEL_NAMES=(
-  "FacebookAI/roberta-base"
-#  "FacebookAI/roberta-large"
-  "microsoft/deberta-v3-base"
-#  "microsoft/deberta-v3-large"
+#  "FacebookAI/roberta-base"
+#  "microsoft/deberta-v3-base"
+  "FacebookAI/roberta-large"
+  "microsoft/deberta-v3-large"
 )
 
 for MODEL_NAME in "${MODEL_NAMES[@]}"; do
@@ -41,13 +41,13 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
       --per_device_train_batch_size 64 \
       --gradient_accumulation_steps 1 \
       --learning_rate 2e-5 \
-      --num_train_epochs 20 \
+      --num_train_epochs 1 \
       --logging_strategy steps \
       --eval_strategy steps \
       --save_strategy steps \
       --logging_steps 10 \
-      --eval_steps 315 \
-      --save_steps 315 \
+      --eval_steps 100 \
+      --save_steps 100 \
       --save_total_limit 3 \
       --load_best_model_at_end True \
       --metric_for_best_model pearson \
