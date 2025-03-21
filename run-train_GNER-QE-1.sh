@@ -42,14 +42,14 @@ for LR in "${LEARNING_RATES[@]}"; do
         --bf16 True --tf32 True \
         --max_seq_length 512 \
         --per_device_eval_batch_size 30 \
-        --per_device_train_batch_size 20 \
+        --per_device_train_batch_size 16 \
         --gradient_accumulation_steps 1 \
         --deepspeed "configs/deepspeed/ds0_t5.json" \
         --learning_rate $LR \
         --logging_steps 50 \
         --eval_steps 500 \
         --save_steps 500 \
-        --max_steps 12000 \
+        --max_steps -1 \
         --num_train_epochs $TRAIN_EPOCHS \
         --logging_strategy steps \
         --eval_strategy steps \
