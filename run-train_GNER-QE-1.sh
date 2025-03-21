@@ -4,7 +4,7 @@ set -x
 DEEPSPEED_PORT=$(shuf -i 25000-30000 -n 1)
 CUDA_DEVICES=0,1,2,3
 SOURCE_FILE="run_glue.py"
-TRAIN_EPOCHS=0.5
+TRAIN_EPOCHS=1
 TRAIN_DATA_POST="max_sampled=3"
 TRAIN_FILE="data/GNER-QE/pile-ner-sampled-N19988-quality_est-${TRAIN_DATA_POST}.json"
 VALID_FILE="data/GNER-QE/ZSE-validation-sampled-N210-quality_est-max_sampled=0.json"
@@ -46,10 +46,10 @@ for LR in "${LEARNING_RATES[@]}"; do
         --gradient_accumulation_steps 1 \
         --deepspeed "configs/deepspeed/ds0_t5.json" \
         --learning_rate $LR \
-        --logging_steps 10 \
-        --eval_steps 100 \
-        --save_steps 100 \
-        --max_steps -1 \
+        --logging_steps 50 \
+        --eval_steps 500 \
+        --save_steps 500 \
+        --max_steps 7000 \
         --num_train_epochs $TRAIN_EPOCHS \
         --logging_strategy steps \
         --eval_strategy steps \
