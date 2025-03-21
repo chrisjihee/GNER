@@ -474,9 +474,9 @@ def find_increasing_indices(lst):
 
 @main.command("rerank_by_predict_results")
 def rerank_by_predict_results(
-        generation_file: Annotated[str, typer.Option("--generation_file")] = "output/ZSE-generate/ZSE-test-pred-by_beam-num=100.jsonl",  # "output/ZSE-generate/ZSE-test-pred-by_beam-num=100.jsonl", "output/ZSE-generate/ZSE-validation-pred-by_beam-num=100.jsonl"
-        regression_input_files: Annotated[str, typer.Option("--regression_input_files")] = "data/GNER-QE/ZSE-test-pred-by_beam-num=*-test.json",
-        regression_output_files: Annotated[str, typer.Option("--regression_output_files")] = "output/GNER-QE/**/checkpoint-*/pred/predict_results_*",
+        generation_file: Annotated[str, typer.Option("--generation_file")] = "data/GNER-QE/ZSE-test-sampled-N700/ZSE-test-sampled-N700-hybrid_gen-by_beam-amount=5x10.jsonl",
+        regression_input_files: Annotated[str, typer.Option("--regression_input_files")] = "data/GNER-QE/ZSE-test-sampled-N700-quality_est-max_sampled=0.json",
+        regression_output_files: Annotated[str, typer.Option("--regression_output_files")] = "output-lfs/GNER-QE-HR-*/**/checkpoint-*/pred/predict_results_*",
         # pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
         output_home: Annotated[str, typer.Option("--output_home")] = "output",
         output_name: Annotated[str, typer.Option("--output_name")] = "ZSE-rerank",
