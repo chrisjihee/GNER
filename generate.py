@@ -564,7 +564,7 @@ def rerank_by_predict_results(
 @main.command("check_possibility")
 def check_possibility(
         generation_file: Annotated[str, typer.Argument()] = ...,  # "output/ZSE-generate/ZSE-validation-pred-by_beam-num=100.jsonl",  "output/ZSE-generate/ZSE-test-pred-by_beam-num=100.jsonl"
-        pretrained: Annotated[str, typer.Option("--pretrained")] = "dyyyyyyyy/GNER-T5-base",  # "dyyyyyyyy/GNER-T5-large", "output-lfs/ZSE-jihee-BL-dl012/FlanT5-Base-BL/checkpoint-9900", "output-lfs/ZSE-yuyang-BL-lirs-b1/checkpoint-9900"
+        pretrained: Annotated[str, typer.Option("--pretrained")] = "output-lfs/train_ZSE-HR207842/GnerT5-Base-HR207842/checkpoint-17052",  # "dyyyyyyyy/GNER-T5-base", "dyyyyyyyy/GNER-T5-large", "output-lfs/train_ZSE-HR207842/GnerT5-Base-HR207842/checkpoint-17052"
         max_examples: Annotated[int, typer.Option("--max_examples")] = -1,
         output_home: Annotated[str, typer.Option("--output_home")] = "output",
         output_name: Annotated[str, typer.Option("--output_name")] = None,
