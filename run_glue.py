@@ -468,7 +468,7 @@ def main():
             batched=True,
             load_from_cache_file=not data_args.overwrite_cache,
             desc="Running tokenizer on dataset",
-            num_proc=os.cpu_count(),  # chrisjihee: for parallel processing
+            num_proc=int(os.cpu_count() / 4),  # chrisjihee: for parallel processing
         )
     if training_args.do_train:
         if "train" not in raw_datasets:
