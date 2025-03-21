@@ -1,0 +1,51 @@
+{
+  "best_metric": 0.4560219492171799,
+  "best_model_checkpoint": "output-lfs/GNER-QE-HR/microsoft/deberta-v3-base-max_sampled=3/checkpoint-25180",
+  "epoch": 1.0,
+  "eval_steps": 500,
+  "global_step": 25180,
+  "is_hyper_param_search": false,
+  "is_local_process_zero": true,
+  "is_world_process_zero": true,
+  "log_history": [
+    {
+      "epoch": 1.0,
+      "grad_norm": 6.566041469573975,
+      "learning_rate": 2e-05,
+      "loss": 0.6532,
+      "step": 25180
+    },
+    {
+      "epoch": 1.0,
+      "eval_loss": 1.6435273885726929,
+      "eval_mse": 1.6429552291824645,
+      "eval_pearson": 0.4560219492171799,
+      "eval_runtime": 43.169,
+      "eval_samples_per_second": 499.432,
+      "eval_spearmanr": 0.4544073891135145,
+      "eval_steps_per_second": 15.613,
+      "step": 25180
+    }
+  ],
+  "logging_steps": 500,
+  "max_steps": 1007160,
+  "num_input_tokens_seen": 0,
+  "num_train_epochs": 40,
+  "save_steps": 500,
+  "stateful_callbacks": {
+    "TrainerControl": {
+      "args": {
+        "should_epoch_stop": false,
+        "should_evaluate": false,
+        "should_log": false,
+        "should_save": true,
+        "should_training_stop": false
+      },
+      "attributes": {}
+    }
+  },
+  "total_flos": 2.1199994650781286e+17,
+  "train_batch_size": 4,
+  "trial_name": null,
+  "trial_params": null
+}
