@@ -3,19 +3,17 @@ set -x
 
 DEEPSPEED_CONFIG="configs/deepspeed/ds1_t5.json"
 DEEPSPEED_PORT=$(shuf -i 25000-30000 -n 1)
-CUDA_DEVICES=0,1,2,3
+CUDA_DEVICES=4,5,6,7
 SOURCE_FILE="run_glue.py"
 TRAIN_POSTFIX="max_sampled=3"
 TRAIN_FILE="data/GNER-QE/pile-ner-sampled-N19988-quality_est-${TRAIN_POSTFIX}.json"
-VALID_FILE="data/GNER-QE/ZSE-validation-sampled-N210-quality_est-max_sampled=10.json"
+VALID_FILE="data/GNER-QE/ZSE-validation-sampled-N210-quality_est-max_sampled=0.json"
 TEST_FILE="data/GNER-QE/ZSE-test-sampled-N700-quality_est-max_sampled=0.json"
 OUTPUT_NAME="GNER-QE-HR-ep1"
 OUTPUT_HOME="output-lfs"
 
 MODEL_NAMES=(
-#  "FacebookAI/roberta-base"
 #  "microsoft/deberta-v3-base"
-  "FacebookAI/roberta-large"
   "microsoft/deberta-v3-large"
 )
 
@@ -41,7 +39,7 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
       --per_device_train_batch_size 64 \
       --gradient_accumulation_steps 1 \
       --learning_rate 2e-5 \
-      --num_train_epochs 1 \
+      --num_train_epochs 1.2 \
       --logging_strategy steps \
       --eval_strategy steps \
       --save_strategy steps \
