@@ -12,7 +12,7 @@ SOURCE_FILE = "run_glue.py"
 # trained_model_paths = dirs("output-lfs/GNER-QE-HR-*/**/roberta-*/checkpoint-*")
 trained_model_paths = dirs("output-lfs/GNER-QE-HR-*/**/deberta-*/checkpoint-*")
 TRAIN_DATA_POST = "max_sampled=3"
-TRAIN_FILE = f"data/GNER-QE/pile-ner-sampled-N19988-quality_est-${TRAIN_DATA_POST}.json"
+TRAIN_FILE = f"data/GNER-QE/pile-ner-sampled-N19988-quality_est-{TRAIN_DATA_POST}.json"
 VALID_FILE = "data/GNER-QE/ZSE-validation-sampled-N210-quality_est-max_sampled=0.json"
 TEST_FILE = "data/GNER-QE/ZSE-test-sampled-N700-quality_est-max_sampled=0.json"
 
