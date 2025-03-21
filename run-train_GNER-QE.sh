@@ -48,10 +48,9 @@ for MODEL_NAME in "${MODEL_NAMES[@]}"; do
       --logging_steps 10 \
       --eval_steps 100 \
       --save_steps 100 \
-      --save_total_limit 3 \
+      --save_total_limit 2 \
       --load_best_model_at_end True \
       --metric_for_best_model pearson \
       --deepspeed $DEEPSPEED_CONFIG \
-      --overwrite_output_dir \
-      --overwrite_cache
+      --overwrite_output_dir
 done
