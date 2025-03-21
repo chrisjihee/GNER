@@ -415,6 +415,48 @@ def convert_to_qe_data(
                         logger.debug("")
 
 
+@main.command("convert_to_qe_data_seq2seq")
+def convert_to_qe_data_seq2seq(
+        input_files: Annotated[str, typer.Argument()] = ...,  # "data/GNER-QE/pile-ner-sampled-N19988-part1/*.jsonl", "data/GNER-QE/ZSE-validation-sampled-N210/*.jsonl", "data/GNER-QE/ZSE-test-sampled-N700/*.jsonl"
+        output_file: Annotated[str, typer.Option("--output_file")] = "data/GNER-QE-seq2seq/quality_est.jsonl",
+        output_name: Annotated[str, typer.Option("--output_name")] = "GNER-QE-seq2seq",
+        output_home: Annotated[str, typer.Option("--output_home")] = "data",
+        pretrained: Annotated[str, typer.Option("--pretrained")] = "output-lfs/train_ZSE-HR207842/GnerT5-Base-HR207842/checkpoint-17052",
+        max_sample_per_quality: Annotated[int, typer.Option("--max_sample_per_quality")] = 3,
+        weight_f1: Annotated[float, typer.Option("--weight_f1")] = 0.7,
+        weight_ed: Annotated[float, typer.Option("--weight_ed")] = 0.3,
+        pow_weight: Annotated[float, typer.Option("--pow_weight")] = 2.0,
+        max_score: Annotated[float, typer.Option("--max_score")] = 5.0,
+        random_seed: Annotated[int, typer.Option("--random_seed")] = 7,
+        max_workers: Annotated[int, typer.Option("--max_workers")] = int(os.cpu_count() / 4),
+        logging_file: Annotated[str, typer.Option("--logging_file")] = "convert_to_qe_data.out",
+        logging_level: Annotated[int, typer.Option("--logging_level")] = logging.INFO,
+):
+    input_files = Path(input_files)
+    output_file = Path(output_file)
+    input_file_list = files(input_files)
+    assert input_file_list, f"Invalid input files: {input_files}"
+    stamp = now_stamp()
+    env = NewProjectEnv(
+        time_stamp=from_timestamp(stamp, fmt='%m%d-%H%M%S'),
+        output_name=output_name,
+        output_home=output_home,
+        logging_file=new_path(logging_file, post=from_timestamp(stamp, fmt='%m%d-%H%M%S')),
+        logging_level=logging_level,
+        logging_format=LoggingFormat.CHECK_24,
+        random_seed=random_seed,
+        max_workers=max_workers,
+    )
+    output_file = (env.output_dir if output_file.parent == Path() else output_file.parent) / new_path(
+        output_file.name,
+        pre=input_files.parent.name,
+        post=f"max_sampled={max_sample_per_quality}"
+    )
+    tokenizer = AutoTokenizer.from_pretrained(pretrained)
+    datasets.disable_progress_bar()
+    logger.info(f"Convert {input_files}[{len(input_file_list)}] => {output_file}")
+
+
 def find_increasing_indices(lst):
     if not lst:
         return []
